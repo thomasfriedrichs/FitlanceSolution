@@ -6,6 +6,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  - group: react-variables
 
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
@@ -27,6 +28,11 @@ steps:
     npm install
     npm run build
   displayName: 'Build React app'
+  env:
+    REACT_APP_TRAINER_EMAIL: $(REACT-APP-TRAINER-EMAIL)
+    REACT_APP_TRAINER_PASSWORD: $(REACT-APP-TRAINER-PASSWORD)
+    REACT_APP_USER_EMAIL: $(REACT-APP-USER-EMAIL)
+    REACT_APP_USER_PASSWORD: $(REACT-APP-USER-PASSWORD)
 
 # Run React app tests
 #- script: |
