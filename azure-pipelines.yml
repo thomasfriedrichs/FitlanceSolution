@@ -5,8 +5,9 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  buildConfiguration: 'Release'
-  - group: react-variables
+- name: buildConfiguration
+  value: 'Release'
+- group: react-variables
 
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
