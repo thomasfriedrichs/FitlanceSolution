@@ -1,0 +1,63 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- name: buildConfiguration
+  value: 'Release'
+- group: react-variables
+
+steps:
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'dotnet build $(buildConfiguration)'
+
+# Add testing steps for the .NET Core app
+- script: dotnet test --configuration $(buildConfiguration) --no-build
+  displayName: 'Test .NET Core App'
+
+# Setup Node.js for React app build
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.x' 
+  displayName: 'Install Node.js'
+
+- script: |
+    echo "User email length: ${#REACT_APP_USER_EMAIL}"
+    echo "User password length: ${#REACT_APP_USER_PASSWORD}"
+  displayName: 'Echo secret lengths'
+  env:
+    REACT_APP_USER_EMAIL: $(REACT-APP-USER-EMAIL)
+    REACT_APP_USER_PASSWORD: $(REACT-APP-USER-PASSWORD)
+
+# Install npm dependencies and build React app
+- script: |
+    cd Fitlance/ClientApp
+    npm install
+    npm run build
+  displayName: 'Build React app'
+  env:
+    REACT_APP_TRAINER_EMAIL: $(REACT-APP-TRAINER-EMAIL)
+    REACT_APP_TRAINER_PASSWORD: $(REACT-APP-TRAINER-PASSWORD)
+    REACT_APP_USER_EMAIL: $(REACT-APP-USER-EMAIL)
+    REACT_APP_USER_PASSWORD: $(REACT-APP-USER-PASSWORD)
+
+# Run React app tests
+#- script: |
+#    cd Fitlance/ClientApp
+#    npm test
+#  displayName: 'Test React app'
+
+# Publish Artifacts
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/publish'
+    zipAfterPublish: true
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/publish'
+    ArtifactName: 'publish'
+    publishLocation: 'Container'
