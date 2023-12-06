@@ -68,7 +68,7 @@
   "scripts": {
     "prestart": "node aspnetcore-https && node aspnetcore-react",
     "start": "rimraf ./build && react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && node -e \"console.log('REACT_APP_USER_EMAIL length:', process.env.REACT_APP_USER_EMAIL ? process.env.REACT_APP_USER_EMAIL.length : 'undefined')\"",
     "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/"
