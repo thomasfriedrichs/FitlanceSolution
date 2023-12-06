@@ -122,6 +122,14 @@ builder.Services.AddCors(opt =>
             .AllowAnyMethod()
             .AllowCredentials();
         });
+    opt.AddPolicy("DevClient2",
+        b =>
+        {
+            b.WithOrigins("https://localhost:7021")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+        });
     opt.AddPolicy("Domain",
         b =>
         {
