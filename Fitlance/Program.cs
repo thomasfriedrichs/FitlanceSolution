@@ -170,6 +170,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("Domain");
 app.UseCors("Azure");
+app.UseCors("DevClient2");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
