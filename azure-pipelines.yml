@@ -24,7 +24,7 @@ steps:
   displayName: 'Install Node.js'
 
 # Install npm dependencies and build React app
-- script:
+- script: |
     cd Fitlance/ClientApp
     npm install
     npm run build
