@@ -23,14 +23,13 @@ steps:
     versionSpec: '14.x' 
   displayName: 'Install Node.js'
 
-  - script: |
+- script: |
     echo "User email length: ${#REACT_APP_USER_EMAIL}"
     echo "User password length: ${#REACT_APP_USER_PASSWORD}"
   displayName: 'Echo secret lengths'
   env:
     REACT_APP_USER_EMAIL: $(REACT-APP-USER-EMAIL)
     REACT_APP_USER_PASSWORD: $(REACT-APP-USER-PASSWORD)
-
 
 # Install npm dependencies and build React app
 - script: |
