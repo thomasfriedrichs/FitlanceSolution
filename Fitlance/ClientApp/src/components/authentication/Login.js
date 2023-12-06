@@ -16,7 +16,7 @@ const Login = () => {
 
     const handleGuestUser = () => {
         login(process.env.REACT_APP_USER_EMAIL, process.env.REACT_APP_USER_PASSWORD)
-        console.log(`REACT_APP_USER_EMAIL length: ${process.env.REACT_APP_USER_EMAIL?.length || 0}`);
+        console.log(process.env.REACT_APP_USER_EMAIL, process.env.REACT_APP_USER_PASSWORD);
     };
 
     const handleGuestTrainer = () => {
