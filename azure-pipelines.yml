@@ -62,6 +62,9 @@ steps:
 
 # Install npm dependencies and build React app
 - script: |
+    set -a
+    source $(envFile.secureFilePath)
+    set +a
     cd Fitlance/ClientApp
     npm install
     npm run build
