@@ -7,19 +7,6 @@ pool:
 variables:
 - name: buildConfiguration
   value: 'Release'
-#- group: react-variables
-#- name: REACT_APP_TRAINER_EMAIL
-#  value: $(REACT-APP-TRAINER-EMAIL)
-#  readonly: true
-#- name: REACT_APP_TRAINER_PASSWORD
-#  value: $(REACT-APP-TRAINER-PASSWORD)
-#  readonly: true
-#- name: REACT_APP_USER_EMAIL
-#  value: $(REACT-APP-USER-EMAIL)
-#  readonly: true
-#- name: REACT_APP_USER_PASSWORD
-#  value: $(REACT-APP-USER-PASSWORD)
-#  readonly: true
 
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
@@ -34,11 +21,8 @@ steps:
   inputs:
     secureFile: '.env.production.logins'
 - script: |
-    echo "Secure file path: $(envFile.secureFilePath)"
-    set -a
-    source $(envFile.secureFilePath)
-    set +a
-  displayName: 'Load environment variables'
+    cp $(envFile.secureFilePath) Fitlance/ClientApp/.env.production
+  displayName: 'Copy secure file to React app directory'
 
 - script: |
     set -a
@@ -62,19 +46,12 @@ steps:
 
 # Install npm dependencies and build React app
 - script: |
-    set -a
-    source $(envFile.secureFilePath)
-    set +a
     cd Fitlance/ClientApp
     npm install
     npm run build
   displayName: 'Build React app'
   env:
     NODE_ENV: production
-#    REACT_APP_TRAINER_EMAIL: $(REACT-APP-TRAINER-EMAIL)
-#    REACT_APP_TRAINER_PASSWORD: $(REACT-APP-TRAINER-PASSWORD)
-#    REACT_APP_USER_EMAIL: $(REACT-APP-USER-EMAIL)
-#    REACT_APP_USER_PASSWORD: $(REACT-APP-USER-PASSWORD)
 
 # Run React app tests
 #- script: |
