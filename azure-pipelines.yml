@@ -38,6 +38,7 @@ steps:
     npm run build
   displayName: 'Build React app'
   env:
+    NODE_ENV: production
     REACT_APP_TRAINER_EMAIL: $(REACT-APP-TRAINER-EMAIL)
     REACT_APP_TRAINER_PASSWORD: $(REACT-APP-TRAINER-PASSWORD)
     REACT_APP_USER_EMAIL: $(REACT-APP-USER-EMAIL)
