@@ -24,20 +24,6 @@ steps:
     cp $(envFile.secureFilePath) Fitlance/ClientApp/.env.production
   displayName: 'Copy secure file to React app directory'
 
-- script: |
-    set -a
-    source $(envFile.secureFilePath)
-    set +a
-    echo "REACT_APP_USER_EMAIL key exists: ${REACT_APP_USER_EMAIL+yes}"
-    echo "REACT_APP_USER_EMAIL length: ${#REACT_APP_USER_EMAIL}"
-    echo "REACT_APP_USER_PASSWORD key exists: ${REACT_APP_USER_PASSWORD+yes}"
-    echo "REACT_APP_USER_PASSWORD length: ${#REACT_APP_USER_PASSWORD}"
-    echo "REACT_APP_TRAINER_EMAIL key exists: ${REACT_APP_TRAINER_EMAIL+yes}"
-    echo "REACT_APP_TRAINER_EMAIL length: ${#REACT_APP_TRAINER_EMAIL}"
-    echo "REACT_APP_TRAINER_PASSWORD key exists: ${REACT_APP_TRAINER_PASSWORD+yes}"
-    echo "REACT_APP_TRAINER_PASSWORD length: ${#REACT_APP_TRAINER_PASSWORD}"
-  displayName: 'Check environment variable keys and lengths'
-  
 # Setup Node.js for React app build
 - task: NodeTool@0
   inputs:
