@@ -16,10 +16,6 @@ const Login = () => {
 
     const handleGuestUser = () => {
         login(process.env.REACT_APP_USER_EMAIL, process.env.REACT_APP_USER_PASSWORD)
-        console.log(`REACT_APP_USER_EMAIL length: ${process.env.REACT_APP_USER_EMAIL ? process.env.REACT_APP_USER_EMAIL.length : 'undefined'}`);
-        console.log(`REACT_APP_USER_PASSWORD length: ${process.env.REACT_APP_USER_PASSWORD ? process.env.REACT_APP_USER_PASSWORD.length : 'undefined'}`);
-        console.log(`REACT_APP_TRAINER_EMAIL length: ${process.env.REACT_APP_TRAINER_EMAIL ? process.env.REACT_APP_TRAINER_EMAIL.length : 'undefined'}`);
-        console.log(`REACT_APP_TRAINER_PASSWORD length: ${process.env.REACT_APP_TRAINER_PASSWORD ? process.env.REACT_APP_TRAINER_PASSWORD.length : 'undefined'}`);
     };
 
     const handleGuestTrainer = () => {

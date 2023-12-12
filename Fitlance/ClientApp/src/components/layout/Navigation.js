@@ -108,16 +108,6 @@ const Navigation = () => {
                                             {cookieExists ? "Log out" : "Log in"}
                                         </button>
                                     </li>
-                                    <li className="border-b border-gray-400 my-8 uppercase">
-                                        {cookieExists ? <></> :
-                                            <button
-                                                onClick={onLoginVisible}
-                                                className="py-2 px-2 font-medium text-gray-500 rounded hover:bg-green hover:text-white transition duration-150"
-                                            >
-                                                Sign up
-                                            </button>
-                                        }
-                                    </li>
                                 </ul>
                             </div>
                         </section>
@@ -154,14 +144,6 @@ const Navigation = () => {
                         </div>
                     </div>
                     <div className="hidden md:flex items-center space-x-3">
-                        {cookieExists ? <></> :
-                            <button
-                                onClick={onLoginVisible}
-                                className="py-2 px-2 font-medium text-gray-500 rounded hover:bg-green hover:text-white transition duration-150"
-                            >
-                                Sign up
-                            </button>
-                        }
                         <button
                             type="button"
                             onClick={cookieExists ? logout : onLoginVisible}

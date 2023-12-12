@@ -18,7 +18,6 @@ builder.Configuration
 
 var configuration = builder.Configuration;
 
-
 // Add services to the container.
 builder.Services.AddDbContext<FitlanceContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -170,7 +169,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("Domain");
 app.UseCors("Azure");
-app.UseCors("DevClient2");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
