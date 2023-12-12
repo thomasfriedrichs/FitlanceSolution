@@ -26,7 +26,6 @@ const SingleAppointment = (appointment) => {
         <div className="border-b shadow-sm rounded-sm hover:bg-slate-100">
             <section
                 className="p-2 w-full mx-auto hover:bg-slate-100"
-                role="region"
                 aria-label="Appointment Information"
             >
                 <h1 className="text-xl sm:text-2xl font-bold mb-4">Appointment Information</h1>
