@@ -2,11 +2,15 @@
 .rbc-calendar {
     background-color: white;
     font-family: "Roboto", sans-serif;
-    z-index: 0;
+    z-index: 0 !important;
 }
 
 .rbc-btn-group {
     display: inline-flex;
+}
+
+.rbc-month-view {
+    z-index: 0;
 }
 
 .rbc-toolbar {
@@ -120,9 +124,4 @@
 
 .mb-2 {
     margin-bottom: 0 !important;
-}
-
-
-@media only screen and (max-width: 700){
-
 }

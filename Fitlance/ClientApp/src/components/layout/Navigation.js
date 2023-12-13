@@ -21,7 +21,7 @@ const Navigation = () => {
     };
 
     return (
-        <nav className="lg-white shadow-md bg-white fixed top-0 w-[100vw]">
+        <nav className="lg-white shadow-md bg-white fixed top-0 w-[100vw] z-50">
             <AuthWrapper isFormVisible={isFormVisible} setIsFormVisible={setIsFormVisible} />
             <div className="mx-auto px-4 min-h-[2.5rem]">
                 <div className="flex justify-between">
