@@ -1,64 +1,26 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-
-using Fitlance.Entities;
+﻿using Fitlance.Entities;
 
 namespace Fitlance.Data;
 
-public class FitlanceContext : IdentityDbContext<User>
+public class AppointmentSeeder
 {
-    public FitlanceContext()
+    private readonly FitlanceContext _context;
+
+    public AppointmentSeeder(FitlanceContext context)
     {
+        _context = context;
     }
 
-    public FitlanceContext(DbContextOptions<FitlanceContext> options)
-        : base(options)
+    public void SeedData()
     {
+        SeedAppointments();
     }
 
-    public DbSet<Appointment>? Appointments { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    private void SeedAppointments()
     {
-        if (!optionsBuilder.IsConfigured)
-        {
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.Development.Local.json", true, true)
-                .AddJsonFile("appsettings.json", true, true)
-                .Build();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-        }
-    }
+        _context.Appointments.RemoveRange(_context.Appointments);
+        _context.SaveChanges();
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-
-        modelBuilder.HasDefaultSchema("Fitlance");
-        modelBuilder.Entity<User>(mb =>
-        {
-            mb.HasMany<Appointment>().WithOne().HasForeignKey(a => a.ClientId).IsRequired();
-            mb.ToTable("AspNetUsers");
-        });
-
-        modelBuilder.Entity<Appointment>(a =>
-        {
-            a.Property(p => p.Id).ValueGeneratedOnAdd();
-            a.ToTable("Appointments");
-        });
-
-        SeedAppointments(modelBuilder);
-    }
-
-    private void ClearAppointments()
-    {
-        Appointments.RemoveRange(Appointments);
-        SaveChanges();
-    }
-
-
-    private static void SeedAppointments(ModelBuilder modelBuilder)
-    {
         var addresses = new[]
         {
             new {StreetAddress = "2101 N Northlake Way", City = "Seattle", State = "WA", PostalCode = "98103", Country = "USA", Latitude = 47.646711, Longitude = -122.334383 }, // Gas Works Park
@@ -95,7 +57,7 @@ public class FitlanceContext : IdentityDbContext<User>
         var endDate = startDate.AddYears(1);
         var appointmentHours = new[] { 9, 10, 11, 12, 13, 14, 15, 16 };
 
-        var appointmentId = 1;
+        //var appointmentId = 1;
         var weeks = (int)Math.Ceiling((endDate - startDate).TotalDays / 7);
         for (var week = 0; week < weeks; week++)
         {
@@ -110,9 +72,9 @@ public class FitlanceContext : IdentityDbContext<User>
                 var endTimeUtc = startTimeUtc.AddHours(duration);
                 var address = addresses[random.Next(addresses.Length)];
 
-                modelBuilder.Entity<Appointment>().HasData(new
+                var appointment = new Appointment
                 {
-                    Id = appointmentId++,
+                    //Id = appointmentId++,
                     ClientId = clientId,
                     TrainerId = trainerId,
                     CreateTimeUtc = createTimeUtc,
@@ -127,8 +89,11 @@ public class FitlanceContext : IdentityDbContext<User>
                     Latitude = address.Latitude,
                     Longitude = address.Longitude,
                     IsActive = true
-                });
+                };
+
+                _context.Appointments.Add(appointment);
             }
         }
+        _context.SaveChanges();
     }
 }

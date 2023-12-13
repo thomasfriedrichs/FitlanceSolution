@@ -21,6 +21,7 @@ var configuration = builder.Configuration;
 // Add services to the container.
 builder.Services.AddDbContext<FitlanceContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<AppointmentSeeder>();
 
 builder.Services.AddControllersWithViews();
 
@@ -148,6 +149,15 @@ builder.Services.AddCors(opt =>
 });
 
 var app = builder.Build();
+
+if(ConfigurationBinder.GetValue<bool>(configuration, "SeedDataOnStartup"))
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var appointmentSeeder = scope.ServiceProvider.GetRequiredService<AppointmentSeeder>();
+        appointmentSeeder.SeedData();
+    } 
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

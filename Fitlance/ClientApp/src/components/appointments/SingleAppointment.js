@@ -17,7 +17,6 @@ const SingleAppointment = (appointment) => {
     const startTimeLocal = startTimeUtcDate.toLocaleString();
     const timezone = startTimeUtcDate.toLocaleTimeString(undefined, { timeZoneName: 'short' }).split(' ')[2];
 
-
     const onEdit = () => {
         setFormView(!formView);
     };
