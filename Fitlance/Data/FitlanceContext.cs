@@ -35,6 +35,12 @@ public class FitlanceContext : IdentityDbContext<User>
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.HasDefaultSchema("Fitlance");
+
+        modelBuilder.Entity<Trainer>()
+       .HasOne(t => t.User)
+       .WithOne()
+       .HasForeignKey<Trainer>(t => t.UserId);
+
         modelBuilder.Entity<User>(mb =>
         {
             mb.HasMany<Appointment>().WithOne().HasForeignKey(a => a.ClientId).IsRequired();
@@ -46,5 +52,8 @@ public class FitlanceContext : IdentityDbContext<User>
             a.Property(p => p.Id).ValueGeneratedOnAdd();
             a.ToTable("Appointments");
         });
+
+        TrainerSeeder.SeedTrainers(modelBuilder);
+
     }
 }

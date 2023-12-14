@@ -32,6 +32,7 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<FitlanceContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddScoped<UserManager<User>>();
+builder.Services.AddTransient<TrainerSeeder>();
 
 //Authentication
 
