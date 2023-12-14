@@ -18,8 +18,8 @@ public class AppointmentSeeder
 
     private void SeedAppointments()
     {
-        _context.Appointments.RemoveRange(_context.Appointments);
-        _context.SaveChanges();
+        //_context.Appointments.RemoveRange(_context.Appointments);
+        //_context.SaveChanges();
 
         var addresses = new[]
         {

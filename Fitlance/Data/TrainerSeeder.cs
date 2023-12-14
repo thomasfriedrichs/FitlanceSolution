@@ -9,9 +9,9 @@ namespace Fitlance.Data;
 
 public class TrainerSeeder
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<User> _userManager;
 
-    public TrainerSeeder(UserManager<IdentityUser> userManager)
+    public TrainerSeeder(UserManager<User> userManager)
     {
         _userManager = userManager;
     }
@@ -58,11 +58,11 @@ public class TrainerSeeder
                 NutritionCertification = GetNutritionCertification(),
                 YearsOfExperience = yearsOfExperience, 
                 Rating = 3.5 + 1.5 * random.NextDouble(), // Random rating between 3.5 to 5
-                Certifications = GetCertifications(specialization),
+                CertificationsDelimited = string.Join(";", GetCertifications(specialization) ?? Array.Empty<string>()),
                 HourlyRate = 50 + 5 * random.Next(0, 11), // Generates a rate between 50 to 100 in increments of 5
                 SecondLanguage = GetSecondLanguage(),
-                Avilability = GetAvailability(),
-                ClientSkill = GetClientSkill(yearsOfExperience),
+                AvailabilityDelimited = string.Join(";", GetAvailability()),
+                ClientSkillDelimited = string.Join(";", GetClientSkill(yearsOfExperience)),
                 ReviewCount = random.Next(50),
                 ActiveClients = random.Next(15)
             };
@@ -553,6 +553,6 @@ public class TrainerSeeder
             return bios[index];
         }
 
-        return "Dedicated fitness professional with a passion for helping clients achieve their goals."; // Default bio
+        return "Dedicated fitness professional with a passion for helping clients achieve their goals.";
     }
 }
