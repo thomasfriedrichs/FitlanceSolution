@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Text;
 using System.Data;
 
@@ -17,12 +16,12 @@ public class TrainerSeeder
         _userManager = userManager;
     }
 
-    public static async Task SeedTrainers(ModelBuilder modelBuilder, UserManager<IdentityUser> userManager)
+    public async Task SeedTrainers(FitlanceContext dbContext)
     {
-        var random = new Random();
-        var trainers = new List<Trainer>();
+        Random random = new();
+        List<Trainer> trainers = new();
 
-        for (int i = 1; i <= 1000; i++)
+        for (int i = 1; i <= 1500; i++)
         {
             string gender = GetGender();
             string userId = Guid.NewGuid().ToString();
@@ -45,10 +44,10 @@ public class TrainerSeeder
                 CreateTime = DateTime.Now,
             };
 
-            var createUserResult = await userManager.CreateAsync(user, GeneratePassword(16)); 
+            var createUserResult = await _userManager.CreateAsync(user, GeneratePassword(16)); 
             if (createUserResult.Succeeded)
             {
-                await userManager.AddToRoleAsync(user, RoleConstants.Trainer);
+                await _userManager.AddToRoleAsync(user, RoleConstants.Trainer);
             }
 
             var trainer = new Trainer
@@ -71,13 +70,14 @@ public class TrainerSeeder
             trainers.Add(trainer);
         }
 
-        modelBuilder.Entity<Trainer>().HasData(trainers);
+        dbContext.Trainers.AddRange(trainers);
+        await dbContext.SaveChangesAsync();
     }
 
     private static string GetGender()
     {
         string[] sexes = { "Male", "Female", "Non-Binary" };
-        var random = new Random();
+        Random random = new();
         int index = random.Next(sexes.Length);
         return sexes[index];
     }
@@ -86,7 +86,7 @@ public class TrainerSeeder
     private static string GetSpecialization()
     {
         string[] specializations = {"Yoga", "Strength", "Endurance", "Pilates", "HIIT"};
-        var random = new Random();
+        Random random = new();
         int index = random.Next(specializations.Length);
         return specializations[index];
     }
@@ -106,7 +106,7 @@ public class TrainerSeeder
             "Institute for Integrative Nutrition (IIN) Health Coach Certification",
             "Nutrition Therapy Practitioner (NTP) or Nutritional Consultant (NC) from the Nutritional Therapy Association (NTA)"
         };
-        var random = new Random();
+        Random random = new();
         if (random.Next(2) == 0)
         {
             return null;
@@ -120,7 +120,7 @@ public class TrainerSeeder
 
     private static string[]? GetCertifications(string specialization)
     {
-        var random = new Random();
+        Random random = new();
 
         string[] yogaCerts = {
             "Registered Yoga Teacher 200 Hours",
@@ -170,7 +170,7 @@ public class TrainerSeeder
 
         if (selectedCerts == null) return null;
 
-        var certifications = new List<string>();
+        List<string> certifications = new();
         int numberOfCerts = random.Next(1, 4); 
 
         for (int i = 0; i < numberOfCerts; i++)
@@ -187,7 +187,7 @@ public class TrainerSeeder
 
     private static string? GetSecondLanguage()
     {
-        var random = new Random();
+        Random random = new();
 
         if (random.Next(10) == 0)
         {
@@ -202,9 +202,9 @@ public class TrainerSeeder
 
     private static string[] GetAvailability()
     {
-        var random = new Random();
+        Random random = new();
 
-        List<string> days = new List<string>();
+        List<string> days = new();
         if (random.Next(5) == 0) // 1 in 5 chance for having both Weekdays and Weekends
         {
             days.Add("WeekDays");
@@ -216,7 +216,7 @@ public class TrainerSeeder
         }
 
         string[] hoursOptions = { "Morning", "Afternoon", "Evening" };
-        List<string> hours = new List<string>();
+        List<string> hours = new();
         while (hours.Count < 2)
         {
             string hour = hoursOptions[random.Next(hoursOptions.Length)];
@@ -231,7 +231,7 @@ public class TrainerSeeder
 
     private static string[] GetClientSkill(int yearsOfExperience)
     {
-        var random = new Random();
+        Random random = new();
 
         // more experienced trainers are more likely to handle both skill levels
         if (yearsOfExperience <= 5)
@@ -273,7 +273,7 @@ public class TrainerSeeder
 
     private static string GeneratePassword(int length = 8)
     {
-        var random = new Random();
+        Random random = new();
 
         const string lowerChars = "abcdefghijklmnopqrstuvwxyz";
         const string upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -284,7 +284,7 @@ public class TrainerSeeder
             lowerChars, upperChars, digitChars, nonAlphanumericChars
         };
 
-        StringBuilder password = new StringBuilder();
+        StringBuilder password = new();
 
         // Ensure each character type is used at least once
         foreach (var charSet in randomChars)
@@ -364,7 +364,7 @@ public class TrainerSeeder
             "Joanne", "Jocelyn", "Jodie", "Jody", "Josephine",
         };
 
-        var random = new Random();
+        Random random = new();
 
         if (gender.Equals("Non-Binary", StringComparison.OrdinalIgnoreCase))
         {
@@ -383,7 +383,7 @@ public class TrainerSeeder
 
     private static string GetLastName()
     {
-        var random = new Random();
+        Random random = new();
 
         string[] lastNames =
         {
@@ -425,14 +425,14 @@ public class TrainerSeeder
             98199
         };
 
-        Random random = new Random();
+        Random random = new();
         int index = random.Next(seattleZipCodes.Length);
         return seattleZipCodes[index];
     }
 
     private static string GetBio(string specialization)
     {
-        Dictionary<string, string[]> SpecialtyBios = new Dictionary<string, string[]>
+        Dictionary<string, string[]> SpecialtyBios = new()
         {
             ["Yoga"] = new[]
         {
@@ -545,7 +545,7 @@ public class TrainerSeeder
             "Expert in incorporating a variety of equipment and bodyweight exercises for diverse and effective HIIT workouts."
         }
         };
-        var random = new Random();
+        Random random = new();
 
         if (SpecialtyBios.TryGetValue(specialization, out var bios))
         {

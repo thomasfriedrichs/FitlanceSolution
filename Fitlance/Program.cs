@@ -151,14 +151,24 @@ builder.Services.AddCors(opt =>
 
 var app = builder.Build();
 
-if(ConfigurationBinder.GetValue<bool>(configuration, "SeedDataOnStartup"))
+if(ConfigurationBinder.GetValue<bool>(configuration, "SeedAppointmentDataOnStartup"))
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var appointmentSeeder = scope.ServiceProvider.GetRequiredService<AppointmentSeeder>();
-        appointmentSeeder.SeedData();
-    } 
+    using var scope = app.Services.CreateScope();
+    var appointmentSeeder = scope.ServiceProvider.GetRequiredService<AppointmentSeeder>();
+    appointmentSeeder.SeedData();
 }
+
+if (builder.Configuration.GetValue<bool>("SeedTrainerDataOnStartup"))
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    var trainerSeeder = services.GetRequiredService<TrainerSeeder>();
+    var dbContext = services.GetRequiredService<FitlanceContext>();
+    dbContext.Database.EnsureCreated();
+    await trainerSeeder.SeedTrainers(dbContext);
+}
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

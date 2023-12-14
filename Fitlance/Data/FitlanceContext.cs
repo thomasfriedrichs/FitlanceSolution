@@ -7,16 +7,13 @@ namespace Fitlance.Data;
 
 public class FitlanceContext : IdentityDbContext<User>
 {
-    public FitlanceContext()
-    {
-    }
-
     public FitlanceContext(DbContextOptions<FitlanceContext> options)
         : base(options)
     {
     }
 
     public DbSet<Appointment>? Appointments { get; set; }
+    public DbSet<Trainer>? Trainers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -39,7 +36,7 @@ public class FitlanceContext : IdentityDbContext<User>
         modelBuilder.Entity<Trainer>()
        .HasOne(t => t.User)
        .WithOne()
-       .HasForeignKey<Trainer>(t => t.UserId);
+       .HasForeignKey<Trainer>(t => t.TrainerId);
 
         modelBuilder.Entity<User>(mb =>
         {
@@ -52,8 +49,5 @@ public class FitlanceContext : IdentityDbContext<User>
             a.Property(p => p.Id).ValueGeneratedOnAdd();
             a.ToTable("Appointments");
         });
-
-        TrainerSeeder.SeedTrainers(modelBuilder);
-
     }
 }
