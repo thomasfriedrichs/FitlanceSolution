@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fitlance.Migrations
 {
     [DbContext(typeof(FitlanceContext))]
-    [Migration("20231214213718_TrainerMigration2")]
-    partial class TrainerMigration2
+    [Migration("20231215023722_TrainerMigration")]
+    partial class TrainerMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
