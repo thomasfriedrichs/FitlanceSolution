@@ -10,10 +10,12 @@ namespace Fitlance.Data;
 public class TrainerSeeder
 {
     private readonly UserManager<User> _userManager;
+    private readonly ILogger<TrainerSeeder> _logger;
 
-    public TrainerSeeder(UserManager<User> userManager)
+    public TrainerSeeder(UserManager<User> userManager, ILogger<TrainerSeeder> logger)
     {
         _userManager = userManager;
+        _logger = logger;
     }
 
     public async Task SeedTrainers(FitlanceContext dbContext)
@@ -44,11 +46,18 @@ public class TrainerSeeder
                 CreateTime = DateTime.Now,
             };
 
-            var createUserResult = await _userManager.CreateAsync(user, GeneratePassword(16)); 
+            var createUserResult = await _userManager.CreateAsync(user, GeneratePassword(16));
             if (createUserResult.Succeeded)
             {
+                _logger.LogInformation($"User created successfully: {user.UserName}");
                 await _userManager.AddToRoleAsync(user, RoleConstants.Trainer);
             }
+            else
+            {
+                _logger.LogWarning($"Failed to create user: {user.UserName}. Errors: {string.Join(", ", createUserResult.Errors.Select(e => e.Description))}");
+                continue;
+            }
+
 
             var trainer = new Trainer
             {
@@ -66,6 +75,8 @@ public class TrainerSeeder
                 ReviewCount = random.Next(50),
                 ActiveClients = random.Next(15)
             };
+
+            _logger.LogInformation($"Trainer created successfully: {trainer.TrainerId}");
 
             trainers.Add(trainer);
         }
