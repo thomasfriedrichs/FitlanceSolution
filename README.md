@@ -362,6 +362,7 @@ REACT_APP_API_BASE_URL=https://localhost:7021
     </li>
 </ul>
 
+<h1 style="font-size: 2em;">Deployment</h1>
 <h3 style="font-size: 1.3em;">Deploying to Azure</h3>
 <p>Deploying the Fitlance application to Azure involves a few key steps to ensure a smooth transition from development to production.</p>
 
