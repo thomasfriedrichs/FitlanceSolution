@@ -14,7 +14,7 @@
 </ul>
 <h2 style="font-size: 1.5em;">Prerequisites:</h2>
 <ul>
-    <li>.NET 6 SDK</li>
+    <li>.NET 8 SDK</li>
     <li>Node.js</li>
     <li>npm</li>
     <li>Microsoft SQL Server</li>
@@ -31,11 +31,11 @@
 <h2 style="margin-top: 20px; font-size: 2em;">Prerequisites Installation Guide</h2>
 
 
-<h3>1. .NET 6.0 SDK</h3>
+<h3>1. .NET 8.0 SDK</h3>
 <ul>
     <li><strong>Windows/Linux/macOS</strong>: 
         <ol>
-        <li>Download the .NET 6.0 SDK from the <a href="https://dotnet.microsoft.com/download/dotnet/6.0">.NET official website</a>.</li>
+        <li>Download the .NET 8.0 SDK from the <a href="https://dotnet.microsoft.com/download/dotnet/8.0">.NET official website</a>.</li>
         <li>Follow the installation instructions for your operating system.</li>
         </ol>
     </li>
@@ -80,7 +80,7 @@
 </ul>
 
 <h3>7. ASP.NET Core Runtime</h3>
-<p>Typically included in the .NET 6.0 SDK. Ensure that it is installed during the .NET SDK setup.</p>
+<p>Typically included in the .NET 8.0 SDK. Ensure that it is installed during the .NET SDK setup.</p>
 
 <h3>8. A Web Browser</h3>
 <p>Ensure you have a modern web browser like Google Chrome, Mozilla Firefox, or Microsoft Edge for testing your application.</p>
