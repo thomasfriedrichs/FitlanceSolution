@@ -1,15 +1,17 @@
 <div align="center">
     <h1 style="font-size: 2em;"><strong>Fitlance</strong></h1>
 </div>
-<div align="center" style="margin-bottom: 20px;">
+<div align="center" style="margin-bottom: 20px; font-size: 1.3em;">
     Fitlance is an application people can use to find personal trainers based on exercise interests.
 </div>
 
 <h2 style="font-size: 1.5em;">Key Features:</h2>
 <ul>
-    <li>Uses Dotnet Identity to manage user and trainer accounts</li>
+    <li><strong>User and Trainer Account Management:</strong> Utilizes .NET Identity for secure handling of user accounts. This includes features like registration, authentication, password recovery, and role-based access control.</li>
+    <li><strong>Appointment Booking System:</strong> Integrated appointment booking system allowing users to schedule sessions with trainers at their convenience.</li>
+    <li><strong>Interactive Calendar:</strong> Features an interactive calendar for users and trainers to manage their training sessions and availability.</li>
+    <li><strong>Mobile Responsive Design:</strong> The application is fully responsive, providing a seamless experience across various devices and screen sizes.</li>
 </ul>
-
 <h2 style="font-size: 1.5em;">Prerequisites:</h2>
 <ul>
     <li>.NET 6 SDK</li>
@@ -26,7 +28,7 @@
     <li>Visual Studio 2022</li>
 </ul>
 
-<h2 style="margin-top: 20px; font-size: 1.5em;">Prerequisites Installation Guide</h2>
+<h2 style="margin-top: 20px; font-size: 2em;">Prerequisites Installation Guide</h2>
 
 
 <h3>1. .NET 6.0 SDK</h3>
@@ -93,7 +95,7 @@
   </li>
 </ul>
 
-<h1>Post-Installation Steps</h1>
+<h1 style="font-size: 2em;">Post-Installation Steps</h1>
 <h3 style="font-size: 1.3em;">1. Cloning the Repository</h3>
 <p>Follow these steps to clone the FitlanceSolution repository from GitHub:</p>
 
@@ -123,7 +125,6 @@
     </li>
 </ul>
 
-<p>With these steps, you will have successfully cloned the FitlanceSolution repository and can begin working on the project.</p>
 <h3 style="font-size: 1.3em;">2. Restoring Project Dependencies</h3>
 <p>After cloning the repository, the next step is to restore the project dependencies for both the .NET backend and the React frontend:</p>
 
@@ -144,9 +145,6 @@
         <p>This will install all dependencies listed in the project's <code>package.json</code> file.</p>
     </li>
 </ul>
-
-<p>Completing these steps ensures that both the backend and frontend parts of your application have all the required dependencies installed</p>
-
 
 <h3 style="font-size: 1.3em;">3. Generating a Trusted Local SSL Certificate</h3>
 <p>To set up HTTPS locally and have your browser trust the SSL certificate, follow these steps:</p>
@@ -193,7 +191,6 @@
     </li>
 </ul>
 
-<p>After completing these steps, your application will be able to use HTTPS locally with a browser-trusted certificate.</p>
 <h3 style="font-size: 1.3em;">4. Open the project in Visual Studio 2022 or your preferred IDE.</h3>
 <h3 style="font-size: 1.3em;">5. Add Local Configuration File</h3>
 <p>Create a file named <code>appsettings.Development.Local.json</code> in FitlanceSolution/Fitlance with the following configuration:</p>
@@ -263,7 +260,6 @@ REACT_APP_API_BASE_URL=https://localhost:7021
         <p>After adding the content, save the <code>.env.local</code> file.</p>
     </li>
 </ul>
-<p>By completing these steps, you will have successfully added a local environment file for the client application, which will be used when running the application locally.</p>
 
 <h3 style="font-size: 1.3em;">7. Connecting to Local Microsoft SQL Server and Running Migrations</h3>
 <p>After setting up your local environment, connect to a Microsoft SQL Server instance and run Entity Framework Core migrations to set up your database:</p>
@@ -288,7 +284,6 @@ REACT_APP_API_BASE_URL=https://localhost:7021
         <p>Check your SQL Server instance (using SQL Server Management Studio or another tool) to ensure the database and tables have been created successfully.</p>
     </li>
 </ul>
-<p>Completing these steps will set up your local database, allowing the application to interact with it correctly.</p>
 
 <h3 style="font-size: 1.3em;">8. Starting Up the Application and Setting Up User Accounts</h3>
 <p>After completing the initial setup, follow these steps to start the application and set up user and trainer accounts:</p>
@@ -315,8 +310,6 @@ REACT_APP_API_BASE_URL=https://localhost:7021
         <p>Once both accounts are registered and the 'Id' values are noted, close the application in your development environment.</p>
     </li>
 </ul>
-
-<p>By completing these steps, you will have the necessary user and trainer accounts set up, along with their respective 'Id' values for data seeding purposes.</p>
 
 <h3 style="font-size: 1.3em;">9. Seeding Data in the Application</h3>
 <p>To seed appointment data into the application, follow these steps:</p>
@@ -345,4 +338,187 @@ REACT_APP_API_BASE_URL=https://localhost:7021
     </li>
 </ul>
 
-<p>Completing these steps ensures that your application is populated with the necessary initial data for appointments and trainers.</p>
+<h1 style="font-size: 2em;">Testing</h1>
+<h3 style="font-size: 1.3em;">Running and Understanding xUnit Tests</h3>
+<p>This section provides guidance on executing and interpreting xUnit tests within the project.</p>
+
+<ul>
+    <li>
+        <strong>Running xUnit Tests Locally:</strong>
+        <p>To run tests locally, use the <code>dotnet test</code> command in the terminal or the Test Explorer in Visual Studio. This will execute all the unit tests in your test project.</p>
+        <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;"><code>dotnet test</code></pre>
+    </li>
+    <li>
+        <strong>CI/CD Pipeline Execution:</strong>
+        <p>Tests are automatically run as part of the CI/CD pipeline. Check the pipeline's YAML configuration for details on how tests are integrated.</p>
+    </li>
+    <li>
+        <strong>Interpreting Test Results:</strong>
+        <p>Review the output of the test run in your terminal or CI/CD pipeline interface to verify test outcomes. Investigate any failures or errors to maintain the integrity of the application.</p>
+    </li>
+    <li>
+        <strong>Adding and Modifying Tests:</strong>
+        <p>When adding new features or modifying existing ones, update or add corresponding unit tests. Follow best practices for writing effective tests and document their purpose clearly.</p>
+    </li>
+</ul>
+
+<h3 style="font-size: 1.3em;">Deploying to Azure</h3>
+<p>Deploying the Fitlance application to Azure involves a few key steps to ensure a smooth transition from development to production.</p>
+
+<ul>
+    <li>
+        <strong>Setting Up Azure Resources:</strong>
+        <p>Create necessary Azure resources, including an Azure App Service for web hosting and an Azure SQL Database for data storage. You can do this via the Azure Portal or Azure CLI.</p>
+    </li>
+    <li>
+        <strong>Configuring Azure Deployment Settings:</strong>
+        <p>Configure deployment settings in the Azure App Service. This includes setting up environment variables, connection strings, and any other required configuration settings.</p>
+    </li>
+    <li>
+        <strong>Deploying the Application:</strong>
+        <p>Deploy your application to Azure using your preferred method. This can be done through Visual Studio's integrated Azure deployment tool, Azure DevOps pipelines, or directly from the command line using Azure CLI.</p>
+    </li>
+    <li>
+        <strong>Monitoring and Maintenance:</strong>
+        <p>Once deployed, monitor your application's performance and health through Azure's monitoring tools. Regularly update and maintain the application to ensure security and efficiency.</p>
+    </li>
+</ul>
+<p>For detailed steps and guidance, refer to Azure's official documentation and ensure that your deployment aligns with Azure's best practices.</p>
+
+<h2 style="font-size: 2em;">Built With</h2>
+<p>This section details the main technologies and tools used in the development of the Fitlance application.</p>
+
+<ul>
+    <li>
+        <strong>.NET 6:</strong>
+        <p>The backend of Fitlance is built using .NET 6, a free, cross-platform, open-source developer platform for building many different types of applications.</p>
+    </li>
+    <li>
+        <strong>ASP.NET Core Identity:</strong>
+        <p>ASP.NET Core Identity is used for user and trainer account management, providing a full-featured solution for securing web applications.</p>
+    </li>
+    <li>
+        <strong>Entity Framework Core:</strong>
+        <p>An object-database mapper that enables .NET developers to work with a database using .NET objects, used for data access in the application.</p>
+    </li>
+    <li>
+        <strong>React:</strong>
+        <p>The frontend is developed with React, a JavaScript library for building user interfaces, particularly single-page applications.</p>
+    </li>
+    <li>
+        <strong>Axios:</strong>
+        <p>Axios is utilized for making HTTP requests from the browser, facilitating communication with the backend.</p>
+    </li>
+    <li>
+        <strong>Formik:</strong>
+        <p>Formik is integrated to manage form states in React, simplifying form validation and handling.</p>
+    </li>
+    <li>
+        <strong>Tailwind CSS:</strong>
+        <p>Tailwind CSS is used for styling the application, providing a utility-first CSS framework for rapidly building custom designs.</p>
+    </li>
+    <li>
+        <strong>React Big Calendar:</strong>
+        <p>This library is used to add calendar functionalities in the application, enhancing the user interface for scheduling and managing appointments.</p>
+    </li>
+    <li>
+        <strong>Yup:</strong>
+        <p>Yup is used in conjunction with Formik for object schema validation, enhancing form validation processes.</p>
+    </li>
+    <li>
+        <strong>js-cookie:</strong>
+        <p>js-cookie simplifies the handling of cookies within the application, aiding in state management and authentication processes.</p>
+    </li>
+    <li>
+        <strong>jwt-decode:</strong>
+        <p>jwt-decode is used for decoding JWTs (JSON Web Tokens) in the application, particularly useful for authentication and authorization.</p>
+    </li>
+    <li>
+        <strong>Microsoft SQL Server:</strong>
+        <p>The primary database system used for storing and managing the application's data.</p>
+    </li>
+    <li>
+        <strong>Azure App Service:</strong>
+        <p>Used for hosting the web application, providing a fully managed platform with built-in infrastructure maintenance, security patching, and scaling.</p>
+    </li>
+    <li>
+        <strong>xUnit:</strong>
+        <p>A free, open-source, community-focused unit testing tool for the .NET Framework, used for writing and running tests in the Fitlance project.</p>
+    </li>
+    <li>
+        <strong>YAML (CI/CD Pipelines):</strong>
+        <p>YAML configurations are used to define the continuous integration and continuous deployment pipelines, automating the testing and deployment process.</p>
+    </li>
+    <li>
+        <strong>Visual Studio 2022:</strong>
+        <p>The primary integrated development environment (IDE) used for developing the application, offering powerful tools and features for .NET development.</p>
+    </li>
+    <li>
+        <strong>Node.js and npm:</strong>
+        <p>Node.js serves as the runtime environment for the React frontend, with npm used for managing JavaScript packages.</p>
+    </li>
+    <li>
+        <strong>Azure SQL Database:</strong>
+        <p>A fully managed relational database with built-in intelligence, used in production for the application's data storage.</p>
+    </li>
+</ul>
+
+<h2 style="font-size: 2em;">Contributions</h2>
+<p>I warmly welcome contributions to the Fitlance project. If you're interested in helping out, here's how you can get involved:</p>
+
+<ul>
+    <li>
+        <strong>Reporting Issues:</strong>
+        <p>If you find a bug or have a feature request, please open an issue on our GitHub repository. Provide as much information as possible, such as steps to reproduce the bug and potential solutions or ideas for new features.</p>
+    </li>
+    <li>
+        <strong>Submitting Pull Requests:</strong>
+        <p>If you've developed a new feature or fixed a bug, you can submit a pull request. Please ensure your code follows the project's coding standards and includes appropriate tests (if applicable).</p>
+    </li>
+    <li>
+        <strong>Code Reviews:</strong>
+        <p>Reviewing pull requests from other contributors is a great way to get involved. Offer constructive feedback and suggestions to help improve the code quality.</p>
+    </li>
+    <li>
+        <strong>Documentation:</strong>
+        <p>Improving documentation, fixing typos, or clarifying sections that are unclear are also valuable contributions. Good documentation helps everyone!</p>
+    </li>
+</ul>
+
+<p>Your contributions, no matter how small, are greatly appreciated and help make the Fitlance project better for everyone.</p>
+
+<h2 style="font-size: 2em;">Author</h2>
+<p>The Fitlance application was developed by:</p>
+
+<strong>Thomas Friedrichs</strong>
+<p>Email: <a href="mailto:thomasfriedrichs@msn.com">thomasfriedrichs@msn.com</a></p>
+
+<p>For inquiries please feel free to reach out via email.</p>
+<h2 style="font-size: 2em;">License</h2>
+<p>The Fitlance application is open source and licensed under the MIT License.</p>
+
+<pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">
+MIT License
+
+Copyright (c) [year] Thomas Friedrichs
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</pre>
+
+<p>This license allows others to freely use, modify, and distribute the software.</p>
