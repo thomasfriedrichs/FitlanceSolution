@@ -24,7 +24,7 @@
 
 <h2 id="key-features" style="font-size: 1.5em;">Key Features:</h2>
 <ul>
-    <li><strong>User and Trainer Account Management:</strong> Utilizes .NET Identity for secure handling of user accounts. This includes features like registration, authentication, password recovery, and role-based access control.</li>
+    <li><strong>User and Trainer Account Management:</strong> Utilizes .NET Identity for secure handling of user accounts. This includes features like registration, authentication, and role-based access control.</li>
     <li><strong>Appointment Booking System:</strong> Integrated appointment booking system allowing users to schedule sessions with trainers at their convenience.</li>
     <li><strong>Interactive Calendar:</strong> Features an interactive calendar for users and trainers to manage their training sessions and availability.</li>
     <li><strong>Mobile Responsive Design:</strong> The application is fully responsive, providing a seamless experience across various devices and screen sizes.</li>
