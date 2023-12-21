@@ -5,14 +5,31 @@
     Fitlance is an application people can use to find personal trainers based on exercise interests.
 </div>
 
-<h2 style="font-size: 1.5em;">Key Features:</h2>
+<h1>Table of Contents</h1>
+<ul>
+    <li><a href="#key-features">Key Features</a></li>
+    <li><a href="#prerequisites">Prerequisites</a></li>
+    <li><a href="#recommended">Recommended</a></li>
+    <li><a href="#prerequisites-installation-guide">Prerequisites Installation Guide</a></li>
+    <li><a href="#post-installation-steps">Post-Installation Steps</a></li>
+    <li><a href="#testing">Testing</a></li>
+    <li><a href="#known-issues">Known Issues</a></li>
+    <li><a href="#deployment">Deployment</a></li>
+    <li><a href="#built-with">Built With</a></li>
+    <li><a href="#contributions">Contributions</a></li>
+    <li><a href="#author">Author</a></li>
+    <li><a href="#license">License</a></li>
+</ul>
+
+
+<h2 id="key-features" style="font-size: 1.5em;">Key Features:</h2>
 <ul>
     <li><strong>User and Trainer Account Management:</strong> Utilizes .NET Identity for secure handling of user accounts. This includes features like registration, authentication, password recovery, and role-based access control.</li>
     <li><strong>Appointment Booking System:</strong> Integrated appointment booking system allowing users to schedule sessions with trainers at their convenience.</li>
     <li><strong>Interactive Calendar:</strong> Features an interactive calendar for users and trainers to manage their training sessions and availability.</li>
     <li><strong>Mobile Responsive Design:</strong> The application is fully responsive, providing a seamless experience across various devices and screen sizes.</li>
 </ul>
-<h2 style="font-size: 1.5em;">Prerequisites:</h2>
+<h2 id="prerequisites" style="font-size: 1.5em;">Prerequisites:</h2>
 <ul>
     <li>.NET 8 SDK</li>
     <li>Node.js</li>
@@ -23,12 +40,12 @@
     <li>Terminal such as Git Bash</li>
 </ul>
 
-<h2 style="font-size: 1.5em;">Recommended:</h2>
+<h2 id="recommended" style="font-size: 1.5em;">Recommended:</h2>
 <ul>
     <li>Visual Studio 2022</li>
 </ul>
 
-<h2 style="margin-top: 20px; font-size: 2em;">Prerequisites Installation Guide</h2>
+<h2 id="prerequisites-installation-guide" style="margin-top: 20px; font-size: 2em;">Prerequisites Installation Guide</h2>
 
 
 <h3>1. .NET 8.0 SDK</h3>
@@ -95,7 +112,7 @@
   </li>
 </ul>
 
-<h1 style="font-size: 2em;">Post-Installation Steps</h1>
+<h1 id="post-installation-steps" style="font-size: 2em;">Post-Installation Steps</h1>
 <h3 style="font-size: 1.3em;">1. Cloning the Repository</h3>
 <p>Follow these steps to clone the FitlanceSolution repository from GitHub:</p>
 
@@ -338,7 +355,7 @@ REACT_APP_API_BASE_URL=https://localhost:7021
     </li>
 </ul>
 
-<h1 style="font-size: 2em;">Testing</h1>
+<h1 id="testing" style="font-size: 2em;">Testing</h1>
 <h3 style="font-size: 1.3em;">Running and Understanding xUnit Tests</h3>
 <p>This section provides guidance on executing and interpreting xUnit tests within the project.</p>
 
@@ -362,7 +379,53 @@ REACT_APP_API_BASE_URL=https://localhost:7021
     </li>
 </ul>
 
-<h1 style="font-size: 2em;">Deployment</h1>
+<h3 style="font-size: 1.3em;">Running and Understanding Jest Tests</h3>
+<p>This section provides guidance on executing and interpreting Jest tests within the Fitlance project.</p>
+
+<ul>
+    <li>
+        <strong>Running Jest Tests Locally:</strong>
+        <p>To run Jest tests locally, use the <code>npm run jest</code> command in the terminal. This will execute all Jest unit tests in the project.</p>
+        <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;"><code>npm run jest</code></pre>
+    </li>
+    <li>
+        <strong>CI/CD Pipeline Execution:</strong>
+        <p>Jest tests are automatically run as part of the CI/CD pipeline. Refer to the pipeline's YAML configuration for details on how Jest tests are integrated.</p>
+    </li>
+    <li>
+        <strong>Interpreting Test Results:</strong>
+        <p>Review the output of the Jest test run in your terminal or CI/CD pipeline interface to verify test outcomes. Investigate any failures or errors to ensure the reliability of the application.</p>
+    </li>
+    <li>
+        <strong>Adding and Modifying Tests:</strong>
+        <p>When adding new features or modifying existing ones in the Fitlance application, update or add corresponding Jest tests. Adhere to best practices for writing effective tests and clearly document their purpose.</p>
+    </li>
+    <li>
+        <strong>Note:</strong>
+        <p>See issues section regarding jest testing</p>
+    </li>
+</ul>
+
+<h1 id="known-issues" style="font-size: 2em;">Known Issues</h1>
+<h3 style="font-size: 1.3em;">Known Issue: Jest Testing - Unexpected Token Error</h3>
+<p>This section outlines a persistent issue encountered in the Fitlance project with Jest testing, specifically an 'Unexpected Token' error involving ES6 import statements.</p>
+
+<ul>
+    <li>
+        <strong>Nature of the Error:</strong>
+        <p>Occurs during Jest testing, particularly with ES6 syntax, indicating a potential mismatch in handling ECMAScript modules by Babel or Jest.</p>
+    </li>
+    <li>
+        <strong>Resolution Attempts:</strong>
+        <p>Multiple configuration setups were tested, including exploring compatibility issues with 'node_modules' and experimenting with custom transformations and mocking in Jest.</p>
+    </li>
+    <li>
+        <strong>Current Status:</strong>
+        <p>The issue remains unresolved, suggesting a deeper compatibility or configuration problem. We welcome any insights or solutions and continue to investigate. For more information, please refer to <a href="https://jestjs.io/docs/configuration">Jest's documentation</a>.</p>
+    </li>
+</ul>
+
+<h1 id="deployment" style="font-size: 2em;">Deployment</h1>
 <h3 style="font-size: 1.3em;">Deploying to Azure</h3>
 <p>Deploying the Fitlance application to Azure involves a few key steps to ensure a smooth transition from development to production.</p>
 
@@ -386,7 +449,7 @@ REACT_APP_API_BASE_URL=https://localhost:7021
 </ul>
 <p>For detailed steps and guidance, refer to Azure's official documentation and ensure that your deployment aligns with Azure's best practices.</p>
 
-<h2 style="font-size: 2em;">Built With</h2>
+<h2 id="built-with" style="font-size: 2em;">Built With</h2>
 <p>This section details the main technologies and tools used in the development of the Fitlance application.</p>
 
 <ul>
@@ -464,7 +527,7 @@ REACT_APP_API_BASE_URL=https://localhost:7021
     </li>
 </ul>
 
-<h2 style="font-size: 2em;">Contributions</h2>
+<h2 id="contributions" style="font-size: 2em;">Contributions</h2>
 <p>I warmly welcome contributions to the Fitlance project. If you're interested in helping out, here's how you can get involved:</p>
 
 <ul>
@@ -488,14 +551,14 @@ REACT_APP_API_BASE_URL=https://localhost:7021
 
 <p>Your contributions, no matter how small, are greatly appreciated and help make the Fitlance project better for everyone.</p>
 
-<h2 style="font-size: 2em;">Author</h2>
+<h2 id="author" style="font-size: 2em;">Author</h2>
 <p>The Fitlance application was developed by:</p>
 
 <strong>Thomas Friedrichs</strong>
 <p>Email: <a href="mailto:thomasfriedrichs@msn.com">thomasfriedrichs@msn.com</a></p>
 
 <p>For inquiries please feel free to reach out via email.</p>
-<h2 style="font-size: 2em;">License</h2>
+<h2 id="license" style="font-size: 2em;">License</h2>
 <p>The Fitlance application is open source and licensed under the MIT License.</p>
 
 <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">
