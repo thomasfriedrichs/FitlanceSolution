@@ -30,12 +30,6 @@ steps:
     versionSpec: '20.x' 
   displayName: 'Install Node.js'
 
-- script: |
-    cd Fitlance/ClientApp
-    npm install @babel/plugin-proposal-private-property-in-object
-  displayName: 'Install Babel Plugin'
-
-
 # Install npm dependencies and build React app
 - script: |
     cd Fitlance/ClientApp
