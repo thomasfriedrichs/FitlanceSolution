@@ -9,7 +9,10 @@ const config = {
       }
     ],
     "@babel/preset-react"
-  ]
+    ],
+    "plugins": [
+        "@babel/plugin-proposal-private-property-in-object"
+    ]
 }
 
 module.exports = config;
