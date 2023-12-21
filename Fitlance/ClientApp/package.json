@@ -78,7 +78,7 @@
     "prestart": "node aspnetcore-https && node aspnetcore-react",
     "start": "rimraf ./build && react-scripts start",
     "build": "react-scripts build",
-    "jest": "jest",
+    "jest": "cross-env CI=true jest --env=jsdom",
     "test": "cross-env CI=true react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
