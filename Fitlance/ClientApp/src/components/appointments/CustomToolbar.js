@@ -1,4 +1,5 @@
-﻿import { Navigate } from 'react-big-calendar';
+﻿import React from 'react';
+import { Navigate } from 'react-big-calendar';
 
 const CustomToolbar = (toolbar) => {
     const goToBack = () => {

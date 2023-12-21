@@ -54,8 +54,8 @@ const Login = () => {
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             className={`border w-full rounded-full text-center p-2
-                        ${errors.email && touched.email ? "border-red-500" : "border-lime-500"}
-                      `}
+                                            ${errors.email && touched.email ? "border-red-500" : "border-lime-500"}
+                                            `}
                                         />
                                     </div>
                                     {errors.email && touched.email && (
@@ -72,8 +72,8 @@ const Login = () => {
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             className={`border w-full rounded-full text-center p-2
-                        ${errors.password && touched.password ? "border-red-500" : "border-lime-500"}
-                      `}
+                                                ${errors.password && touched.password ? "border-red-500" : "border-lime-500"}
+                                            `}
                                         />
                                         {errors.password && touched.password && (
                                             <span className="text-red-500">{errors.password}</span>
