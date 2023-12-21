@@ -10,6 +10,7 @@ variables:
 
 stages:
 - stage: Test
+  jobs:
   - job: TestJob
     steps: 
       # Setup Node.js for React app build
