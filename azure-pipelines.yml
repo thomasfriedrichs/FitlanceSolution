@@ -8,52 +8,73 @@ variables:
 - name: buildConfiguration
   value: 'Release'
 
-steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+stages:
+- stage: Test
+  - job: TestJob
+    steps: 
+    # Setup Node.js for React app build
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x' 
+      displayName: 'Install Node.js'
 
-# Add testing steps for the .NET Core app
-- script: dotnet test --configuration $(buildConfiguration) --no-build
-  displayName: 'Test .NET Core App'
+    # Install npm dependencies for testing
+    - script: |
+        cd Fitlance/ClientApp
+        npm install
+      displayName: 'Install dependencies for testing'
 
-- task: DownloadSecureFile@1
-  name: envFile
-  inputs:
-    secureFile: '.env.production.logins'
-- script: |
-    cp $(envFile.secureFilePath) Fitlance/ClientApp/.env.production
-  displayName: 'Copy secure file to React app directory'
+    # Run React app tests
+    - script: |
+        cd Fitlance/ClientApp
+        npm run jest
+      displayName: 'Test React app'
 
-# Setup Node.js for React app build
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x' 
-  displayName: 'Install Node.js'
+    # Clean up node_modules after testing
+    - script: |
+        cd Fitlance/ClientApp
+        rm -rf node_modules
+      displayName: 'Clean up node_modules'
 
-# Install npm dependencies and build React app
-- script: |
-    cd Fitlance/ClientApp
-    npm install
-    npm run build
-  displayName: 'Build React app'
-  env:
-    NODE_ENV: production
+- stage: BuildAndDeploy
+  jobs:
+  - job:
+    steps:
+    # Build .NET Core app
+    - script: dotnet build --configuration $(buildConfiguration)
+      displayName: 'dotnet build $(buildConfiguration)'
 
-# Run React app tests
-- script: |
-    cd Fitlance/ClientApp
-    npm run jest
-  displayName: 'Test React app'
+    # Add testing steps for the .NET Core app
+    - script: dotnet test --configuration $(buildConfiguration) --no-build
+      displayName: 'Test .NET Core App'
 
-# Publish Artifacts
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/publish'
-    zipAfterPublish: true
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/publish'
-    ArtifactName: 'publish'
-    publishLocation: 'Container'
+      # Download secure file 
+    - task: DownloadSecureFile@1
+      name: envFile
+      inputs:
+        secureFile: '.env.production.logins'
+    - script: |
+        cp $(envFile.secureFilePath) Fitlance/ClientApp/.env.production
+      displayName: 'Copy secure file to React app directory'
+
+    # Install npm dependencies and build React app
+    - script: |
+        cd Fitlance/ClientApp
+        npm install --production
+        npm run build
+      displayName: 'Build React app'
+      env:
+        NODE_ENV: production
+
+    # Publish Artifacts
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        publishWebProjects: true
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/publish'
+        zipAfterPublish: true
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/publish'
+        ArtifactName: 'publish'
+        publishLocation: 'Container'
