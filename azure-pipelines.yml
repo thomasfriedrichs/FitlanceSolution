@@ -40,10 +40,10 @@ steps:
     NODE_ENV: production
 
 # Run React app tests
-#- script: |
-#    cd Fitlance/ClientApp
-#    npm test
-#  displayName: 'Test React app'
+- script: |
+    cd Fitlance/ClientApp
+    npm run jest
+  displayName: 'Test React app'
 
 # Publish Artifacts
 - task: DotNetCoreCLI@2
