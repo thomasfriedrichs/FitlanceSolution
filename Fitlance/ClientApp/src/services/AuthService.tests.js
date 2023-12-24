@@ -16,11 +16,17 @@ describe('AuthService', () => {
         'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid': mockId,
         'http://schemas.microsoft.com/ws/2008/06/identity/claims/role': mockRole
     };
-    let windowSpy;
+
+    beforeAll(() => {
+        Object.defineProperty(window, 'location', {
+            writable: true,
+            value: { href: jest.fn() }
+        });
+    });
 
     beforeEach(() => {
         jwt_decode.mockReturnValue(decodedToken);
-        windowSpy = jest.spyOn(window.location, 'href', 'set');
+        Cookies.get.mockReturnValue(mockToken);
     });
 
     afterEach(() => {
