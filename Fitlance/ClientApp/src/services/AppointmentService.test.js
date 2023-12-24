@@ -10,6 +10,7 @@ describe('Appointment Service', () => {
     const mockId = 'test-id';
     const mockData = { data: 'test data' };
     const mockError = new Error('test error');
+    let consoleSpy;
 
     beforeEach(() => {
         Cookies.get.mockImplementation((key) => {
@@ -85,7 +86,7 @@ describe('Appointment Service', () => {
             trainerId: 'trainerId2194324',
             streetAddress: '992834 33rd st',
             startTimeUtc: new Date(),
-            endTimeUtc: new Date().addHours(3),
+            endTimeUtc = addHoursToDate(new Date(), 2);
             id: '123',
         };
 
@@ -135,7 +136,6 @@ describe('Appointment Service', () => {
 
 });
 
-Date.prototype.addHours = function(h) {
-    this.setTime(this.getTime() + (h*60*60*1000));
-    return this;
+function addHoursToDate(date, hours) {
+    return new Date(date.getTime() + hours * 60 * 60 * 1000);
 }
