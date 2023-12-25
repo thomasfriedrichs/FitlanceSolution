@@ -8,7 +8,6 @@ jest.mock('js-cookie');
 jest.mock('jwt-decode', () => jest.fn());
 
 describe('AuthService', () => {
-    const BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const mockToken = 'mock-token';
     const mockId = 'mock-id';
     const mockRole = 'mock-role';
