@@ -30,6 +30,8 @@ describe('Appointment Service', () => {
 
     // Test for postAppointment
     it('should post an appointment correctly', async () => {
+        const startTime = new Date();
+
         const requestObject = {
             city: 'Seattle',
             country: 'USA',
@@ -37,8 +39,8 @@ describe('Appointment Service', () => {
             state: 'WA',
             trainerId: 'trainerId2194324',
             streetAddress: '992834 33rd st',
-            startTimeUtc: new Date(),
-            endTimeUtc: new Date().addHours(2),
+            startTimeUtc: startTime,
+            endTimeUtc: addHoursToDate(startTime, 2),
             id: '123',
         };
         await service.postAppointment(requestObject);
@@ -57,6 +59,8 @@ describe('Appointment Service', () => {
 
     // Test for putAppointment
     it('should update an appointment correctly', async () => {
+        const startTime = new Date();
+
         const requestObject = {
             city: 'Seattle',
             country: 'USA',
@@ -64,8 +68,8 @@ describe('Appointment Service', () => {
             state: 'WA',
             trainerId: 'trainerId2194324',
             streetAddress: '992834 33rd st',
-            startTimeUtc: new Date(),
-            endTimeUtc: new Date().addHours(3),
+            startTimeUtc: startTime,
+            endTimeUtc: addHoursToDate(startTime, 3),
             id: '123',
         };
         const response = await service.putAppointment('123', requestObject);
@@ -78,6 +82,8 @@ describe('Appointment Service', () => {
     });
 
     it('should handle errors in putAppointment', async () => {
+        const startTime = new Date();
+
         const requestObject = {
             city: 'Seattle',
             country: 'USA',
@@ -85,8 +91,8 @@ describe('Appointment Service', () => {
             state: 'WA',
             trainerId: 'trainerId2194324',
             streetAddress: '992834 33rd st',
-            startTimeUtc: new Date(),
-            endTimeUtc = addHoursToDate(new Date(), 2);
+            startTimeUtc: startTime,
+            endTimeUtc: addHoursToDate(startTime, 2),
             id: '123',
         };
 
@@ -136,6 +142,6 @@ describe('Appointment Service', () => {
 
 });
 
-function addHoursToDate(date, hours) {
+const addHoursToDate = (date, hours) => {
     return new Date(date.getTime() + hours * 60 * 60 * 1000);
 }
