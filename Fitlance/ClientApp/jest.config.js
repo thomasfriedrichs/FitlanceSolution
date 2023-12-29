@@ -11,6 +11,7 @@ const config = {
     },
     testEnvironment: 'jsdom',
     verbose: true,
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"]
 };
 
 module.exports = config;

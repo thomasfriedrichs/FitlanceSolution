@@ -1,7 +1,7 @@
 ﻿import React from "react";
+import Cookies from "js-cookie";
 import { Formik, Form } from "formik";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Cookies from "js-cookie";
 
 import { ProfileSchema } from "../../validators/Validate";
 import { putProfile } from "../../services/ProfileService";
