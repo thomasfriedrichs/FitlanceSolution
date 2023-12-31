@@ -1,27 +1,15 @@
 ﻿import React from "react";
 import Cookies from "js-cookie";
 import { Formik, Form } from "formik";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { ProfileSchema } from "../../validators/Validate";
-import { putProfile } from "../../services/ProfileService";
+import useProfileFormMutation from "./hooks/useProfileFormMutation";
 
 const EditForm = ({ setNeedsEdit, data }) => {
     const queryClient = useQueryClient();
     const userName = Cookies.get("UserName");
-
-    const mutation = useMutation({
-        mutationFn: async values => {
-            await putProfile(values);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["profile"] });
-            return backToProfile();
-        },
-        onError: (error) => {
-            console.log("query error", error);
-        }
-    });
+    const { mutate } = useProfileFormMutation(); 
 
     const { firstName, lastName, city, zipCode, bio } = data;
 
@@ -41,7 +29,17 @@ const EditForm = ({ setNeedsEdit, data }) => {
     return (
         <Formik
             initialValues={userData}
-            onSubmit={mutation.mutate}
+            onSubmit={(values) => {
+                mutate(values, {
+                    onSuccess: () => {
+                        queryClient.invalidateQueries({ queryKey: ["profile"] });
+                        return backToProfile();
+                    },
+                    onError: (error) => {
+                        console.log("query error", error);
+                    }
+                });
+            }}
             validationSchema={ProfileSchema}
             enableReinitialize={true}
         >
@@ -71,8 +69,8 @@ const EditForm = ({ setNeedsEdit, data }) => {
                                 value={values.firstName}
                                 onChange={handleChange}
                                 className={`border w-full rounded-lg text-center p-1 col-span-12 md:col-span-6
-                ${errors.firstName && touched.firstName ? "border-red-500" : "border-lime-500"}
-              `}
+                                    ${errors.firstName && touched.firstName ? "border-red-500" : "border-lime-500"}
+                                `}
                             />
                             {errors.firstName && touched.firstName && (
                                 <span className="text-red-500">{errors.firstName}</span>
@@ -84,8 +82,8 @@ const EditForm = ({ setNeedsEdit, data }) => {
                                 value={values.lastName}
                                 onChange={handleChange}
                                 className={`border w-full rounded-lg text-center p-1 col-span-12 md:col-span-6
-                ${errors.lastName && touched.lastName ? "border-red-500" : "border-lime-500"}
-              `}
+                                    ${errors.lastName && touched.lastName ? "border-red-500" : "border-lime-500"}
+                                `}
                             />
                             {errors.lastName && touched.lastName && (
                                 <span className="text-red-500">{errors.lastName}</span>
@@ -97,25 +95,25 @@ const EditForm = ({ setNeedsEdit, data }) => {
                                 value={values.city}
                                 onChange={handleChange}
                                 className={`border w-full rounded-lg text-center p-1 col-span-12 md:col-span-6
-                ${errors.lastName && touched.lastName ? "border-red-500" : "border-lime-500"}
-              `}
+                                    ${errors.city && touched.city ? "border-red-500" : "border-lime-500"}
+                                `}
                             />
-                            {errors.lastName && touched.lastName && (
-                                <span className="text-red-500">{errors.lastName}</span>
+                            {errors.city && touched.city && (
+                                <span className="text-red-500">{errors.city}</span>
                             )}
                             <input
-                                type="number"
-                                pattern="[0-9]"
+                                type="text"
+                                pattern="[0-9]{5}"
                                 name="zipcode"
                                 placeholder={zipCode === null ? "Zipcode" : zipCode}
                                 value={values.zipcode}
                                 onChange={handleChange}
                                 className={`border w-full rounded-lg text-center p-1 col-span-12 md:col-span-6
-                ${errors.lastName && touched.lastName ? "border-red-500" : "border-lime-500"}
-              `}
+                                    ${errors.zipcode && touched.zipcode ? "border-red-500" : "border-lime-500"}
+                                `}
                             />
-                            {errors.lastName && touched.lastName && (
-                                <span className="text-red-500">{errors.lastName}</span>
+                            {errors.zipcode && touched.zipcode && (
+                                <span className="text-red-500">{errors.zipcode}</span>
                             )}
                             <textarea
                                 spellCheck="true"
@@ -125,11 +123,11 @@ const EditForm = ({ setNeedsEdit, data }) => {
                                 value={values.bio}
                                 onChange={handleChange}
                                 className={`border w-full rounded-lg text-center p-1 col-span-12 md:h-32
-                ${errors.lastName && touched.lastName ? "border-red-500" : "border-lime-500"}
-              `}
+                                    ${errors.bio && touched.bio ? "border-red-500" : "border-lime-500"}
+                                `}
                             >Bio</textarea>
-                            {errors.lastName && touched.lastName && (
-                                <span className="text-red-500">{errors.lastName}</span>
+                            {errors.bio && touched.bio && (
+                                <span className="text-red-500">{errors.bio}</span>
                             )}
                             <div className="flex justify-center col-span-12">
                                 <button

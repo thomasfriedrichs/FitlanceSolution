@@ -24,7 +24,9 @@ export const ProfileSchema = Yup.object().shape({
     firstName: Yup.string().required("First name required"),
     lastName: Yup.string().required("Last name required"),
     city: Yup.string().required("City required"),
-    zipcode: Yup.number().required("Zipcode required"),
+    zipcode: Yup.string()
+        .required("Zipcode required")
+        .matches(/^[0-9]{5}$/, "Zipcode must be exactly 5 characters"),
     bio: Yup.string().required("Bio required")
 });
 
