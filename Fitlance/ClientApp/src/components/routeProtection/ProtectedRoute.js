@@ -4,7 +4,7 @@ import { useCookieWatcher } from "@fcannizzaro/react-use-cookie-watcher";
 
 const ProtectedRoute = ({ children }) => {
     const cookieExists = useCookieWatcher("X-Access-Token", {
-        checkEvery: 500
+        checkEvery: 100
     });
 
     if (!cookieExists) {
