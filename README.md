@@ -425,6 +425,24 @@ REACT_APP_API_BASE_URL=https://localhost:7021
     </li>
 </ul>
 
+<h3 style="font-size: 1.3em;">Known Issue: Testing Formik with React Query's useMutation</h3>
+<p>This section discusses a challenge encountered in testing the EditForm component, which integrates Formik for form handling and React Query's useMutation for data submission.</p>
+
+<ul>
+    <li>
+        <strong>Nature of the Issue:</strong>
+        <p>The `useMutation`'s `mutate` function is not being called as expected on form submission within Jest testing environment.</p>
+    </li>
+    <li>
+        <strong>Resolution Attempts:</strong>
+        <p>Tests were set up with various mock strategies and simulated form submissions, yet `mutate` did not trigger as anticipated. Debugging steps included reviewing mocks, ensuring correct Formik setup, and examining asynchronous handling.</p>
+    </li>
+    <li>
+        <strong>Current Status:</strong>
+        <p>The issue is still under investigation. Insights or solutions that align with the Formik and React Query integration are welcomed. Documentation related to this issue can be found in <a href="https://formik.org/docs/overview">Formik's documentation</a> and <a href="https://react-query.tanstack.com/reference/useMutation">React Query's useMutation</a>.</p>
+    </li>
+</ul>
+
 <h1 id="deployment" style="font-size: 2em;">Deployment</h1>
 <h3 style="font-size: 1.3em;">Deploying to Azure</h3>
 <p>Deploying the Fitlance application to Azure involves a few key steps to ensure a smooth transition from development to production.</p>
