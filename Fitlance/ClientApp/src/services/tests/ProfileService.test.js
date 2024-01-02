@@ -1,4 +1,4 @@
-import * as service from './ProfileService';
+import * as service from '.././ProfileService';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 

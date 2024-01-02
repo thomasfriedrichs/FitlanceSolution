@@ -1,4 +1,4 @@
-import * as service from './TrainerService';
+import * as service from '.././TrainerService';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 

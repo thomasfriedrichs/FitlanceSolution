@@ -4,7 +4,7 @@ import { Formik, Form } from "formik";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ProfileSchema } from "../../validators/Validate";
-import useProfileFormMutation from "./hooks/useProfileFormMutation";
+import { useProfileFormMutation } from "./hooks/useProfileFormMutation";
 
 const EditForm = ({ setNeedsEdit, data }) => {
     const queryClient = useQueryClient();

@@ -1,4 +1,4 @@
-import * as service from './AppointmentService.js';
+import * as service from '.././AppointmentService.js';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 

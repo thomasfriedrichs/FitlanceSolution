@@ -18,7 +18,7 @@ export const login = (email, password) => {
             Cookies.set("Role", decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"], { path: "/" });
             window.location.href = "/";
         })
-        .catch(console.error());
+        .catch(console.error);
 };
 
 export const logout = () => {
@@ -43,5 +43,5 @@ export const register = (username, email, password, role) => {
         Cookies.set("Role", decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"], { path: "/" });
         window.location.href = "/";
     })
-        .catch(console.error());
+        .catch(console.error);
 };

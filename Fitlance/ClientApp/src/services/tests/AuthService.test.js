@@ -1,4 +1,4 @@
-import * as AuthService from './AuthService';
+import * as AuthService from '.././AuthService';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
