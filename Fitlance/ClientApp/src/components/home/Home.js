@@ -8,7 +8,7 @@ import img4 from './assets/img4.jpg';
 
 const Home = () => {
     const cookieExists = useCookieWatcher('X-Access-Token', {
-        checkEvery: 500,
+        checkEvery: 100,
     });
 
     return (
