@@ -57,6 +57,7 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\src\components\home\assets\" />
+    <Folder Include="ClientApp\src\components\layout\Tests\" />
     <Folder Include="ClientApp\src\components\routeProtection\tests\" />
   </ItemGroup>
 

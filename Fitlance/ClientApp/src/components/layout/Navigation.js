@@ -38,6 +38,7 @@ const Navigation = () => {
                             <div
                                 className="flex flex-col justify-center"
                                 onClick={() => setIsNavOpen((prev) => !prev)}
+                                data-testid="hamburger-menu"
                             >
                                 <div>
                                     <HamburgerButton size="32" />
