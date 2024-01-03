@@ -18,5 +18,7 @@ public class User : IdentityUser
 
     public string? Bio { get; set; }
 
+    public Trainer? Trainer { get; set; }
+
     public List<Appointment>? Appointments { get; set; }
 }
