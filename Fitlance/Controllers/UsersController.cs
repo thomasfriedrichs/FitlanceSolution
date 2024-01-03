@@ -40,6 +40,17 @@ public class UsersController : ControllerBase
     {
         var trainers = await _userManager.GetUsersInRoleAsync("Trainer");
 
+        var trainerIds = trainers.Select(t => t.Id).ToList();
+        var trainerProfiles = await _context.Trainers
+                                            .Where(tp => trainerIds.Contains(tp.TrainerId))
+                                            .ToListAsync();
+
+        // Associate each trainer with their profile
+        foreach (var trainer in trainers)
+        {
+            trainer.TrainerData = trainerProfiles.FirstOrDefault(tp => tp.TrainerId == trainer.Id);
+        }
+
         return Ok(trainers.ToList());
     }
 
