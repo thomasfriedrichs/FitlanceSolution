@@ -11,14 +11,14 @@ namespace Fitlance.Tests;
 
 public class UsersUnitTests
 {
-    public DbContextOptions<FitlanceContext> BuildOptions()
+    public static  DbContextOptions<FitlanceContext> BuildOptions()
     {
         var optionsBuilder = new DbContextOptionsBuilder<FitlanceContext>();
         optionsBuilder.UseInMemoryDatabase(databaseName: "TestDb");
         return optionsBuilder.Options;
     }
 
-    public ServiceProvider BuildServiceProvider()
+    public static ServiceProvider BuildServiceProvider()
     {
         var services = new ServiceCollection();
 
@@ -220,7 +220,7 @@ public class UsersUnitTests
         await SeedUsers(userManager, roleManager);
     }
 
-    public void Cleanup(ServiceProvider serviceProvider)
+    internal static void Cleanup(ServiceProvider serviceProvider)
     {
         var context = serviceProvider.GetRequiredService<FitlanceContext>();
         context.Database.EnsureDeleted();  // This will delete the in-memory database
@@ -252,12 +252,11 @@ public class UsersUnitTests
 
 
 
-    private List<User> GetTestUsers()
+    private static List<User> GetTestUsers()
     {
         var users = new List<User>
         {
-            new User
-            {
+            new() {
                 UserName = "john.doe",
                 Email = "john.doe@example.com",
                 CreateTime = DateTime.UtcNow.AddMonths(-1),
@@ -267,8 +266,7 @@ public class UsersUnitTests
                 ZipCode = 10001,
                 Bio = "Personal Trainer"
             },
-            new User
-            {
+            new() {
                 UserName = "jane.doe",
                 Email = "jane.doe@example.com",
                 CreateTime = DateTime.UtcNow.AddMonths(-2),
@@ -278,8 +276,7 @@ public class UsersUnitTests
                 ZipCode = 90001,
                 Bio = "Yoga Instructor"
             },
-            new User
-            {
+            new() {
                 UserName = "mike.smith",
                 Email = "mike.smith@example.com",
                 CreateTime = DateTime.UtcNow.AddMonths(-3),

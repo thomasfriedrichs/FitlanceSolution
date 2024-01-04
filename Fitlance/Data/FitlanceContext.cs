@@ -5,13 +5,8 @@ using Fitlance.Entities;
 
 namespace Fitlance.Data;
 
-public class FitlanceContext : IdentityDbContext<User>
+public class FitlanceContext(DbContextOptions<FitlanceContext> options) : IdentityDbContext<User>(options)
 {
-    public FitlanceContext(DbContextOptions<FitlanceContext> options)
-        : base(options)
-    {
-    }
-
     public DbSet<Appointment>? Appointments { get; set; }
     public DbSet<Trainer>? Trainers { get; set; }
 
@@ -35,7 +30,7 @@ public class FitlanceContext : IdentityDbContext<User>
 
         modelBuilder.Entity<Trainer>()
        .HasOne(t => t.User)
-       .WithOne()
+       .WithOne(u => u.Trainer)
        .HasForeignKey<Trainer>(t => t.TrainerId);
 
         modelBuilder.Entity<User>(mb =>

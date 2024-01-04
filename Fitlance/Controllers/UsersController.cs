@@ -32,24 +32,36 @@ public class UsersController(FitlanceContext context, UserManager<User> userMana
     [ProducesResponseType(typeof(Array), 200)]
     public async Task<ActionResult<IEnumerable<User>>> FindTrainers()
     {
-        var trainers = await _userManager.GetUsersInRoleAsync("Trainer");
+        var trainers = await _context.Users
+                                 .Where(u => u.Trainer != null)
+                                 .Include(u => u.Trainer)
+                                 .Select(u => new TrainerDTO
+                                 {
+                                     Id = u.Id,
+                                     UserName = u.UserName,
+                                     Email = u.Email,
+                                     CreateTime = u.CreateTime,
+                                     FirstName = u.FirstName,
+                                     LastName = u.LastName,
+                                     City = u.City,
+                                     ZipCode = u.ZipCode,
+                                     Bio = u.Bio,
+                                     Gender = u.Trainer.Gender,
+                                     Specialization = u.Trainer.Specialization,
+                                     NutritionCertification = u.Trainer.NutritionCertification,
+                                     YearsOfExperience = u.Trainer.YearsOfExperience,
+                                     Rating = u.Trainer.Rating,
+                                     HourlyRate = u.Trainer.HourlyRate,
+                                     SecondLanguage = u.Trainer.SecondLanguage,
+                                     ReviewCount = u.Trainer.ReviewCount,
+                                     ActiveClients = u.Trainer.ActiveClients,
+                                     Certifications = u.Trainer.Certifications,
+                                     Availability = u.Trainer.Availability,
+                                     ClientSkill = u.Trainer.ClientSkill
+                                 })
+                                 .ToListAsync();
 
-        var trainerIds = trainers.Select(t => t.Id).ToList();
-
-        var trainerProfiles = new List<Trainer>();
-        if(_context.Trainers is not null)
-        { 
-            trainerProfiles = await _context.Trainers
-                                                .Where(tp => trainerIds.Contains(tp.TrainerId))
-                                                .ToListAsync();
-        }
-
-        foreach (var trainer in trainers)
-        {
-            trainer.TrainerData = trainerProfiles.FirstOrDefault(tp => tp.TrainerId == trainer.Id);
-        }
-
-        return Ok(trainers.ToList());
+        return Ok(trainers);
     }
 
     // GET: api/User/5

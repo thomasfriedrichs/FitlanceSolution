@@ -4,6 +4,7 @@ using Fitlance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fitlance.Migrations
 {
     [DbContext(typeof(FitlanceContext))]
-    partial class FitlanceContextModelSnapshot : ModelSnapshot
+    [Migration("20240104172401_EditTrainerPlaceHolder")]
+    partial class EditTrainerPlaceHolder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,6 +196,9 @@ namespace Fitlance.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TrainerId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -212,6 +218,8 @@ namespace Fitlance.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("TrainerId");
 
                     b.ToTable("AspNetUsers", "Fitlance");
                 });
@@ -365,12 +373,21 @@ namespace Fitlance.Migrations
             modelBuilder.Entity("Fitlance.Entities.Trainer", b =>
                 {
                     b.HasOne("Fitlance.Entities.User", "User")
-                        .WithOne("Trainer")
+                        .WithOne()
                         .HasForeignKey("Fitlance.Entities.Trainer", "TrainerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Fitlance.Entities.User", b =>
+                {
+                    b.HasOne("Fitlance.Entities.Trainer", "Trainer")
+                        .WithMany()
+                        .HasForeignKey("TrainerId");
+
+                    b.Navigation("Trainer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -427,8 +444,6 @@ namespace Fitlance.Migrations
             modelBuilder.Entity("Fitlance.Entities.User", b =>
                 {
                     b.Navigation("Appointments");
-
-                    b.Navigation("Trainer");
                 });
 #pragma warning restore 612, 618
         }
