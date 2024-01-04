@@ -11,16 +11,10 @@ namespace Fitlance.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class UsersController(FitlanceContext context, UserManager<User> userManager) : ControllerBase
 {
-    private readonly FitlanceContext _context;
-    private readonly UserManager<User> _userManager;
-
-    public UsersController(FitlanceContext context, UserManager<User> userManager)
-    {
-        _context = context;
-        _userManager = userManager;
-    }
+    private readonly FitlanceContext _context = context;
+    private readonly UserManager<User> _userManager = userManager;
 
     // GET: api/Users
     [Authorize(Policy = "UserRights")]
@@ -41,11 +35,15 @@ public class UsersController : ControllerBase
         var trainers = await _userManager.GetUsersInRoleAsync("Trainer");
 
         var trainerIds = trainers.Select(t => t.Id).ToList();
-        var trainerProfiles = await _context.Trainers
-                                            .Where(tp => trainerIds.Contains(tp.TrainerId))
-                                            .ToListAsync();
 
-        // Associate each trainer with their profile
+        var trainerProfiles = new List<Trainer>();
+        if(_context.Trainers is not null)
+        { 
+            trainerProfiles = await _context.Trainers
+                                                .Where(tp => trainerIds.Contains(tp.TrainerId))
+                                                .ToListAsync();
+        }
+
         foreach (var trainer in trainers)
         {
             trainer.TrainerData = trainerProfiles.FirstOrDefault(tp => tp.TrainerId == trainer.Id);
