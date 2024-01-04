@@ -6,11 +6,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using Xunit.Abstractions;
 
 namespace Fitlance.Tests;
 
 public class UsersUnitTests
 {
+    private readonly ITestOutputHelper _output;
+
+    public UsersUnitTests(ITestOutputHelper output)
+    {
+        _output = output;
+    }
     public static  DbContextOptions<FitlanceContext> BuildOptions()
     {
         var optionsBuilder = new DbContextOptionsBuilder<FitlanceContext>();
@@ -70,8 +77,9 @@ public class UsersUnitTests
     }
 
     [Fact]
-    public async Task FindTrainers_ReturnsOkResult_WithListOfTrainers()
+    public async Task FindTrainers_ReturnsOkResult_WithListOfTrainerDTOs()
     {
+        // Arrange
         var serviceProvider = BuildServiceProvider();
         await InitializeData(serviceProvider);
 
@@ -79,18 +87,35 @@ public class UsersUnitTests
         var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
 
         var controller = new UsersController(context, userManager);
+
+        // Act
         var result = await controller.FindTrainers();
 
         // Assert
         var actionResult = Assert.IsType<OkObjectResult>(result.Result);
-        var model = Assert.IsAssignableFrom<IEnumerable<User>>(actionResult.Value);
-        Assert.Equal(2, model.Count());
-        Assert.All(model, user => Assert.NotNull(user.UserName));
-        Assert.All(model, user => Assert.NotNull(user.Email));
-        Assert.All(model, async user => Assert.True(await userManager.IsInRoleAsync(user, "Trainer")));
+        var model = Assert.IsAssignableFrom<IEnumerable<TrainerDTO>>(actionResult.Value);
+        _output.WriteLine($"Number of trainers found: {model.Count()}");
+
+        Assert.Equal(2, model.Count()); 
+
+        Assert.All(model, dto =>
+        {
+            _output.WriteLine($"Checking TrainerDTO: {dto.UserName}, {dto.Email}");
+            Assert.NotNull(dto.UserName);
+            Assert.NotNull(dto.Email);
+        });
+
+        foreach (var trainerDto in model)
+        {
+            var user = await userManager.FindByIdAsync(trainerDto.Id);
+            Assert.NotNull(user);
+            _output.WriteLine($"User found: {user.UserName}, in role Trainer: {await userManager.IsInRoleAsync(user, "Trainer")}");
+            Assert.True(await userManager.IsInRoleAsync(user, "Trainer"));
+        }
 
         Cleanup(serviceProvider);
     }
+
 
     [Fact]
     public async Task GetUser_ReturnsOkResult_WithUser()
@@ -215,9 +240,10 @@ public class UsersUnitTests
 
     private static async Task InitializeData(ServiceProvider serviceProvider)
     {
+        var context = serviceProvider.GetRequiredService<FitlanceContext>();
         var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        await SeedUsers(userManager, roleManager);
+        await SeedUsers(userManager, roleManager, context);
     }
 
     internal static void Cleanup(ServiceProvider serviceProvider)
@@ -227,7 +253,7 @@ public class UsersUnitTests
     }
 
 
-    public static async Task SeedUsers(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+    public static async Task SeedUsers(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, FitlanceContext context)
     {
         // Ensure the roles exist
         if (!await roleManager.RoleExistsAsync("Trainer"))
@@ -240,9 +266,27 @@ public class UsersUnitTests
         await userManager.CreateAsync(trainer1, "Password123!");
         await userManager.AddToRoleAsync(trainer1, "Trainer");
 
+        var trainerProfile1 = new Trainer
+        {
+            TrainerId = trainer1.Id,
+            Gender = "Male",
+            Specialization = "Weightlifting",
+        };
+        context.Trainers.Add(trainerProfile1);
+
         var trainer2 = new User { UserName = "trainer2", Email = "trainer2@example.com" };
         await userManager.CreateAsync(trainer2, "Password123!");
         await userManager.AddToRoleAsync(trainer2, "Trainer");
+
+        var trainerProfile2 = new Trainer
+        {
+            TrainerId = trainer2.Id,
+            Gender = "Female",
+            Specialization = "Yoga",
+        };
+        context.Trainers.Add(trainerProfile2);
+
+        await context.SaveChangesAsync();
 
         // Create user
         var user = new User { UserName = "user1", Email = "user1@example.com" };
