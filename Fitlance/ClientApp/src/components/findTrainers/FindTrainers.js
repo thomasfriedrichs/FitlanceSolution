@@ -1,11 +1,10 @@
 ﻿import React from "react";
-import { useQuery } from "@tanstack/react-query";
 
-import { fetchTrainers } from "../../services/TrainerService";
 import SingleTrainer from "./SingleTrainer";
+import useLazyLoadTrainers from "./hooks/useLazyLoadTrainers";
 
 const FindTrainers = () => {
-    const { data, isLoading, isError, error } = useQuery(["findTrainers"], fetchTrainers);
+    const { displayedTrainers, isLoading, isError, error } = useLazyLoadTrainers();
 
     if (isLoading) {
         return <span>Loading...</span>
@@ -24,7 +23,7 @@ const FindTrainers = () => {
                     </h1>
                 </div>
                 <div className="mt-10">
-                    {data.map((trainer, i) => {
+                    {displayedTrainers.map((trainer, i) => {
                         const imageIndex = Math.floor(Math.random() * 61);
                         return (
                             <SingleTrainer

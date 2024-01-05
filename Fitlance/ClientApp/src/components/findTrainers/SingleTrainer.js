@@ -1,7 +1,7 @@
 ﻿import React, { useState } from "react";
 
 import images from "./../../assets/profileImages/index";
-import AppointmentFormWithFormik from "../appointments/AppointmentForm";
+import AppointmentForm from "../appointments/AppointmentForm";
 import { postAppointment } from "../../services/AppointmentService";
 
 const SingleTrainer = ({ trainer, imageIndex }) => {
@@ -38,7 +38,7 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
             </div>
             <section>
                 {appointmentFormView ?
-                    <AppointmentFormWithFormik
+                    <AppointmentForm
                         toggleView={toggleDropdownForm}
                         query={postAppointment}
                         reqType={"post"}
