@@ -4,7 +4,7 @@ import SingleTrainer from "./SingleTrainer";
 import useLazyLoadTrainers from "./hooks/useLazyLoadTrainers";
 
 const FindTrainers = () => {
-    const { displayedTrainers, isLoading, isError, error } = useLazyLoadTrainers();
+    const { displayedTrainers, isLoading, isError, error, loader } = useLazyLoadTrainers();
 
     if (isLoading) {
         return <span>Loading...</span>
@@ -32,6 +32,9 @@ const FindTrainers = () => {
                                 imageIndex={imageIndex} />
                         );
                     })}
+                    <div ref={loader} className="loading-indicator">
+                        {isLoading && <span>Loading more trainers...</span>}
+                    </div>
                 </div>
             </div>
         </div>

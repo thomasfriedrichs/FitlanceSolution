@@ -23,7 +23,11 @@ const useLazyLoadTrainers = (batchSize = 10) => {
     useEffect(() => {
         const observerInstance = new IntersectionObserver((entries) => {
             // Check if loader is in view and more trainers are available to load
+            console.log('Observer triggered', entries); // Log to see if this triggers
+
             if (entries[0].isIntersecting && !isFetchingMore && data && displayedTrainers.length < data.length) {
+                console.log('Loading more trainers');
+
                 setIsFetchingMore(true);  // Set state to indicate more trainers are being fetched
                 loadMoreTrainers();       // Call the function to load more trainers
             }
