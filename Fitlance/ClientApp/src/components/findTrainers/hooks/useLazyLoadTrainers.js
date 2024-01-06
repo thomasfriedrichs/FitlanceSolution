@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
+
 import { fetchTrainers } from '../../../services/TrainerService';
 
 const useLazyLoadTrainers = (batchSize = 10) => {
