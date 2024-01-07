@@ -5,52 +5,81 @@ import AppointmentForm from "../appointments/AppointmentForm";
 import { postAppointment } from "../../services/AppointmentService";
 
 const SingleTrainer = ({ trainer, imageIndex }) => {
-    const { bio, firstName, lastName, city, zipCode, id } = trainer;
+    const {
+        firstName,
+        lastName,
+        city,
+        bio,
+        gender,
+        specialization,
+        nutritionCertification,
+        yearsOfExperience,
+        rating,
+        hourlyRate,
+        secondLanguage,
+        reviewCount,
+        certifications,
+        availability,
+        clientSkill,
+        id
+    } = trainer;
     const [appointmentFormView, setAppointmentFormView] = useState(false);
 
     const toggleDropdownForm = () => {
         setAppointmentFormView(!appointmentFormView);
     };
 
+    const certificationsStr = certifications.join(', ');
+    const availabilityStr = availability.join(', ');
+    const clientSkillStr = clientSkill.join(', ');
+
     return (
-        <div className={`relative border-b rounded-sm flex flex-col md:flex-row justify-between hover:bg-slate-100
-            ${appointmentFormView ? "h-80 md:h-80" : "h-48 md:h-32"}`}>
-            <div className="flex flex-row">
+        <article className={`relative border-b rounded-sm flex flex-col xl:flex-row justify-between items-start hover:bg-slate-100 mb-4 pb-8 md:pb-2 md:h-auto`}>
+            <div className="flex flex-row items-center">
                 <div className="p-2">
                     <img
                         className="object-cover h-24 w-24 rounded-full"
                         src={images[imageIndex].image}
-                        alt={images[imageIndex].alt} />
+                        alt={`Profile of ${firstName} ${lastName}`}
+                    />
                 </div>
-                <div className="flex flex-col md:flex-row md:justify-between w-2/3">
-                    <div className="flex flex-row h-4">
-                        <h1 className="p-2 font-semibold">{firstName}</h1>
-                        <h1 className="p-2 font-semibold">{lastName}</h1>
+                <div className="flex flex-col justify-between w-full md:ml-4">
+                    <div className="flex flex-col md:flex-row justify-between items-center">
+                        <h2 className="text-xl font-semibold">{`${firstName} ${lastName}`}</h2>
+                        <p className="font-semibold">{`${city}, ${gender}, ${yearsOfExperience} years experience`}</p>
                     </div>
-                    <div className="flex flex-row mr-1 md:mr-6">
-                        <p className="p-2 font-semibold">{city}</p>
-                        <p className="p-2 font-semibold">{zipCode}</p>
-                    </div>
-                    <div>
-                        <p className="p-2">{bio}</p>
+                    <p className="my-2">{bio}</p>
+                    <div className="text-sm">
+                        <p>Specialization: {specialization}</p>
+                        <p>Nutrition Certification: {nutritionCertification}</p>
+                        <p>Hourly Rate: ${hourlyRate}</p>
+                        <p>Rating: {rating} stars</p>
+                        <p>Second Language: {secondLanguage}</p>
+                        <p>Review Count: {reviewCount}</p>
+                        <p>Certifications: {certificationsStr}</p>
+                        <p>Availability: {availabilityStr}</p>
+                        <p>Client Skills: {clientSkillStr}</p>
                     </div>
                 </div>
             </div>
-            <section>
-                {appointmentFormView ?
+            <section className={`${appointmentFormView ? "block" : "hidden"} w-full xl:w-1/2 pb-10`}>
+                {appointmentFormView && (
                     <AppointmentForm
                         toggleView={toggleDropdownForm}
                         query={postAppointment}
                         reqType={"post"}
-                        trainerId={id} />
-                    : null}
+                        trainerId={id}
+                    />
+                )}
             </section>
             <button
                 onClick={toggleDropdownForm}
-                className="absolute bottom-0 right-0 p-2">
-                {appointmentFormView ? "Cancel" : "Make Appointment"}
+                className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 md:left-auto md:translate-x-0 md:right-0 p-2 ${appointmentFormView ? "hover:text-red-500" : "hover:text-green"} rounded-lg focus:outline-none`}
+                aria-expanded={appointmentFormView}
+            >
+                {appointmentFormView ? "Close" : "Make Appointment"}
             </button>
-        </div>
+        </article>
     )
 }
 
