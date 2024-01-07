@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCertificate } from "@fortawesome/free-solid-svg-icons";
 
-import { maleImages, femaleImages, nonBinaryImages } from "./../../assets/profileImages/index";
+import { usePersistentProfileImage } from "./hooks/usePersistentProfileImage"; 
 import AppointmentForm from "../appointments/AppointmentForm";
 import { postAppointment } from "../../services/AppointmentService";
 import RatingStars from "./RatingStars";
@@ -27,6 +27,7 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
         id
     } = trainer;
     const [appointmentFormView, setAppointmentFormView] = useState(false);
+    const { profileImage, isImageReady } = usePersistentProfileImage(trainer.gender);
 
     const toggleDropdownForm = () => {
         setAppointmentFormView(!appointmentFormView);
@@ -34,21 +35,6 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
 
     const availabilityStr = availability.join(', ');
     const clientSkillStr = clientSkill.join(', ');
-
-    const selectImage = (gender) => {
-        const formattedGender = gender.toLowerCase().replace(/-/g, '');
-        let selectedImages = nonBinaryImages;
-
-        if (formattedGender === 'male') {
-            selectedImages = maleImages;
-        } else if (formattedGender === 'female') {
-            selectedImages = femaleImages;
-        }
-        const imageIndex = Math.floor(Math.random() * selectedImages.length);
-        return selectedImages[imageIndex];
-    };
-
-    const profileImage = selectImage(gender);
 
     const formatRatingWithOneDecimal = (rating) => {
         return rating.toFixed(1);
@@ -65,18 +51,18 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
         return pronouns[formattedGender] || "Not specified";
     };
 
-    console.log(gender)
-
     return (
         <article className={`relative border-b rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 mb-6 bg-white flex flex-col xl:flex-row justify-between items-start hover:bg-slate-100 px-2 pb-12 md:pb-2 md:h-auto`}>
             <div className="flex flex-row items-center">
                 <div className="flex flex-col justify-between w-full md:ml-4">
                     <div className="flex items-center space-x-4">
-                        <img
-                            className="h-24 w-24 rounded-full object-cover"
-                            src={profileImage.image}
-                            alt={`Profile of ${firstName} ${lastName}`}
-                        />
+                        {isImageReady && profileImage && (
+                            <img
+                                className="h-24 w-24 rounded-full object-cover"
+                                src={profileImage.image}
+                                alt={profileImage.alt}
+                            />
+                        )}
                         <div>
                             <h2 className="text-xl font-bold">{firstName} {lastName}</h2>
                             <div className="flex items-center space-x-1">
