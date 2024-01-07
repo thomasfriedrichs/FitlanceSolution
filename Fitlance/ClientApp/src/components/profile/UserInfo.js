@@ -1,9 +1,9 @@
 ﻿import React from "react";
-import images from "../../assets/profileImages";
+import { maleImages } from "../../assets/profileImages";
 
 const UserInfo = ({ data }) => {
     const { firstName, lastName, zipCode, city, bio } = data;
-    const imageIndex = Math.floor(Math.random() * 61);
+    const imageIndex = Math.floor(Math.random() * 30);
 
     return (
         <section className="bg-white p-4 rounded-lg">
@@ -12,8 +12,8 @@ const UserInfo = ({ data }) => {
                     <div className="p-2 h-48 w-48">
                         <img
                             className="object-cover h-48 w-48 rounded-full"
-                            src={images[imageIndex].image}
-                            alt={images[imageIndex].alt}
+                            src={maleImages[imageIndex].image}
+                            alt={maleImages[imageIndex].alt}
                             aria-describedby="profile-image-description" />
                     </div>
                 </aside>

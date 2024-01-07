@@ -1,8 +1,8 @@
 ﻿import React, { useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCertificate } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCertificate } from "@fortawesome/free-solid-svg-icons";
 
-import images from "./../../assets/profileImages/index";
+import { maleImages, femaleImages, nonBinaryImages } from "./../../assets/profileImages/index";
 import AppointmentForm from "../appointments/AppointmentForm";
 import { postAppointment } from "../../services/AppointmentService";
 import RatingStars from "./RatingStars";
@@ -32,9 +32,23 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
         setAppointmentFormView(!appointmentFormView);
     };
 
-    const certificationsStr = certifications.join(', ');
     const availabilityStr = availability.join(', ');
     const clientSkillStr = clientSkill.join(', ');
+
+    const selectImage = (gender) => {
+        const formattedGender = gender.toLowerCase().replace(/-/g, '');
+        let selectedImages = nonBinaryImages;
+
+        if (formattedGender === 'male') {
+            selectedImages = maleImages;
+        } else if (formattedGender === 'female') {
+            selectedImages = femaleImages;
+        }
+        const imageIndex = Math.floor(Math.random() * selectedImages.length);
+        return selectedImages[imageIndex];
+    };
+
+    const profileImage = selectImage(gender);
 
     const formatRatingWithOneDecimal = (rating) => {
         return rating.toFixed(1);
@@ -60,7 +74,7 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
                     <div className="flex items-center space-x-4">
                         <img
                             className="h-24 w-24 rounded-full object-cover"
-                            src={images[imageIndex].image}
+                            src={profileImage.image}
                             alt={`Profile of ${firstName} ${lastName}`}
                         />
                         <div>
