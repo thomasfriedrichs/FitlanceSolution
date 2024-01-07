@@ -3,12 +3,12 @@
 import images from "./../../assets/profileImages/index";
 import AppointmentForm from "../appointments/AppointmentForm";
 import { postAppointment } from "../../services/AppointmentService";
+import RatingStars from "./RatingStars";
 
 const SingleTrainer = ({ trainer, imageIndex }) => {
     const {
         firstName,
         lastName,
-        city,
         bio,
         gender,
         specialization,
@@ -33,32 +33,49 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
     const availabilityStr = availability.join(', ');
     const clientSkillStr = clientSkill.join(', ');
 
+    const formatRatingWithOneDecimal = (rating) => {
+        return rating.toFixed(1);
+    }
+    const formattedRating = formatRatingWithOneDecimal(rating);
+
+    const getPronouns = (gender) => {
+        const pronouns = {
+            male: "He/Him",
+            female: "She/Her",
+            nonbinary: "They/Them"
+        };
+        return pronouns[gender.toLowerCase()] || "Not specified";
+    };
+
     return (
-        <article className={`relative border-b rounded-sm flex flex-col xl:flex-row justify-between items-start hover:bg-slate-100 mb-4 pb-8 md:pb-2 md:h-auto`}>
+        <article className={`relative border-b rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 mb-6 bg-white flex flex-col xl:flex-row justify-between items-start hover:bg-slate-100 px-2 pb-12 md:pb-2 md:h-auto`}>
             <div className="flex flex-row items-center">
-                <div className="p-2">
-                    <img
-                        className="object-cover h-24 w-24 rounded-full"
-                        src={images[imageIndex].image}
-                        alt={`Profile of ${firstName} ${lastName}`}
-                    />
-                </div>
                 <div className="flex flex-col justify-between w-full md:ml-4">
-                    <div className="flex flex-col md:flex-row justify-between items-center">
-                        <h2 className="text-xl font-semibold">{`${firstName} ${lastName}`}</h2>
-                        <p className="font-semibold">{`${city}, ${gender}, ${yearsOfExperience} years experience`}</p>
+                    <div className="flex items-center space-x-4">
+                        <img
+                            className="h-24 w-24 rounded-full object-cover"
+                            src={images[imageIndex].image}
+                            alt={`Profile of ${firstName} ${lastName}`}
+                        />
+                        <div>
+                            <h2 className="text-xl font-bold">{firstName} {lastName}</h2>
+                            <div className="flex items-center space-x-1">
+                                <span className="text-lg font-semibold">{formattedRating}</span>
+                                <RatingStars rating={rating} />
+                            </div>
+                            <p className="text-sm text-gray-600">{reviewCount} Reviews</p>
+                            <div className="flex flex-row space-x-2">
+                                <p className="text-sm text-gray-600">{getPronouns(gender)}</p>
+                                <p className="text-sm text-gray-600">{yearsOfExperience} YOE</p>
+                            </div>
+                        </div>
                     </div>
-                    <p className="my-2">{bio}</p>
+                    <p className="text-gray-800 p-1">{bio}</p>
                     <div className="text-sm">
-                        <p>Specialization: {specialization}</p>
-                        <p>Nutrition Certification: {nutritionCertification}</p>
-                        <p>Hourly Rate: ${hourlyRate}</p>
-                        <p>Rating: {rating} stars</p>
-                        <p>Second Language: {secondLanguage}</p>
-                        <p>Review Count: {reviewCount}</p>
-                        <p>Certifications: {certificationsStr}</p>
-                        <p>Availability: {availabilityStr}</p>
-                        <p>Client Skills: {clientSkillStr}</p>
+                        <p className="font-bold p-1">Hourly Rate: <span className="font-normal">${hourlyRate} Per Hour</span></p>
+                        <p className="font-bold p-1">Certifications: <span className="font-normal">{certificationsStr || 'Not specified'}</span></p>
+                        <p className="font-bold p-1">Availability: <span className="font-normal">{availabilityStr || 'Not specified'}</span></p>
+                        <p className="font-bold p-1">Client Skills: <span className="font-normal">{clientSkillStr || 'Not specified'}</span></p>
                     </div>
                 </div>
             </div>
