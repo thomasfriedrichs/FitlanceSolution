@@ -1,4 +1,6 @@
 ﻿import React, { useState } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCertificate } from '@fortawesome/free-solid-svg-icons';
 
 import images from "./../../assets/profileImages/index";
 import AppointmentForm from "../appointments/AppointmentForm";
@@ -11,6 +13,7 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
         lastName,
         bio,
         gender,
+        city,
         specialization,
         nutritionCertification,
         yearsOfExperience,
@@ -44,8 +47,11 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
             female: "She/Her",
             nonbinary: "They/Them"
         };
-        return pronouns[gender.toLowerCase()] || "Not specified";
+        const formattedGender = gender.replace(/-/g, '').toLowerCase();
+        return pronouns[formattedGender] || "Not specified";
     };
+
+    console.log(gender)
 
     return (
         <article className={`relative border-b rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 mb-6 bg-white flex flex-col xl:flex-row justify-between items-start hover:bg-slate-100 px-2 pb-12 md:pb-2 md:h-auto`}>
@@ -72,8 +78,22 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
                     </div>
                     <p className="text-gray-800 p-1">{bio}</p>
                     <div className="text-sm">
+                        {nutritionCertification && <p className="font-bold p-1">Nutrition Certification: <span className="font-normal">{nutritionCertification}</span></p>}
+                        {secondLanguage && <p className="font-bold p-1">Second Language: <span className="font-normal">{secondLanguage}</span></p>}
+                        {certifications && (
+                            <div className="p-1">
+                                <p className="font-bold">Certifications:</p>
+                                <ul className="list-none pl-0">
+                                    {certifications.map((certification, index) => (
+                                        <li key={index} className="flex items-center">
+                                            <FontAwesomeIcon icon={faCertificate} className="text-yellow-500 mr-2" />
+                                            <span className="font-normal">{certification}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                         <p className="font-bold p-1">Hourly Rate: <span className="font-normal">${hourlyRate} Per Hour</span></p>
-                        <p className="font-bold p-1">Certifications: <span className="font-normal">{certificationsStr || 'Not specified'}</span></p>
                         <p className="font-bold p-1">Availability: <span className="font-normal">{availabilityStr || 'Not specified'}</span></p>
                         <p className="font-bold p-1">Client Skills: <span className="font-normal">{clientSkillStr || 'Not specified'}</span></p>
                     </div>
