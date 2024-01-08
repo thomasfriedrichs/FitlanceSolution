@@ -7,7 +7,7 @@ import AppointmentForm from "../appointments/AppointmentForm";
 import { postAppointment } from "../../services/AppointmentService";
 import RatingStars from "./RatingStars";
 
-const SingleTrainer = ({ trainer, imageIndex }) => {
+const SingleTrainer = ({ trainer }) => {
     const {
         firstName,
         lastName,

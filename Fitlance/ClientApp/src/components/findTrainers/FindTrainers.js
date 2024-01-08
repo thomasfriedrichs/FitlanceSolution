@@ -32,12 +32,11 @@ const FindTrainers = () => {
                 </div>
                 <div className="mt-10">
                     {displayedTrainers.map((trainer, i) => {
-                        const imageIndex = Math.floor(Math.random() * 61);
                         return (
                             <SingleTrainer
                                 key={i}
                                 trainer={trainer}
-                                imageIndex={imageIndex}/>
+                            />
                         );
                     })}
                     <div ref={loader} className="loading-indicator">
