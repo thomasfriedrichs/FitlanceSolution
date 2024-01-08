@@ -62,24 +62,7 @@ import Img61 from "./img61.png"
 
 
 
-
-const images = [
-    {
-        image: Img1,
-        alt: "Profile Image"
-    },
-    {
-        image: Img2,
-        alt: "Profile Image"
-    },
-    {
-        image: Img3,
-        alt: "Profile Image"
-    },
-    {
-        image: Img4,
-        alt: "Profile Image"
-    },
+export const maleImages = [
     {
         image: Img5,
         alt: "Profile Image"
@@ -94,90 +77,6 @@ const images = [
     },
     {
         image: Img8,
-        alt: "Profile Image"
-    },
-    {
-        image: Img9,
-        alt: "Profile Image"
-    },
-    {
-        image: Img10,
-        alt: "Profile Image"
-    },
-    {
-        image: Img11,
-        alt: "Profile Image"
-    },
-    {
-        image: Img12,
-        alt: "Profile Image"
-    },
-    {
-        image: Img13,
-        alt: "Profile Image"
-    },
-    {
-        image: Img14,
-        alt: "Profile Image"
-    },
-    {
-        image: Img15,
-        alt: "Profile Image"
-    },
-    {
-        image: Img16,
-        alt: "Profile Image"
-    },
-    {
-        image: Img17,
-        alt: "Profile Image"
-    },
-    {
-        image: Img18,
-        alt: "Profile Image"
-    },
-    {
-        image: Img19,
-        alt: "Profile Image"
-    },
-    {
-        image: Img20,
-        alt: "Profile Image"
-    },
-    {
-        image: Img21,
-        alt: "Profile Image"
-    },
-    {
-        image: Img22,
-        alt: "Profile Image"
-    },
-    {
-        image: Img23,
-        alt: "Profile Image"
-    },
-    {
-        image: Img24,
-        alt: "Profile Image"
-    },
-    {
-        image: Img25,
-        alt: "Profile Image"
-    },
-    {
-        image: Img26,
-        alt: "Profile Image"
-    },
-    {
-        image: Img27,
-        alt: "Profile Image"
-    },
-    {
-        image: Img28,
-        alt: "Profile Image"
-    },
-    {
-        image: Img29,
         alt: "Profile Image"
     },
     {
@@ -308,6 +207,111 @@ const images = [
         image: Img61,
         alt: "Profile Image"
     }
-];
+]
+export const femaleImages = [
+    {
+        image: Img1,
+        alt: "Profile Image"
+    },
+    {
+        image: Img10,
+        alt: "Profile Image"
+    },
+    {
+        image: Img2,
+        alt: "Profile Image"
+    },
+    {
+        image: Img3,
+        alt: "Profile Image"
+    },
+    {
+        image: Img4,
+        alt: "Profile Image"
+    },
+    {
+        image: Img9,
+        alt: "Profile Image"
+    },
 
-export default images;
+    {
+        image: Img11,
+        alt: "Profile Image"
+    },
+    {
+        image: Img12,
+        alt: "Profile Image"
+    },
+    {
+        image: Img13,
+        alt: "Profile Image"
+    },
+    {
+        image: Img14,
+        alt: "Profile Image"
+    },
+    {
+        image: Img15,
+        alt: "Profile Image"
+    },
+    {
+        image: Img16,
+        alt: "Profile Image"
+    },
+    {
+        image: Img17,
+        alt: "Profile Image"
+    },
+    {
+        image: Img18,
+        alt: "Profile Image"
+    },
+    {
+        image: Img19,
+        alt: "Profile Image"
+    },
+    {
+        image: Img20,
+        alt: "Profile Image"
+    },
+    {
+        image: Img21,
+        alt: "Profile Image"
+    },
+    {
+        image: Img22,
+        alt: "Profile Image"
+    },
+    {
+        image: Img23,
+        alt: "Profile Image"
+    },
+    {
+        image: Img24,
+        alt: "Profile Image"
+    },
+    {
+        image: Img25,
+        alt: "Profile Image"
+    },
+    {
+        image: Img26,
+        alt: "Profile Image"
+    },
+    {
+        image: Img27,
+        alt: "Profile Image"
+    },
+    {
+        image: Img28,
+        alt: "Profile Image"
+    },
+    {
+        image: Img29,
+        alt: "Profile Image"
+    },
+]
+export const nonBinaryImages = [
+    ...maleImages,
+    ...femaleImages  
+];
