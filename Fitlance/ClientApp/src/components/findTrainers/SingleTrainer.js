@@ -1,6 +1,6 @@
 ﻿import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCertificate } from "@fortawesome/free-solid-svg-icons";
+import { faCertificate, faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 import { usePersistentProfileImage } from "./hooks/usePersistentProfileImage"; 
 import AppointmentForm from "../appointments/AppointmentForm";
@@ -27,7 +27,13 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
         id
     } = trainer;
     const [appointmentFormView, setAppointmentFormView] = useState(false);
-    const { profileImage, isImageReady } = usePersistentProfileImage(trainer.gender);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const { profileImage, isImageReady } = usePersistentProfileImage(gender);
+
+    const handleExpandClick = () => {
+        setIsExpanded(prevState => !prevState);
+    };
+
 
     const toggleDropdownForm = () => {
         setAppointmentFormView(!appointmentFormView);
@@ -76,45 +82,63 @@ const SingleTrainer = ({ trainer, imageIndex }) => {
                             </div>
                         </div>
                     </div>
-                    <p className="text-gray-800 p-1">{bio}</p>
-                    <div className="text-sm">
-                        {nutritionCertification && <p className="font-bold p-1">Nutrition Certification: <span className="font-normal">{nutritionCertification}</span></p>}
-                        {secondLanguage && <p className="font-bold p-1">Second Language: <span className="font-normal">{secondLanguage}</span></p>}
-                        {certifications && (
-                            <div className="p-1">
-                                <p className="font-bold">Certifications:</p>
-                                <ul className="list-none pl-0">
-                                    {certifications.map((certification, index) => (
-                                        <li key={index} className="flex items-center">
-                                            <FontAwesomeIcon icon={faCertificate} className="text-yellow-500 mr-2" />
-                                            <span className="font-normal">{certification}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                        <p className="font-bold p-1">Hourly Rate: <span className="font-normal">${hourlyRate} Per Hour</span></p>
-                        <p className="font-bold p-1">Availability: <span className="font-normal">{availabilityStr || 'Not specified'}</span></p>
-                        <p className="font-bold p-1">Client Skills: <span className="font-normal">{clientSkillStr || 'Not specified'}</span></p>
-                    </div>
+                    {isExpanded && ( 
+                        <div>
+                            <p className="text-gray-800 p-1">{bio}</p>
+                            <div className="text-sm">
+                                {nutritionCertification && <p className="font-bold p-1">Nutrition Certification: <span className="font-normal">{nutritionCertification}</span></p>}
+                                {secondLanguage && <p className="font-bold p-1">Second Language: <span className="font-normal">{secondLanguage}</span></p>}
+                                {certifications && (
+                                    <div className="p-1">
+                                        <p className="font-bold">Certifications:</p>
+                                        <ul className="list-none pl-0">
+                                            {certifications.map((certification, index) => (
+                                                <li key={index} className="flex items-center">
+                                                    <FontAwesomeIcon icon={faCertificate} className="text-yellow-500 mr-2" />
+                                                    <span className="font-normal">{certification}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                                <p className="font-bold p-1">Hourly Rate: <span className="font-normal">${hourlyRate} Per Hour</span></p>
+                                <p className="font-bold p-1">Availability: <span className="font-normal">{availabilityStr || 'Not specified'}</span></p>
+                                <p className="font-bold p-1">Client Skills: <span className="font-normal">{clientSkillStr || 'Not specified'}</span></p>
+                           </div>
+                        </div>
+                    )}
                 </div>
             </div>
-            <section className={`${appointmentFormView ? "block" : "hidden"} w-full xl:w-1/2 pb-10`}>
-                {appointmentFormView && (
-                    <AppointmentForm
-                        toggleView={toggleDropdownForm}
-                        query={postAppointment}
-                        reqType={"post"}
-                        trainerId={id}
-                    />
-                )}
-            </section>
+            {isExpanded && (
+                <div>
+                    <section className={`${appointmentFormView ? "block" : "hidden"} w-full xl:w-1/2 pb-10`}>
+                        {appointmentFormView && (
+                            <AppointmentForm
+                                toggleView={toggleDropdownForm}
+                                query={postAppointment}
+                                reqType={"post"}
+                                trainerId={id}
+                            />
+                        )}
+                    </section>
+                    <button
+                        onClick={toggleDropdownForm}
+                        className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 md:left-auto md:translate-x-0 md:right-0 p-2 ${appointmentFormView ? "hover:text-red-500" : "hover:text-green"} rounded-lg focus:outline-none`}
+                        aria-expanded={appointmentFormView}
+                    >
+                        {appointmentFormView ? "Close" : "Make Appointment"}
+                    </button>
+                </div>
+            )}
             <button
-                onClick={toggleDropdownForm}
-                className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 md:left-auto md:translate-x-0 md:right-0 p-2 ${appointmentFormView ? "hover:text-red-500" : "hover:text-green"} rounded-lg focus:outline-none`}
-                aria-expanded={appointmentFormView}
+                onClick={handleExpandClick}
+                className={`absolute top-0 right-0 p-2 rounded-lg focus:outline-none ${isExpanded ? 'rotate-180' : ''}`}
+                aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
             >
-                {appointmentFormView ? "Close" : "Make Appointment"}
+                <FontAwesomeIcon
+                    icon={isExpanded ? faChevronUp : faChevronDown}
+                    className={`${isExpanded ? 'rotate-180' : ''} transition-transform`}
+                />
             </button>
         </article>
     )

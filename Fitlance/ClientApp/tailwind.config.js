@@ -12,6 +12,9 @@
             colors: {
                 'green': '#90ee90',
                 'lavender': '#e6e6fa'
+            },
+            rotate: {
+                '180': '180deg',
             }
         },
     },
