@@ -1,4 +1,7 @@
 ﻿import React from "react";
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 import SingleTrainer from "./SingleTrainer";
 import useLazyLoadTrainers from "./hooks/useLazyLoadTrainers";
@@ -7,8 +10,13 @@ const FindTrainers = () => {
     const { displayedTrainers, isLoading, isError, error, loader } = useLazyLoadTrainers();
 
     if (isLoading) {
-        return <span>Loading...</span>
+        return (
+            <div className="fixed inset-0 bg-white bg-opacity-75 flex justify-center items-center z-50">
+                <FontAwesomeIcon icon={faSpinner} className="text-4xl text-primary animate-spin" />
+            </div>
+        );
     };
+
 
     if (isError) {
         return <span className="mt-32">Error: {error.message}</span>
@@ -29,7 +37,7 @@ const FindTrainers = () => {
                             <SingleTrainer
                                 key={i}
                                 trainer={trainer}
-                                imageIndex={imageIndex} />
+                                imageIndex={imageIndex}/>
                         );
                     })}
                     <div ref={loader} className="loading-indicator">

@@ -1,5 +1,8 @@
 ﻿import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 import EditForm from "./EditForm";
 import UserInfo from "./UserInfo";
@@ -15,8 +18,13 @@ const Profile = () => {
     };
 
     if (isLoading) {
-        return <span>Loading...</span>
+        return (
+            <div className="fixed inset-0 bg-white bg-opacity-75 flex justify-center items-center z-50">
+                <FontAwesomeIcon icon={faSpinner} className="text-4xl text-primary animate-spin" />
+            </div>
+        );
     };
+
 
     if (isError) {
         return <span className="mt-32">Error: {error.message}</span>
