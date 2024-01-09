@@ -1,9 +1,12 @@
 ﻿import React from "react";
+import Cookies from "js-cookie";
+
 import { maleImages } from "../../assets/profileImages";
 
 const UserInfo = ({ data }) => {
     const { firstName, lastName, zipCode, city, bio } = data;
-    const imageIndex = Math.floor(Math.random() * 30);
+    const id = Cookies.get("Id");
+    const imageIndex = id === "1f6e518e-2140-4107-8fd6-5433244581e7" ? 0 : Math.floor(Math.random() * 30);
 
     return (
         <section className="bg-white p-4 rounded-lg">
