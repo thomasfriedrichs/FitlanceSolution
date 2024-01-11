@@ -22,9 +22,14 @@ export const putAppointment = async (id, reqObj) => {
 
 export const getUserAppointments = async () => {
     const id = Cookies.get("Id");
+    console.log("Calling getUserAppointments")
     try {
+        console.log("UerAppointments Try Block")
         const response = await apiClient.get(`/api/Appointments/GetUserAppointments/${id}`);
+        console.log("UserAppointments Response", response)
+        console.log("Response Data from getUserAppointments", response.data)
         return response.data;
+
     } catch (err) {
         console.log(err);
     };

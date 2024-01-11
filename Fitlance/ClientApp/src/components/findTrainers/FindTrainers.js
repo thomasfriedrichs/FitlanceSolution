@@ -2,13 +2,11 @@
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-
 import SingleTrainer from "./SingleTrainer";
 import useLazyLoadTrainers from "./hooks/useLazyLoadTrainers";
 
 const FindTrainers = () => {
     const { displayedTrainers, isLoading, isError, error, loader } = useLazyLoadTrainers();
-
 
     if (isLoading) {
         return (
@@ -17,7 +15,6 @@ const FindTrainers = () => {
             </div>
         );
     };
-
 
     if (isError) {
         return (
@@ -35,9 +32,6 @@ const FindTrainers = () => {
             </div>
         );
     }
-
-
-
 
     return (
         <div className="flex justify-center">

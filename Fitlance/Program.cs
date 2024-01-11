@@ -10,6 +10,7 @@ using Fitlance.Constants;
 using Fitlance.Middleware;
 using IAuthenticationService = Fitlance.Services.IAuthenticationService;
 using AuthenticationService = Fitlance.Services.AuthenticationService;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,29 +69,37 @@ builder.Services.AddAuthentication(options =>
     {
         OnAuthenticationFailed = context =>
         {
-            // Log the exception
-            context.NoResult();
-            context.Response.StatusCode = 500;
-            context.Response.ContentType = "text/plain";
-            return context.Response.WriteAsync(context.Exception.ToString());
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
+            logger.LogError("Authentication failed: {Error}", context.Exception.Message); // Log only the exception message
+            return Task.CompletedTask;
         },
         OnChallenge = context =>
         {
-            // Skip the default logic.
-            context.HandleResponse();
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
+            if (!context.Response.HasStarted)
+            {
+                logger.LogWarning("JWT Challenge invoked");
+                // Optionally, remove the custom response and let the framework set the default 401 status
+            }
             return Task.CompletedTask;
         },
         OnMessageReceived = context =>
         {
-            context.Token = context.Request.Cookies["AccessToken"];
+            var token = context.Request.Cookies["AccessToken"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
             return Task.CompletedTask;
         },
         OnTokenValidated = context =>
         {
-            // Log successful validation here
+            // You may choose to reduce logging here or remove it entirely
             return Task.CompletedTask;
         }
     };
+
+
 });
 
 //Authorization Policies
@@ -178,13 +187,13 @@ builder.Services.AddCors(opt =>
 
 var app = builder.Build();
 
-app.Use(async (context, next) =>
+/*app.Use(async (context, next) =>
 {
     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-    var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-    logger.LogInformation($"Token received: {token}");
+    var token = context.Request.Headers.Cookie.FirstOrDefault()?.Split(" ").Last();
+    logger.LogInformation("Token received: {Token}", token);
     await next();
-});
+});*/
 
 
 if (ConfigurationBinder.GetValue<bool>(configuration, "SeedAppointmentDataOnStartup"))

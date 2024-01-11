@@ -15,7 +15,7 @@ export const login = async (email, password) => {
 
 export const logout = async (userId) => {
     try {
-        await apiClient.post('/api/Auth/logout', { userId });
+        await apiClient.post('/api/Auth/logout',  userId );
     } catch (error) {
         console.error(error);
         throw error;

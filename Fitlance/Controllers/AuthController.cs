@@ -42,10 +42,10 @@ public class AuthController(IAuthenticationService authenticationService) : Cont
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Logout([FromBody]LogoutRequest request)
+    public async Task<IActionResult> Logout(string request)
     {
         var httpResponse = HttpContext.Response;
-        await _authenticationService.Logout(request.userId, httpResponse);
+        await _authenticationService.Logout(request, httpResponse);
 
         return Ok();
     }

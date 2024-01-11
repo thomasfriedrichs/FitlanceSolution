@@ -9,19 +9,15 @@ namespace Fitlance.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/[controller]")]
-public class AppointmentsController : ControllerBase
+public class AppointmentsController(FitlanceContext context) : ControllerBase
 {
-    private readonly FitlanceContext _context;
-
-    public AppointmentsController(FitlanceContext context)
-    {
-        _context = context;
-    }
+    private readonly FitlanceContext _context = context;
 
     [Authorize(Policy = "UserRights")]
     [HttpGet]
     [Route("GetUserAppointments/{id}")]
     [ProducesResponseType(typeof(Array), 200)]
+
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<Appointment>>> GetUserAppointments(string? id)
     {
