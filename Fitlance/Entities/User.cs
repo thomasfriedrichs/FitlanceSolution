@@ -21,4 +21,6 @@ public class User : IdentityUser
     public Trainer? Trainer { get; set; }
 
     public List<Appointment>? Appointments { get; set; }
+
+    public virtual ICollection<RefreshToken>? RefreshTokens { get; set; }
 }

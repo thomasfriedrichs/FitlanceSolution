@@ -1,47 +1,38 @@
-﻿import axios from "axios";
-import Cookies from "js-cookie";
-import jwt_decode from "jwt-decode";
+﻿import apiClient from "./AxiosAPIClient";
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL
-
-export const login = (email, password) => {
-    return axios
-        .post(`${BASE_URL}/api/Auth/login`, {
+export const login = async (email, password) => {
+    try {
+        const response = await apiClient.post('/api/Auth/login', {
             email,
             password
-        }, {
-            withCredentials: true
-        })
-        .then(() => {
-            const decoded = jwt_decode(Cookies.get("X-Access-Token"));
-            Cookies.set("Id", decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"], { path: "/" });
-            Cookies.set("Role", decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"], { path: "/" });
-            window.location.href = "/";
-        })
-        .catch(console.error);
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 };
 
-export const logout = () => {
-    Cookies.remove("X-Access-Token");
-    Cookies.remove("Role");
-    Cookies.remove("Email");
-    Cookies.remove("Id");
+export const logout = async (userId) => {
+    try {
+        await apiClient.post('/api/Auth/logout', { userId });
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 };
 
-export const register = (username, email, password, role) => {
-    return axios.post(`${BASE_URL}/api/Auth/register`, {
-        username,
-        email,
-        password,
-        role
-    }, {
-        withCredentials: true
-    })
-    .then(() => {
-        const decoded = jwt_decode(Cookies.get("X-Access-Token"));
-        Cookies.set("Id", decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"], { path: "/" });
-        Cookies.set("Role", decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"], { path: "/" });
-        window.location.href = "/";
-    })
-        .catch(console.error);
+export const register = async (username, email, password, role) => {
+    try {
+        const response = await apiClient.post('/api/Auth/register', {
+            username,
+            email,
+            password,
+            role
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 };

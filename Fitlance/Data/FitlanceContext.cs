@@ -9,6 +9,7 @@ public class FitlanceContext(DbContextOptions<FitlanceContext> options) : Identi
 {
     public DbSet<Appointment>? Appointments { get; set; }
     public DbSet<Trainer>? Trainers { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -43,6 +44,18 @@ public class FitlanceContext(DbContextOptions<FitlanceContext> options) : Identi
         {
             a.Property(p => p.Id).ValueGeneratedOnAdd();
             a.ToTable("Appointments");
+        });
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(rt => rt.Token);
+            entity.Property(rt => rt.Token).IsRequired();
+            entity.Property(rt => rt.ExpiryTime).IsRequired();
+            entity.Property(rt => rt.IsRevoked).IsRequired();
+            entity.HasOne(rt => rt.User)
+                  .WithMany(u => u.RefreshTokens)
+                  .HasForeignKey(rt => rt.UserId)
+                  .IsRequired();
         });
     }
 }

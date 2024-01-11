@@ -9,9 +9,9 @@ const queryClient = new QueryClient();
 const App = () => {
     return (
         <QueryClientProvider client={queryClient}>
-            <Layout>
-                <AppRoutes />
-            </Layout>
+                <Layout>
+                    <AppRoutes />
+                </Layout>
         </QueryClientProvider>
     );
 };

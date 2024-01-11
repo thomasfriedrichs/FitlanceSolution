@@ -1,10 +1,12 @@
 ﻿import React from "react";
 import { Field, Formik, Form } from "formik";
+import Cookies from "js-cookie";
 
 import { RegisterSchema } from "../../validators/Validate";
 import { register } from "../../services/AuthService";
 
 const Register = () => {
+
     const initialValues = {
         username: "",
         email: "",
@@ -12,9 +14,16 @@ const Register = () => {
         role: ""
     };
 
-    const handleRegistration = (values) => {
-        console.log(values);
-        register(values.username, values.email, values.password, values.role);
+    const handleRegistration = async (values) => {
+        try {
+            const response = await register(values.username, values.email, values.password, values.role);
+            if (response) {
+                Cookies.set("Id", response.Id)
+                Cookies.set("Role", response.userRole[0])
+            }
+        } catch (error) {
+            console.error("Registration error:", error);
+        }
     };
 
     return (

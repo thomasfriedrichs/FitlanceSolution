@@ -1,12 +1,10 @@
-﻿import axios from 'axios';
-import Cookies from 'js-cookie';
+﻿import Cookies from "js-cookie";
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL
+import apiClient from "./AxiosAPIClient";
 
 export const postAppointment = async (reqObj) => {
-    const token = Cookies.get("X-Access-Token");
     try {
-        const response = await axios.post(`${BASE_URL}/api/Appointments`, reqObj, { headers: { authorization: `bearer ${token}` } });
+        const response = await apiClient.post('/api/Appointments', reqObj);
         return response;
     } catch (err) {
         console.log(err);
@@ -14,9 +12,8 @@ export const postAppointment = async (reqObj) => {
 };
 
 export const putAppointment = async (id, reqObj) => {
-    const token = Cookies.get("X-Access-Token");
     try {
-        const response = await axios.put(`${BASE_URL}/api/Appointments/${id}`, reqObj, { headers: { authorization: `bearer ${token}` } });
+        const response = await apiClient.put(`/api/Appointments/${id}`, reqObj);
         return response;
     } catch (err) {
         console.log(err);
@@ -24,10 +21,9 @@ export const putAppointment = async (id, reqObj) => {
 };
 
 export const getUserAppointments = async () => {
-    const token = Cookies.get("X-Access-Token");
     const id = Cookies.get("Id");
     try {
-        const response = await axios.get(`${BASE_URL}/api/Appointments/GetUserAppointments/${id}`, { headers: { authorization: `bearer ${token}` } });
+        const response = await apiClient.get(`/api/Appointments/GetUserAppointments/${id}`);
         return response.data;
     } catch (err) {
         console.log(err);
@@ -35,10 +31,9 @@ export const getUserAppointments = async () => {
 };
 
 export const getTrainerAppointments = async () => {
-    const token = Cookies.get("X-Access-Token");
     const id = Cookies.get("Id");
     try {
-        const response = await axios.get(`${BASE_URL}/api/Appointments/GetTrainerAppointments/${id}`, { headers: { authorization: `bearer ${token}` } });
+        const response = await apiClient.get(`/api/Appointments/GetTrainerAppointments/${id}`);
         return response.data;
     } catch (err) {
         console.log(err);

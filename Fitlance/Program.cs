@@ -7,6 +7,7 @@ using System.Text;
 using Fitlance.Data;
 using Fitlance.Entities;
 using Fitlance.Constants;
+using Fitlance.Middleware;
 using IAuthenticationService = Fitlance.Services.IAuthenticationService;
 using AuthenticationService = Fitlance.Services.AuthenticationService;
 
@@ -24,6 +25,9 @@ builder.Services.AddDbContext<FitlanceContext>(options =>
 builder.Services.AddScoped<AppointmentSeeder>();
 
 builder.Services.AddControllersWithViews();
+
+//Logging
+builder.Services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Program>>());
 
 //Identity
 builder.Services.AddIdentity<User, IdentityRole>()
@@ -60,11 +64,34 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = configuration["JWT:ValidIssuer"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
     };
-}).AddCookie(options =>
-{
-    options.Cookie.Name = "X-Access-Token";
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-}); 
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            // Log the exception
+            context.NoResult();
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "text/plain";
+            return context.Response.WriteAsync(context.Exception.ToString());
+        },
+        OnChallenge = context =>
+        {
+            // Skip the default logic.
+            context.HandleResponse();
+            return Task.CompletedTask;
+        },
+        OnMessageReceived = context =>
+        {
+            context.Token = context.Request.Cookies["AccessToken"];
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            // Log successful validation here
+            return Task.CompletedTask;
+        }
+    };
+});
 
 //Authorization Policies
 builder.Services.AddAuthorization(options =>
@@ -151,7 +178,16 @@ builder.Services.AddCors(opt =>
 
 var app = builder.Build();
 
-if(ConfigurationBinder.GetValue<bool>(configuration, "SeedAppointmentDataOnStartup"))
+app.Use(async (context, next) =>
+{
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+    logger.LogInformation($"Token received: {token}");
+    await next();
+});
+
+
+if (ConfigurationBinder.GetValue<bool>(configuration, "SeedAppointmentDataOnStartup"))
 {
     using var scope = app.Services.CreateScope();
     var appointmentSeeder = scope.ServiceProvider.GetRequiredService<AppointmentSeeder>();
@@ -186,6 +222,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
     });
     app.UseCors("DevClient");
+    app.UseCors("DevClient2");
 }
 
 app.UseCors("Domain");
@@ -195,6 +232,8 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+//uncomment for debugging log requests
+//app.UseMiddleware<RequestLoggingMiddleware>();
 app.MapControllers();
 
 app.MapFallbackToFile("index.html");

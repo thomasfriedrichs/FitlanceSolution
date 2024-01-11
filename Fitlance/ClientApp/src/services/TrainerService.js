@@ -1,11 +1,9 @@
-﻿import axios from "axios";
-import Cookies from "js-cookie";
+﻿import apiClient from "./AxiosAPIClient";
 
 export const fetchTrainers = async () => {
-    const token = Cookies.get("X-Access-Token");
     try {
-        const response = await axios
-            .get(`${process.env.REACT_APP_API_BASE_URL}/api/Users/FindTrainers`, { headers: { authorization: `bearer ${token}` } });
+        const response = await apiClient
+            .get('/api/Users/FindTrainers');
         return response.data;
     } catch (err) {
         console.log(err);

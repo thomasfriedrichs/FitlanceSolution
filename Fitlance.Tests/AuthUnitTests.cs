@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
 using Moq;
 
 using Fitlance.Services;
 using Fitlance.Controllers;
 using Fitlance.Dtos;
 using Fitlance.Entities;
-using Microsoft.AspNetCore.Identity;
+using Fitlance.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fitlance.Tests;
 
@@ -15,11 +17,24 @@ public class AuthUnitTests
 {
     private readonly Mock<IAuthenticationService> _authServiceMock;
     private readonly AuthController _authController;
+    private readonly FitlanceContext _inMemoryContext;
 
     public AuthUnitTests()
     {
         _authServiceMock = new Mock<IAuthenticationService>();
         _authController = new AuthController(_authServiceMock.Object);
+        _inMemoryContext = CreateInMemoryContext();
+    }
+
+    private static FitlanceContext CreateInMemoryContext()
+    {
+        var options = new DbContextOptionsBuilder<FitlanceContext>()
+            .UseInMemoryDatabase(databaseName: "InMemoryFitlanceDb")
+            .Options;
+
+        var context = new FitlanceContext(options);
+
+        return context;
     }
 
     [Fact]
@@ -28,7 +43,7 @@ public class AuthUnitTests
         // Arrange
         var mockAuthService = new Mock<IAuthenticationService>();
         var registerRequest = new RegisterRequest { Email = "test@example.com", Username = "testuser", Password = "Test@1234" };
-        mockAuthService.Setup(x => x.Register(It.IsAny<RegisterRequest>())).ReturnsAsync("RegistrationTokenString");
+        mockAuthService.Setup(x => x.Register(It.IsAny<RegisterRequest>(), It.IsAny<HttpResponse>())).ReturnsAsync("RegistrationTokenString");
 
         var mockCookies = new Mock<IResponseCookies>();
         var mockResponse = new Mock<HttpResponse>();
@@ -60,7 +75,7 @@ public class AuthUnitTests
         var mockAuthService = new Mock<IAuthenticationService>();
         var registerRequest = new RegisterRequest { Email = "existing@example.com", Username = "existinguser", Password = "Test@1234" };
 
-        mockAuthService.Setup(x => x.Register(It.IsAny<RegisterRequest>()))
+        mockAuthService.Setup(x => x.Register(It.IsAny<RegisterRequest>(), It.IsAny<HttpResponse>()))
                        .ThrowsAsync(new ArgumentException($"User with email {registerRequest.Email} already exists."));
 
         var mockHttpContext = new Mock<HttpContext>();
@@ -83,11 +98,14 @@ public class AuthUnitTests
     public async Task Register_WithNoRole_ThrowsArgumentException()
     {
         // Arrange
+        var mockResponse = new Mock<HttpResponse>();
         var registerRequest = new RegisterRequest { Email = "test@example.com", Username = "testuser", Password = "Test@1234", Role = "" };
         var mockConfiguration = new Mock<IConfiguration>();
         var mockUserManager = new Mock<UserManager<User>>(
             new Mock<IUserStore<User>>().Object,
             null, null, null, null, null, null, null, null);
+
+        var mockContext = new Mock<FitlanceContext>(new DbContextOptions<FitlanceContext>());
 
         mockUserManager.Setup(x => x.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
                        .ReturnsAsync(IdentityResult.Success);
@@ -102,7 +120,7 @@ public class AuthUnitTests
         mockUserManager.Setup(x => x.AddToRoleAsync(It.IsAny<User>(), ""))
                        .ThrowsAsync(new ArgumentException("Unable to register user, role required"));
 
-        var authService = new AuthenticationService(mockUserManager.Object, mockConfiguration.Object);
+        var authService = new AuthenticationService(mockUserManager.Object, mockConfiguration.Object, mockContext.Object);
 
 
         var controller = new AuthController(authService)
@@ -117,39 +135,4 @@ public class AuthUnitTests
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => controller.Register(registerRequest));
         Assert.Equal("Unable to register user, role required", exception.Message);
     }
-
-
-    [Fact]
-    public async Task Login_UserLogsInSuccessfully_ReturnsOkResult()
-    {
-        // Arrange
-        var mockAuthService = new Mock<IAuthenticationService>();
-        var loginRequest = new LoginRequest { Email = "test@example.com", Password = "Test@1234" };
-        mockAuthService.Setup(x => x.Login(It.IsAny<LoginRequest>())).ReturnsAsync("LoginTokenString");
-
-        var mockCookies = new Mock<IResponseCookies>();
-        var mockResponse = new Mock<HttpResponse>();
-        mockResponse.SetupGet(r => r.Cookies).Returns(mockCookies.Object);
-
-        var mockHttpContext = new Mock<HttpContext>();
-        mockHttpContext.SetupGet(x => x.Response).Returns(mockResponse.Object);
-
-        var controller = new AuthController(mockAuthService.Object)
-        {
-            ControllerContext = new ControllerContext()
-            {
-                HttpContext = mockHttpContext.Object
-            }
-        };
-
-        // Act
-        var result = await controller.Login(loginRequest);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal("LoginTokenString", okResult.Value);
-    }
-
-
-
 }

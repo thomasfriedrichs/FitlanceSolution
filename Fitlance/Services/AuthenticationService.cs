@@ -1,27 +1,27 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 using System.Security.Claims;
 using System.Text;
 
 using Fitlance.Dtos;
+using Fitlance.Data;
 using Fitlance.Entities;
 using Fitlance.Constants;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Fitlance.Services;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService(UserManager<User> userManager, IConfiguration configuration, FitlanceContext context) : IAuthenticationService
 {
-    private readonly UserManager<User> _userManager;
-    private readonly IConfiguration _configuration;
+    private readonly UserManager<User> _userManager = userManager;
+    private readonly IConfiguration _configuration = configuration;
+    private readonly FitlanceContext _context = context;
 
-    public AuthenticationService(UserManager<User> userManager, IConfiguration configuration)
-    {
-        _userManager = userManager;
-        _configuration = configuration;
-    }
-
-    public async Task<string> Register(RegisterRequest request)
+    public async Task<string> Register(RegisterRequest request, HttpResponse response)
     {
         bool userExists = await CheckIfUserExists(request, _userManager);
         
@@ -46,11 +46,11 @@ public class AuthenticationService : IAuthenticationService
         
         await AddToRole(request.Role, user, _userManager);
 
-        return await Login(new LoginRequest { Email = request.Email, Password = request.Password });
+        return await Login(new LoginRequest { Email = request.Email, Password = request.Password }, response );
 
     }
 
-    public async Task<string> Login(LoginRequest request)
+    public async Task<string> Login(LoginRequest request, HttpResponse response)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
 
@@ -71,30 +71,56 @@ public class AuthenticationService : IAuthenticationService
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
-        var userRoles = await _userManager.GetRolesAsync(user);
+        var userRole = await _userManager.GetRolesAsync(user);
 
-        if (userRoles is not null && userRoles.Any())
+        if (userRole is not null && userRole.Any())
         {
-            authClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
+            authClaims.AddRange(userRole.Select(role => new Claim(ClaimTypes.Role, role)));
         }
 
         authClaims.Add(new Claim(ClaimTypes.Sid, user.Id));
 
         authClaims.Add(new Claim("cStamp", user.ConcurrencyStamp));
 
-        var token = GetToken(authClaims);
+        var accessToken = GetToken(authClaims);
+        SetAccessTokenAsCookie(accessToken, response);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        var refreshToken = await GenerateRefreshToken(user.Id);
+        SetRefreshTokenAsCookie(refreshToken, response);
+
+        return JsonConvert.SerializeObject(new { user.Id, userRole });
+
     }
 
-    private async Task<bool> CheckIfUserExists(RegisterRequest request, UserManager<User> userManager)
+    public async Task<ActionResult> Logout(string userId, HttpResponse response)
+    {
+        var refreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.UserId == userId && !rt.IsRevoked);
+        if (refreshToken != null)
+        {
+            refreshToken.IsRevoked = true;
+            _context.Update(refreshToken);
+            await _context.SaveChangesAsync();
+        }
+
+        ClearTokenCookies(response);
+
+        return new OkResult();
+    }
+
+    private static void ClearTokenCookies(HttpResponse response)
+    {
+        response.Cookies.Delete("AccessToken");
+        response.Cookies.Delete("RefreshToken");
+    }
+
+
+    private static async Task<bool> CheckIfUserExists(RegisterRequest request, UserManager<User> userManager)
     {
         var user = await userManager.FindByEmailAsync(request.Email)
               ?? await userManager.FindByNameAsync(request.Username);
 
         return user != null;
     }
-
 
     private static async Task<IdentityResult> AddToRole(string role, User user, UserManager<User> userManager)
     {
@@ -115,6 +141,133 @@ public class AuthenticationService : IAuthenticationService
             throw new ArgumentException($"Unable to register user, role required");
         }
     }
+
+    public async Task<string> RefreshToken(HttpRequest request, HttpResponse response)
+    {
+        var refreshToken = request.Cookies["RefreshToken"];
+
+        var user = await ValidateRefreshToken(refreshToken) ?? throw new SecurityTokenException("Invalid refresh token");
+
+        var authClaims = new List<Claim>
+    {
+        new(ClaimTypes.Name, user.UserName),
+        new(ClaimTypes.Email, user.Email),
+        new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+    };
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+        foreach (var userRole in userRoles)
+        {
+            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+        }
+
+        var accessToken = GetToken(authClaims);
+        var newRefreshToken = await GenerateRefreshToken(user.Id);
+        SetRefreshTokenAsCookie(newRefreshToken, response);
+        await InvalidateRefreshToken(refreshToken);
+
+        return new JwtSecurityTokenHandler().WriteToken(accessToken); 
+    }
+
+    private async Task InvalidateRefreshToken(string refreshToken)
+    {
+        var refreshTokenEntity = await _context.RefreshTokens
+                                               .FirstOrDefaultAsync(rt => rt.Token == refreshToken);
+        if (refreshTokenEntity != null)
+        {
+            refreshTokenEntity.IsRevoked = true;
+            _context.Update(refreshTokenEntity);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+
+    public async Task<User> ValidateRefreshToken(string refreshToken)
+    {
+        var refreshTokenEntity = await _context.RefreshTokens
+                                           .Include(rt => rt.User)
+                                           .SingleOrDefaultAsync(rt => rt.Token == GenerateSaltedHash(refreshToken, rt.Salt));
+
+        if (refreshTokenEntity == null || refreshTokenEntity.IsRevoked)
+        {
+            return null;
+        }
+
+        if (refreshTokenEntity.ExpiryTime < DateTime.UtcNow)
+        {
+            _context.RefreshTokens.Remove(refreshTokenEntity);
+            await _context.SaveChangesAsync();
+            return null;
+        }
+
+        return refreshTokenEntity.User;
+    }
+
+
+    public async Task<RefreshToken> GenerateRefreshToken(string userId)
+    {
+        var tokenString = GenerateRefreshTokenString();
+        var salt = Guid.NewGuid().ToString();
+        var hashedToken = GenerateSaltedHash(tokenString, salt);
+
+        var refreshToken = new RefreshToken
+        {
+            UserId = userId,
+            Token = hashedToken, 
+            Salt = salt, 
+            ExpiryTime = DateTime.UtcNow.AddDays(7),
+            IsRevoked = false
+        };
+
+        _context.RefreshTokens.Add(refreshToken);
+        await _context.SaveChangesAsync();
+
+        return new RefreshToken
+        {
+            Token = tokenString,
+            ExpiryTime = refreshToken.ExpiryTime,
+        };
+    }
+
+    public static string GenerateSaltedHash(string data, string salt)
+    {
+        var saltedData = $"{salt}{data}";
+        byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(saltedData));
+        return Convert.ToBase64String(bytes);
+    }
+
+    private static string GenerateRefreshTokenString()
+    {
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
+    }
+
+    private static void SetAccessTokenAsCookie(JwtSecurityToken token, HttpResponse response)
+    {
+        var encodedToken = new JwtSecurityTokenHandler().WriteToken(token);
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = token.ValidTo,
+            Secure = true 
+        };
+        response.Cookies.Append("AccessToken", encodedToken, cookieOptions);
+    }
+
+
+    private static void SetRefreshTokenAsCookie(RefreshToken refreshToken, HttpResponse response)
+    {
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = refreshToken.ExpiryTime,
+            Secure = true
+        };
+        response.Cookies.Append("RefreshToken", refreshToken.Token, cookieOptions);
+    }
+
 
     private JwtSecurityToken GetToken(IEnumerable<Claim> authClaims)
     {

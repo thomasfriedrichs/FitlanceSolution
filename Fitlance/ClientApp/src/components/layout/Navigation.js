@@ -1,18 +1,25 @@
 ﻿import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { HamburgerButton, StretchingOne } from "@icon-park/react";
-import { useCookieWatcher } from "@fcannizzaro/react-use-cookie-watcher";
 import Cookies from "js-cookie";
+import { useCookieWatcher } from "@fcannizzaro/react-use-cookie-watcher";
 
 import AuthWrapper from "../authentication/AuthWrapper";
 import { logout } from "../../services/AuthService";
 
 const Navigation = () => {
-    const cookieExists = useCookieWatcher("X-Access-Token", {
-        checkEvery: 500
+    const role = Cookies.get("Role");
+    const id = Cookies.get("Id");
+    const cookieExists = useCookieWatcher("Id", {
+        checkEvery: 100
     });
 
-    const roleValue = Cookies.get("Role");
+    const handleLogout = () => {
+        logout(id);
+        Cookies.remove("Id");
+        Cookies.remove("Role");
+    };
+
     const [isNavOpen, setIsNavOpen] = useState(false);
     const [isFormVisible, setIsFormVisible] = useState(false);
 
@@ -85,7 +92,7 @@ const Navigation = () => {
                                         :
                                         <></>
                                     }
-                                    {roleValue === "User" ?
+                                    {cookieExists && role === "User" && (
                                         <li className="border-b border-gray-400 my-8">
                                             <NavLink
                                                 to="/findtrainers"
@@ -94,9 +101,7 @@ const Navigation = () => {
                                                 Find Trainers
                                             </NavLink>
                                         </li>
-                                        :
-                                        <></>
-                                    }
+                                    )}
                                     <li className="border-b border-gray-400 my-8 uppercase">
                                         <button
                                             type="button"
@@ -130,7 +135,7 @@ const Navigation = () => {
                                 :
                                 <></>
                             }
-                            {roleValue === "User" ?
+                            {cookieExists && role === "User" && (
                                 <div className="font-semibold text-gray-500 text-lg duration-150 px-2 border-r-2">
                                     <NavLink
                                         to="/findtrainers"
@@ -139,15 +144,13 @@ const Navigation = () => {
                                         Find Trainers
                                     </NavLink>
                                 </div>
-                                :
-                                <></>
-                            }
+                             )}
                         </div>
                     </div>
                     <div className="hidden md:flex items-center space-x-3">
                         <button
                             type="button"
-                            onClick={cookieExists ? logout : onLoginVisible}
+                            onClick={cookieExists ? handleLogout : onLoginVisible}
                             className="py-2 px-2 mx-4 font-medium text-gray-500 rounded hover:bg-green hover:text-white transition duration-150"
                         >
                             {cookieExists ? "Log out" : "Log in"}

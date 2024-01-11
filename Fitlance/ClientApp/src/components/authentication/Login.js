@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import { Formik } from "formik";
+import Cookies from "js-cookie";
 
 import { LogInSchema } from "../../validators/Validate";
 import { login } from "../../services/AuthService";
@@ -10,16 +11,31 @@ const Login = () => {
         password: ""
     };
 
-    const handleLogin = (values) => {
-        login(values.email, values.password);
+    const handleLogin = async (values) => {
+        try {
+            const response = await login(values.email, values.password);
+            if (response) {
+                Cookies.set("Id", response.Id)
+                Cookies.set("Role", response.userRole[0]) 
+                window.location.href = '/';
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+        }
     };
 
-    const handleGuestUser = () => {
-        login(process.env.REACT_APP_USER_EMAIL, process.env.REACT_APP_USER_PASSWORD)
+    const handleGuestUser = async () => {
+        await handleLogin({
+            email: process.env.REACT_APP_USER_EMAIL,
+            password: process.env.REACT_APP_USER_PASSWORD
+        });
     };
 
-    const handleGuestTrainer = () => {
-        login(process.env.REACT_APP_TRAINER_EMAIL, process.env.REACT_APP_TRAINER_PASSWORD)
+    const handleGuestTrainer = async () => {
+        await handleLogin({
+            email: process.env.REACT_APP_TRAINER_EMAIL,
+            password: process.env.REACT_APP_TRAINER_PASSWORD
+        });
     };
 
     return (
