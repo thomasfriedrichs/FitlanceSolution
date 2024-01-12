@@ -14,7 +14,7 @@ apiClient.interceptors.response.use(
             try {
                 console.log("refresh attempt")
                 // Trigger a refresh token call.
-                await axios.post('/auth/refresh', {}, { withCredentials: true });
+                await apiClient.post('api/Auth/refresh', {});
                 // Retry the original request. 
                 return apiClient(originalRequest);
             } catch (refreshError) {

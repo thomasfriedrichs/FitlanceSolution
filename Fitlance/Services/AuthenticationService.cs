@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Security.Claims;
@@ -10,16 +12,15 @@ using Fitlance.Dtos;
 using Fitlance.Data;
 using Fitlance.Entities;
 using Fitlance.Constants;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Fitlance.Services;
 
-public class AuthenticationService(UserManager<User> userManager, IConfiguration configuration, FitlanceContext context) : IAuthenticationService
+public class AuthenticationService(UserManager<User> userManager, IConfiguration configuration, FitlanceContext context, ILogger logger) : IAuthenticationService
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly IConfiguration _configuration = configuration;
     private readonly FitlanceContext _context = context;
+    private readonly ILogger _logger = logger;
 
     public async Task<string> Register(RegisterRequest request, HttpResponse response)
     {
@@ -61,7 +62,7 @@ public class AuthenticationService(UserManager<User> userManager, IConfiguration
 
         if (!await _userManager.CheckPasswordAsync(user, request.Password))
         {
-            throw new ArgumentException($"Unable to authenticate user {request.Email}");
+            throw new ArgumentException("Invalid login attempt.");
         }
 
         var authClaims = new List<Claim>
@@ -107,6 +108,43 @@ public class AuthenticationService(UserManager<User> userManager, IConfiguration
         return new OkResult();
     }
 
+    public async Task<(bool IsSuccess, string Message)> RefreshToken(HttpRequest request, HttpResponse response)
+    {
+        var refreshTokenId = request.Cookies["RefreshTokenId"];
+        var refreshToken = request.Cookies["RefreshToken"];
+
+        try
+        {
+            var user = await ValidateRefreshToken(refreshTokenId,refreshToken) ?? throw new SecurityTokenException("Invalid refresh token");
+
+            var authClaims = new List<Claim>
+            {
+                new(ClaimTypes.Name, user.UserName),
+                new(ClaimTypes.Email, user.Email),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var accessToken = GetToken(authClaims);
+            SetAccessTokenAsCookie(accessToken, response);
+            var newRefreshToken = await GenerateRefreshToken(user.Id);
+            SetRefreshTokenAsCookie(newRefreshToken, response);
+            await InvalidateRefreshToken(refreshToken);
+
+            return (true, "Token refreshed successfully");
+        }
+        catch (SecurityTokenException ex)
+        {
+            return (false, ex.Message);
+        }
+    }
+
+
     private static void ClearTokenCookies(HttpResponse response)
     {
         response.Cookies.Delete("AccessToken");
@@ -140,34 +178,7 @@ public class AuthenticationService(UserManager<User> userManager, IConfiguration
         {
             throw new ArgumentException($"Unable to register user, role required");
         }
-    }
-
-    public async Task<string> RefreshToken(HttpRequest request, HttpResponse response)
-    {
-        var refreshToken = request.Cookies["RefreshToken"];
-
-        var user = await ValidateRefreshToken(refreshToken) ?? throw new SecurityTokenException("Invalid refresh token");
-
-        var authClaims = new List<Claim>
-    {
-        new(ClaimTypes.Name, user.UserName),
-        new(ClaimTypes.Email, user.Email),
-        new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-    };
-
-        var userRoles = await _userManager.GetRolesAsync(user);
-        foreach (var userRole in userRoles)
-        {
-            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-        }
-
-        var accessToken = GetToken(authClaims);
-        var newRefreshToken = await GenerateRefreshToken(user.Id);
-        SetRefreshTokenAsCookie(newRefreshToken, response);
-        await InvalidateRefreshToken(refreshToken);
-
-        return new JwtSecurityTokenHandler().WriteToken(accessToken); 
-    }
+    }   
 
     private async Task InvalidateRefreshToken(string refreshToken)
     {
@@ -182,21 +193,26 @@ public class AuthenticationService(UserManager<User> userManager, IConfiguration
     }
 
 
-    public async Task<User> ValidateRefreshToken(string refreshToken)
+    public async Task<User> ValidateRefreshToken(string refreshTokenId, string refreshTokenValue)
     {
-        var refreshTokenEntity = await _context.RefreshTokens
-                                           .Include(rt => rt.User)
-                                           .SingleOrDefaultAsync(rt => rt.Token == GenerateSaltedHash(refreshToken, rt.Salt));
+        if (!Guid.TryParse(refreshTokenId, out Guid guid))
+        {
+            _logger.LogWarning("Invalid GUID format for refresh token id.");
+            return null;
+        }
 
-        if (refreshTokenEntity == null || refreshTokenEntity.IsRevoked)
+        var refreshTokenEntity = await _context.RefreshTokens
+                                               .Include(rt => rt.User)
+                                               .SingleOrDefaultAsync(rt => rt.Id == guid);
+
+        if (refreshTokenEntity == null || refreshTokenEntity.IsRevoked || refreshTokenEntity.ExpiryTime < DateTime.UtcNow)
         {
             return null;
         }
 
-        if (refreshTokenEntity.ExpiryTime < DateTime.UtcNow)
+        var hashedToken = GenerateSaltedHash(refreshTokenValue, refreshTokenEntity.Salt);
+        if (hashedToken != refreshTokenEntity.Token)
         {
-            _context.RefreshTokens.Remove(refreshTokenEntity);
-            await _context.SaveChangesAsync();
             return null;
         }
 
@@ -212,9 +228,10 @@ public class AuthenticationService(UserManager<User> userManager, IConfiguration
 
         var refreshToken = new RefreshToken
         {
+            Id = Guid.NewGuid(),  
             UserId = userId,
             Token = hashedToken, 
-            Salt = salt, 
+            Salt = salt,  
             ExpiryTime = DateTime.UtcNow.AddDays(7),
             IsRevoked = false
         };
@@ -224,6 +241,7 @@ public class AuthenticationService(UserManager<User> userManager, IConfiguration
 
         return new RefreshToken
         {
+            Id = refreshToken.Id,
             Token = tokenString,
             ExpiryTime = refreshToken.ExpiryTime,
         };
@@ -265,6 +283,7 @@ public class AuthenticationService(UserManager<User> userManager, IConfiguration
             Expires = refreshToken.ExpiryTime,
             Secure = true
         };
+        response.Cookies.Append("RefreshTokenId", refreshToken.Id.ToString(), cookieOptions);
         response.Cookies.Append("RefreshToken", refreshToken.Token, cookieOptions);
     }
 

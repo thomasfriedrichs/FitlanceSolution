@@ -10,4 +10,7 @@ public interface IAuthenticationService
     Task<string> Login(LoginRequest request, HttpResponse response);
 
     Task<ActionResult> Logout(string userId, HttpResponse response);
+
+    Task<(bool IsSuccess, string Message)> RefreshToken(HttpRequest httpsRequest, HttpResponse response);
+
 }

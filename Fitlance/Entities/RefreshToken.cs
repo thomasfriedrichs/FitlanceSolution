@@ -6,17 +6,19 @@ namespace Fitlance.Entities;
 public class RefreshToken
 {
     [Key]
-    public string Token { get; set; } // The actual refresh token
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-    public DateTime ExpiryTime { get; set; } // When the token expires
+    public string Token { get; set; } 
 
-    public bool IsRevoked { get; set; } // Whether the token has been revoked
+    public DateTime ExpiryTime { get; set; }
 
-    public string Salt { get; set; } // Store the salt used for hashing the token
+    public bool IsRevoked { get; set; }
+
+    public string Salt { get; set; } 
 
     [ForeignKey("User")]
-    public string UserId { get; set; } // Foreign key to the User table
+    public string UserId { get; set; }
 
-    public virtual User User { get; set; } // Navigation property to the User entity
+    public virtual User User { get; set; } 
 }
  

@@ -70,7 +70,7 @@ builder.Services.AddAuthentication(options =>
         OnAuthenticationFailed = context =>
         {
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
-            logger.LogError("Authentication failed: {Error}", context.Exception.Message); // Log only the exception message
+            logger.LogError("Authentication failed: {Error}", context.Exception.Message); 
             return Task.CompletedTask;
         },
         OnChallenge = context =>
@@ -79,12 +79,18 @@ builder.Services.AddAuthentication(options =>
             if (!context.Response.HasStarted)
             {
                 logger.LogWarning("JWT Challenge invoked");
-                // Optionally, remove the custom response and let the framework set the default 401 status
             }
             return Task.CompletedTask;
         },
         OnMessageReceived = context =>
         {
+            var refreshToken = context.Request.Cookies["RefreshToken"];
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
+            if (!string.IsNullOrEmpty(refreshToken))
+            {
+                //logger.LogInformation("Refresh token found in cookie.");
+                logger.LogInformation("Token: {Token}", refreshToken);
+            }
             var token = context.Request.Cookies["AccessToken"];
             if (!string.IsNullOrEmpty(token))
             {
@@ -94,7 +100,6 @@ builder.Services.AddAuthentication(options =>
         },
         OnTokenValidated = context =>
         {
-            // You may choose to reduce logging here or remove it entirely
             return Task.CompletedTask;
         }
     };

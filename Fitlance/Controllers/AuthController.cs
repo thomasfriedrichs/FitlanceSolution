@@ -19,10 +19,17 @@ public class AuthController(IAuthenticationService authenticationService) : Cont
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var httpResponse = HttpContext.Response;
-        var response = await _authenticationService.Login(request, httpResponse);
+        try
+        {
+            var httpResponse = HttpContext.Response;
+            var response = await _authenticationService.Login(request, httpResponse);
 
-        return Ok(response);
+            return Ok(response);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [AllowAnonymous]
@@ -42,11 +49,32 @@ public class AuthController(IAuthenticationService authenticationService) : Cont
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Logout(string request)
+    public async Task<IActionResult> Logout(string userId)
     {
         var httpResponse = HttpContext.Response;
-        await _authenticationService.Logout(request, httpResponse);
+        await _authenticationService.Logout(userId, httpResponse);
 
-        return Ok();
+        return Ok(new { message = "Logged out successfully" });
+    }
+
+    [HttpPost("refresh")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RefreshToken()
+    {
+        var httpResponse = HttpContext.Response;
+        var httpRequest = HttpContext.Request;
+
+        var (IsSuccess, Message) = await _authenticationService.RefreshToken(httpRequest, httpResponse);
+
+        if (IsSuccess)
+        {
+            return Ok(new { message = Message });
+        }
+        else
+        {
+            return Unauthorized(new { message = Message });
+        }
     }
 }
