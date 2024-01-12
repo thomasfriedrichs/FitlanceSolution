@@ -255,4 +255,63 @@ public class AuthUnitTests
         Assert.True(valueDict.ContainsKey("message"));
         Assert.Equal("Invalid user.", valueDict["message"].ToString());
     }
+
+    [Fact]
+    public async Task RefreshToken_Success_ReturnsOkObjectResult()
+    {
+        // Arrange
+        _authServiceMock.Setup(x => x.RefreshToken(It.IsAny<HttpRequest>(), It.IsAny<HttpResponse>()))
+                        .ReturnsAsync((true, "Token refreshed successfully"));
+
+        var mockHttpContext = new Mock<HttpContext>();
+        mockHttpContext.SetupGet(x => x.Request).Returns(new Mock<HttpRequest>().Object);
+        mockHttpContext.SetupGet(x => x.Response).Returns(new Mock<HttpResponse>().Object);
+
+        _authController.ControllerContext = new ControllerContext
+        {
+            HttpContext = mockHttpContext.Object
+        };
+
+        // Act
+        var result = await _authController.RefreshToken();
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var valueDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(
+            JsonConvert.SerializeObject(okResult.Value));
+
+        Assert.NotNull(valueDict);
+        Assert.True(valueDict.ContainsKey("message"));
+        Assert.Equal("Token refreshed successfully", valueDict["message"].ToString());
+    }
+
+    [Fact]
+    public async Task RefreshToken_Failure_ReturnsUnauthorizedResult()
+    {
+        // Arrange
+        _authServiceMock.Setup(x => x.RefreshToken(It.IsAny<HttpRequest>(), It.IsAny<HttpResponse>()))
+                        .ReturnsAsync((false, "Invalid token"));
+
+        var mockHttpContext = new Mock<HttpContext>();
+        mockHttpContext.SetupGet(x => x.Request).Returns(new Mock<HttpRequest>().Object);
+        mockHttpContext.SetupGet(x => x.Response).Returns(new Mock<HttpResponse>().Object);
+
+        _authController.ControllerContext = new ControllerContext
+        {
+            HttpContext = mockHttpContext.Object
+        };
+
+        // Act
+        var result = await _authController.RefreshToken();
+
+        // Assert
+        var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
+        var valueDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(
+            JsonConvert.SerializeObject(unauthorizedResult.Value));
+
+        Assert.NotNull(valueDict);
+        Assert.True(valueDict.ContainsKey("message"));
+        Assert.Equal("Invalid token", valueDict["message"].ToString());
+    }
+
 }
