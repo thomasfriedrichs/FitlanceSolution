@@ -51,10 +51,17 @@ public class AuthController(IAuthenticationService authenticationService) : Cont
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Logout(string userId)
     {
-        var httpResponse = HttpContext.Response;
-        await _authenticationService.Logout(userId, httpResponse);
+        try
+        {
+            var httpResponse = HttpContext.Response;
+            await _authenticationService.Logout(userId, httpResponse);
 
-        return Ok(new { message = "Logged out successfully" });
+            return Ok(new { message = "Logged out successfully" });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPost("refresh")]

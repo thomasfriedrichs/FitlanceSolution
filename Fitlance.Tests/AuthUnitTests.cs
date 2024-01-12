@@ -12,6 +12,9 @@ using Fitlance.Dtos;
 using Fitlance.Entities;
 using Fitlance.Data;
 using Newtonsoft.Json;
+using Xunit.Abstractions;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Fitlance.Tests;
 
@@ -20,20 +23,14 @@ public class AuthUnitTests
     private readonly Mock<IAuthenticationService> _authServiceMock;
     private readonly AuthController _authController;
     private readonly FitlanceContext _inMemoryContext;
-    private readonly ILogger<AuthUnitTests> _logger;
+    private readonly ITestOutputHelper _output;
 
-    public AuthUnitTests()
+    public AuthUnitTests(ITestOutputHelper output)
     {
         _authServiceMock = new Mock<IAuthenticationService>();
         _authController = new AuthController(_authServiceMock.Object);
         _inMemoryContext = CreateInMemoryContext();
-        var loggerFactory = LoggerFactory.Create(builder =>
-        {
-            builder.AddConsole();
-            builder.AddDebug();
-        });
-
-        _logger = loggerFactory.CreateLogger<AuthUnitTests>();    
+        _output = output;
     }
 
     private static FitlanceContext CreateInMemoryContext()
@@ -175,7 +172,7 @@ public class AuthUnitTests
     [Fact]
     public async Task Login_WithInvalidCredentials_ReturnsArgumentException()
     {
-        // Arrange similar to the above but with invalid credentials
+        // Arrange
         var loginRequest = new LoginRequest { Email = "testInvalid", Password = "testInvalid" };
         _authServiceMock.Setup(x => x.Login(loginRequest, It.IsAny<HttpResponse>()))
                         .ThrowsAsync(new ArgumentException("Invalid login attempt."));
@@ -188,18 +185,20 @@ public class AuthUnitTests
         {
             HttpContext = mockHttpContext.Object
         };
-        // Act & Assert
+        // Act
 
         var result = await _authController.Login(loginRequest);
 
-        // Expect an ArgumentException to be thrown
+        // Assert
 
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        dynamic value = badRequestResult.Value;
-        _logger.LogInformation($"BadRequest value: {JsonConvert.SerializeObject(value)}");
+        var valueDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(badRequestResult.Value));
 
-        Assert.NotNull(value);
-        Assert.Equal("Invalid login attempt.", value.message);
+        Assert.NotNull(valueDict);
+        Assert.True(valueDict.ContainsKey("message"));
+        Assert.Equal("Invalid login attempt.", valueDict["message"].ToString());
+
+
     }
 
     [Fact]
@@ -223,7 +222,8 @@ public class AuthUnitTests
         var result = await _authController.Logout(userId);
 
         // Assert
-
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.NotNull(okResult);
     }
 
     [Fact]
@@ -243,10 +243,16 @@ public class AuthUnitTests
             HttpContext = mockHttpContext.Object
         };
 
-        // Act & Assert
+        // Act
         var result = await _authController.Logout(invalidUserId);
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Invalid user.", (badRequestResult.Value as dynamic)?.message);
-    }
 
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        var valueDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(
+            JsonConvert.SerializeObject(badRequestResult.Value));
+
+        Assert.NotNull(valueDict);
+        Assert.True(valueDict.ContainsKey("message"));
+        Assert.Equal("Invalid user.", valueDict["message"].ToString());
+    }
 }
