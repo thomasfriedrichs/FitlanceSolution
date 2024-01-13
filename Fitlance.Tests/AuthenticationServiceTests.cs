@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Moq;
-using Xunit.Abstractions;
 
 using Fitlance.Data;
 using Fitlance.Dtos;
@@ -16,7 +15,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Linq;
 
 namespace Fitlance.Tests;
 
@@ -27,12 +25,10 @@ public class AuthenticationServiceTests
     private readonly Mock<ILogger<AuthenticationService>> _loggerMock;
     private readonly AuthenticationService _authenticationService;
     private readonly FitlanceContext _context;
-    private readonly ITestOutputHelper _output;
-    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly RoleManager<IdentityRole>? _roleManager;
 
-    public AuthenticationServiceTests(ITestOutputHelper output)
+    public AuthenticationServiceTests()
     { 
-        _output = output;
 
         var options = new DbContextOptionsBuilder<FitlanceContext>()
             .UseInMemoryDatabase(databaseName: "TestDb")
@@ -90,9 +86,9 @@ public class AuthenticationServiceTests
         // Arrange
         var registerRequest = new RegisterRequest
         {
-            Username = "JohnAdams",
-            Email = "JohnAdams@gmail.com",
-            Password = "Password123!",
+            Username = "JohnAdams12",
+            Email = "JohnAdams12@gmail.com",
+            Password = "Password12345!",
             Role = "User" 
         };
 
@@ -148,7 +144,7 @@ public class AuthenticationServiceTests
     [Fact]
     public async Task Login_WithValidCredentials_SetsCookies()
     {
-        // Arrange: Create a user
+        // Arrange
         var user = new User { Email = "test@example.com", UserName = "testUser" };
         await _userManager.CreateAsync(user, "Test@1234");
 
@@ -195,7 +191,7 @@ public class AuthenticationServiceTests
     [Fact]
     public async Task Login_WithIncorrectPassword_ThrowsArgumentException()
     {
-        // Arrange: Create a user
+        // Arrange
         var user = new User { Email = "test@example.com", UserName = "testUser" };
         await _userManager.CreateAsync(user, "Test@1234");
 
@@ -214,17 +210,17 @@ public class AuthenticationServiceTests
     public async Task Logout_UserLogsOutSuccessfully_ClearsCookies()
     {
         // Arrange
-        var user = new User { Email = "test@example.com", UserName = "testUser" };
-        await _userManager.CreateAsync(user, "Test@1234");
+        var user = new User { Email = "test12@example.com", UserName = "213testUser" };
+        await _userManager.CreateAsync(user, "Test@1234123");
 
         var context = new DefaultHttpContext();
-        await _authenticationService.Login(new LoginRequest { Email = "test@example.com", Password = "Test@1234" }, context.Response);
+        await _authenticationService.Login(new LoginRequest { Email = "test12@example.com", Password = "Test@1234123" }, context.Response);
 
         // Act
         await _authenticationService.Logout(user.Id, context.Response);
 
         // Assert
-        var cookies = context.Response.Headers["Set-Cookie"].ToArray();
+        var cookies = context.Response.Headers.SetCookie.ToArray();
         Assert.NotEmpty(cookies);
 
         var accessTokenCleared = cookies.Any(cookie => cookie.StartsWith("AccessToken=") && cookie.Contains("expires="));
@@ -254,51 +250,51 @@ public class AuthenticationServiceTests
         var user = new User { Email = "test@example.com", UserName = "testUser" };
         await _userManager.CreateAsync(user, "Test@1234");
         var refreshTokenValue = Guid.NewGuid().ToString();
-        var outdatedAccessToken = GenerateOutdatedAccessToken(user);
+        var outdatedAccessToken = GenerateExpiredAccessToken(user);
         var validRefreshToken = await GenerateValidRefreshToken( user.Id, refreshTokenValue);
         var refreshTokenId = validRefreshToken.Id.ToString();
-
-        var refreshTokenEntries = _context.RefreshTokens.ToList();
-
-        _output.WriteLine($"RefreshToken Entries: {refreshTokenEntries}");
-        foreach (var tokenEntry in refreshTokenEntries)
-        {
-            _output.WriteLine($"RefreshToken Entry: Id={tokenEntry.Id}, UserId={tokenEntry.UserId}, Token={tokenEntry.Token}, Expiry={tokenEntry.ExpiryTime}, IsRevoked={tokenEntry.IsRevoked}");
-        }
-
-
         var context = new DefaultHttpContext();
         await AppendTokensToResponse(context.Response, outdatedAccessToken, refreshTokenValue, refreshTokenId);
-
         var responseCookies = ExtractCookiesFromResponse(context.Response);
         var formattedCookieHeader = FormatCookieHeader(responseCookies);
-
-        // Create a new request context with the formatted cookie header
         var newRequestContext = new DefaultHttpContext();
         newRequestContext.Request.Headers["Cookie"] = formattedCookieHeader;
 
-        _output.WriteLine("Formatted Cookie Header set in new request context:");
-        _output.WriteLine($"Cookie Header: {newRequestContext.Request.Headers["Cookie"]}");
-
-        // Extract cookies from the request for logging
-        var requestRefreshTokenId = newRequestContext.Request.Cookies["RefreshTokenId"];
-        var requestRefreshToken = newRequestContext.Request.Cookies["RefreshToken"];
-        _output.WriteLine($"Extracted RefreshTokenId from request: {requestRefreshTokenId}");
-        _output.WriteLine($"Extracted RefreshToken from request: {requestRefreshToken}");
-
-
-        _output.WriteLine($"HTTPRequest: {newRequestContext.Request.Cookies["RefreshTokenId"]}");
         // Act
         var (IsSuccess, Message) = await _authenticationService.RefreshToken(newRequestContext.Request, new DefaultHttpContext().Response);
 
         // Assert
         Assert.Equal("Token refreshed successfully", Message);
         Assert.True(IsSuccess, "Expected IsSuccess to be true.");
-
-        _output.WriteLine("Completed Refresh Token test.");
     }
 
-    private static string GenerateOutdatedAccessToken(User user)
+    [Fact]
+    public async Task RefreshToken_WithExpiredRefreshToken_ReturnsFailure()
+    {
+        // Arrange
+        var user = new User { Email = "expired@example.com", UserName = "expiredUser" };
+        await _userManager.CreateAsync(user, "Expired@1234");
+        var refreshTokenValue = Guid.NewGuid().ToString();
+        var expiredAccessToken = GenerateExpiredAccessToken(user);
+        var expiredRefreshToken = await GenerateExpiredRefreshToken(user.Id, refreshTokenValue);
+        var refreshTokenId = expiredRefreshToken.Id.ToString();
+        var context = new DefaultHttpContext();
+        await AppendTokensToResponse(context.Response, expiredAccessToken, refreshTokenValue, refreshTokenId);
+        var responseCookies = ExtractCookiesFromResponse(context.Response);
+        var formattedCookieHeader = FormatCookieHeader(responseCookies);
+        var newRequestContext = new DefaultHttpContext();
+        newRequestContext.Request.Headers.Cookie = formattedCookieHeader;
+
+        // Act
+        var (IsSuccess, Message) = await _authenticationService.RefreshToken(newRequestContext.Request, new DefaultHttpContext().Response);
+
+        // Assert
+        Assert.False(IsSuccess, "Expected IsSuccess to be false for an expired refresh token.");
+        Assert.Equal("Invalid refresh token", Message); 
+    }
+
+
+    private static string GenerateExpiredAccessToken(User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("oqJDaGQkCOdqTFQ-rB87UmpFB6mxbQa39MI8QfZmLpg\r\n"));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -317,6 +313,27 @@ public class AuthenticationServiceTests
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private async Task<RefreshToken> GenerateExpiredRefreshToken(string userId, string tokenValue)
+    {
+        var salt = "wkjerbgf39478ht3975hbf2";
+        var hashedToken = AuthenticationService.GenerateSaltedHash(tokenValue, salt);
+
+        var expiredRefreshToken = new RefreshToken
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            Token = hashedToken, 
+            ExpiryTime = DateTime.UtcNow.AddDays(-1), // Set expiry time in the past to ensure the token is expired
+            Salt = salt,
+            IsRevoked = false
+        };
+
+        _context.RefreshTokens.Add(expiredRefreshToken);
+        await _context.SaveChangesAsync();
+
+        return expiredRefreshToken;
     }
 
 
@@ -354,16 +371,12 @@ public class AuthenticationServiceTests
     private static string ExtractCookiesFromResponse(HttpResponse response)
     {
         var setCookieHeaders = response.Headers.SetCookie;
-
-        // Join all 'Set-Cookie' headers into a single string
-        // Note: This is a simplified approach; you might need to adjust it based on how cookies are set in your application
         return string.Join("; ", setCookieHeaders);
     }
 
 
-    private string FormatCookieHeader(string setCookieHeader)
+    private static string FormatCookieHeader(string setCookieHeader)
     {
-        // Ensure all relevant cookies are included in the request
         var cookieParts = setCookieHeader.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                                          .Where(part => part.Contains("AccessToken=") ||
                                                         part.Contains("RefreshToken=") ||

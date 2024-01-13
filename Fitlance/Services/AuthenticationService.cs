@@ -113,12 +113,6 @@ public class AuthenticationService(UserManager<User> userManager, IConfiguration
         var refreshTokenId = request.Cookies["RefreshTokenId"];
         var refreshToken = request.Cookies["RefreshToken"];
 
-        Console.WriteLine($"Received RefreshTokenId: {refreshTokenId}");
-        Console.WriteLine($"Received RefreshToken: {refreshToken}");
-        Console.WriteLine($"Received Request: {request}");
-
-
-
         try
         {
             var user = await ValidateRefreshToken(refreshTokenId,refreshToken) ?? throw new SecurityTokenException("Invalid refresh token");
