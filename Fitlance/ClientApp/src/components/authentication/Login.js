@@ -1,6 +1,5 @@
 ﻿import React from "react";
 import { Formik } from "formik";
-import Cookies from "js-cookie";
 
 import { LogInSchema } from "../../validators/Validate";
 import { login } from "../../services/AuthService";
@@ -13,12 +12,7 @@ const Login = () => {
 
     const handleLogin = async (values) => {
         try {
-            const response = await login(values.email, values.password);
-            if (response) {
-                Cookies.set("Id", response.Id)
-                Cookies.set("Role", response.userRole[0]) 
-                window.location.href = '/';
-            }
+            await login(values.email, values.password);
         } catch (error) {
             console.error("Login error:", error);
         }

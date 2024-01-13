@@ -1,9 +1,22 @@
-import * as service from '.././AppointmentService.js';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 
-jest.mock('axios');
+import * as service from '.././AppointmentService.js';
+import apiClient from '../AxiosAPIClient.js';
+
 jest.mock('js-cookie');
+
+jest.mock('.././AxiosAPIClient', () => ({
+    get: jest.fn(),
+    put: jest.fn(),
+    post: jest.fn(),
+    create: jest.fn(() => ({
+        interceptors: {
+            response: {
+                use: jest.fn(),
+            },
+        },
+    })),
+}));
 
 describe('Appointment Service', () => {
     const mockToken = 'test-token';
@@ -12,14 +25,15 @@ describe('Appointment Service', () => {
     const mockError = new Error('test error');
     let consoleSpy;
 
+
     beforeEach(() => {
         Cookies.get.mockImplementation((key) => {
             if (key === 'X-Access-Token') return mockToken;
             if (key === 'Id') return mockId;
         });
-        axios.post.mockResolvedValue(mockData);
-        axios.put.mockResolvedValue(mockData);
-        axios.get.mockResolvedValue(mockData);
+        apiClient.post.mockResolvedValue(mockData);
+        apiClient.put.mockResolvedValue(mockData);
+        apiClient.get.mockResolvedValue(mockData);
         consoleSpy = jest.spyOn(console, 'log').mockImplementation();
     });
 
@@ -44,15 +58,14 @@ describe('Appointment Service', () => {
             id: '123',
         };
         await service.postAppointment(requestObject);
-        expect(axios.post).toHaveBeenCalledWith(
-            `${process.env.REACT_APP_API_BASE_URL}/api/Appointments`,
+        expect(apiClient.post).toHaveBeenCalledWith(
+            '/api/Appointments',
             requestObject,
-            { headers: { authorization: `bearer ${mockToken}` } }
         );
     });
 
     it('should handle errors in postAppointment', async () => {
-        axios.post.mockRejectedValueOnce(mockError);
+        apiClient.post.mockRejectedValueOnce(mockError);
         await service.postAppointment({});
         expect(console.log).toHaveBeenCalledWith(mockError);
     });
@@ -73,10 +86,9 @@ describe('Appointment Service', () => {
             id: '123',
         };
         const response = await service.putAppointment('123', requestObject);
-        expect(axios.put).toHaveBeenCalledWith(
-            `${process.env.REACT_APP_API_BASE_URL}/api/Appointments/123`,
-            requestObject,
-            { headers: { authorization: `bearer ${mockToken}` } }
+        expect(apiClient.put).toHaveBeenCalledWith(
+            '/api/Appointments/123',
+            requestObject
         );
         expect(response).toEqual(mockData);
     });
@@ -96,14 +108,13 @@ describe('Appointment Service', () => {
             id: '123',
         };
 
-        axios.put.mockRejectedValueOnce(mockError);
+        apiClient.put.mockRejectedValueOnce(mockError);
 
         await service.putAppointment('123', requestObject);
 
-        expect(axios.put).toHaveBeenCalledWith(
-            `${process.env.REACT_APP_API_BASE_URL}/api/Appointments/123`,
+        expect(apiClient.put).toHaveBeenCalledWith(
+            '/api/Appointments/123',
             requestObject,
-            { headers: { authorization: `bearer ${mockToken}` } }
         );
         expect(console.log).toHaveBeenCalledWith(mockError); 
     });
@@ -111,15 +122,14 @@ describe('Appointment Service', () => {
     // Test for getUserAppointments
     it('should fetch user appointments correctly', async () => {
         const response = await service.getUserAppointments();
-        expect(axios.get).toHaveBeenCalledWith(
-            `${process.env.REACT_APP_API_BASE_URL}/api/Appointments/GetUserAppointments/${mockId}`,
-            { headers: { authorization: `bearer ${mockToken}` } }
+        expect(apiClient.get).toHaveBeenCalledWith(
+            `/api/Appointments/GetUserAppointments/${mockId}`,
         );
         expect(response).toEqual(mockData.data);
     });
 
     it('should handle errors in getUserAppointments', async () => {
-        axios.get.mockRejectedValueOnce(mockError);
+        apiClient.get.mockRejectedValueOnce(mockError);
         await service.getUserAppointments();
         expect(console.log).toHaveBeenCalledWith(mockError);
     });
@@ -127,15 +137,14 @@ describe('Appointment Service', () => {
     // Test for getTrainerAppointments
     it('should fetch trainer appointments correctly', async () => {
         const response = await service.getTrainerAppointments();
-        expect(axios.get).toHaveBeenCalledWith(
-            `${process.env.REACT_APP_API_BASE_URL}/api/Appointments/GetTrainerAppointments/${mockId}`,
-            { headers: { authorization: `bearer ${mockToken}` } }
+        expect(apiClient.get).toHaveBeenCalledWith(
+            `/api/Appointments/GetTrainerAppointments/${mockId}`,
         );
         expect(response).toEqual(mockData.data);
     });
 
     it('should handle errors in getTrainerAppointments', async () => {
-        axios.get.mockRejectedValueOnce(mockError);
+        apiClient.get.mockRejectedValueOnce(mockError);
         await service.getTrainerAppointments();
         expect(console.log).toHaveBeenCalledWith(mockError);
     });

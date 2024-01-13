@@ -1,31 +1,37 @@
-import * as AuthService from '.././AuthService';
-import axios from 'axios';
 import Cookies from 'js-cookie';
-import jwt_decode from 'jwt-decode';
 
-jest.mock('axios');
+import * as AuthService from '.././AuthService';
+import apiClient from '../AxiosAPIClient';
+
 jest.mock('js-cookie');
-jest.mock('jwt-decode', () => jest.fn());
+
+const mockLoginRegisterResponse = {
+    data: {
+        Id: "mockId",
+        userRole: ["mockRole"]
+    }
+};
+
+jest.mock('.././AxiosAPIClient', () => ({
+    post: jest.fn(),
+    create: jest.fn(() => ({
+        interceptors: {
+            response: {
+                use: jest.fn(),
+            },
+        },
+    })),
+}));
 
 describe('AuthService', () => {
-    const mockToken = 'mock-token';
-    const mockId = 'mock-id';
-    const mockRole = 'mock-role';
-    const decodedToken = {
-        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid': mockId,
-        'http://schemas.microsoft.com/ws/2008/06/identity/claims/role': mockRole
-    };
 
-    beforeAll(() => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        apiClient.post.mockClear();
         Object.defineProperty(window, 'location', {
             writable: true,
             value: { href: jest.fn() }
         });
-    });
-
-    beforeEach(() => {
-        jwt_decode.mockReturnValue(decodedToken);
-        Cookies.get.mockReturnValue(mockToken);
     });
 
     afterEach(() => {
@@ -33,57 +39,69 @@ describe('AuthService', () => {
     });
 
     it('login should set cookies and redirect on successful login', async () => {
-        Cookies.get.mockReturnValue(mockToken);
-        axios.post.mockResolvedValue();
+        apiClient.post.mockResolvedValue(mockLoginRegisterResponse);
 
         await AuthService.login('test@example.com', 'password');
 
-        expect(jwt_decode).toHaveBeenCalledWith(mockToken);
-        expect(Cookies.set).toHaveBeenCalledWith('Id', mockId, { path: '/' });
-        expect(Cookies.set).toHaveBeenCalledWith('Role', mockRole, { path: '/' });
+        expect(Cookies.set).toHaveBeenCalledWith('Id', mockLoginRegisterResponse.data.Id);
+        expect(Cookies.set).toHaveBeenCalledWith('Role', mockLoginRegisterResponse.data.userRole[0]);
         expect(window.location.href).toBe('/');
+        apiClient.post.mockReset();
     });
 
     it('login should handle errors', async () => {
-        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-        axios.post.mockRejectedValue(new Error('Error'));
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+        apiClient.post.mockRejectedValue(new Error('Error'));
 
-        await AuthService.login('test@example.com', 'password');
+        try {
+            await AuthService.login('test@example.com', 'password');
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
 
         expect(consoleErrorSpy).toHaveBeenCalled();
         consoleErrorSpy.mockRestore();
+        apiClient.post.mockReset(); 
     });
 
-    it('logout should remove cookies', () => {
-        AuthService.logout();
 
-        expect(Cookies.remove).toHaveBeenCalledWith('X-Access-Token');
-        expect(Cookies.remove).toHaveBeenCalledWith('Role');
-        expect(Cookies.remove).toHaveBeenCalledWith('Email');
+    it('logout should remove cookies', async () => { 
+        const id = 'mockId';
+
+        await AuthService.logout(id);
+
         expect(Cookies.remove).toHaveBeenCalledWith('Id');
+        expect(Cookies.remove).toHaveBeenCalledWith('Role');
     });
 
     it('register should set cookies and redirect on successful registration', async () => {
-        Cookies.get.mockReturnValue(mockToken);
-        axios.post.mockResolvedValue();
+        apiClient.post.mockResolvedValue(mockLoginRegisterResponse);
 
         await AuthService.register('username', 'test@example.com', 'password', 'role');
 
-        expect(jwt_decode).toHaveBeenCalledWith(mockToken);
-        expect(Cookies.set).toHaveBeenCalledWith('Id', mockId, { path: '/' });
-        expect(Cookies.set).toHaveBeenCalledWith('Role', mockRole, { path: '/' });
+        expect(Cookies.set).toHaveBeenCalledWith('Id', mockLoginRegisterResponse.data.Id);
+        expect(Cookies.set).toHaveBeenCalledWith('Role', mockLoginRegisterResponse.data.userRole[0]);
         expect(window.location.href).toBe('/');
+        apiClient.post.mockReset();
+
     });
 
     it('register should handle errors', async () => {
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-        axios.post.mockRejectedValue(new Error('Error'));
+        apiClient.post.mockRejectedValue(new Error('Error'));
 
-        await AuthService.register('username', 'test@example.com', 'password', 'role');
+        try {
+            await AuthService.register('username', 'test@example.com', 'password', 'role');
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
 
         expect(consoleErrorSpy).toHaveBeenCalled();
         consoleErrorSpy.mockRestore();
+        apiClient.post.mockReset();
+
     });
+
 });
 
 // Mocks to prevent errors during testing

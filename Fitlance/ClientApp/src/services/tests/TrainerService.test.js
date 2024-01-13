@@ -1,9 +1,20 @@
-import * as service from '.././TrainerService';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 
-jest.mock('axios');
+import * as service from '.././TrainerService';
+import apiClient from '../AxiosAPIClient';
+
 jest.mock('js-cookie');
+
+jest.mock('.././AxiosAPIClient', () => ({
+    get: jest.fn(),
+    create: jest.fn(() => ({
+        interceptors: {
+            response: {
+                use: jest.fn(),
+            },
+        },
+    })),
+}));
 
 describe('Trainer Service', () => {
     const mockToken = 'mock-token';
@@ -14,6 +25,7 @@ describe('Trainer Service', () => {
     beforeEach(() => {
         Cookies.get.mockReturnValue(mockToken);
         consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+
     });
 
     afterEach(() => {
@@ -22,20 +34,16 @@ describe('Trainer Service', () => {
     });
 
     it('fetchTrainers should fetch trainers successfully', async () => {
-        axios.get.mockResolvedValue(mockData);
+        apiClient.get.mockResolvedValue(mockData);
 
         const trainers = await service.fetchTrainers();
 
-        expect(axios.get).toHaveBeenCalledWith(
-            `${process.env.REACT_APP_API_BASE_URL}/api/Users/FindTrainers`,
-            { headers: { authorization: `bearer ${mockToken}` } }
-        );
+        expect(apiClient.get).toHaveBeenCalledWith('/api/Users/FindTrainers');
         expect(trainers).toBe(mockData.data);
     });
 
     it('fetchTrainers should log an error when the request fails', async () => {
-        axios.get.mockRejectedValue(mockError);
-
+        apiClient.get.mockRejectedValue(mockError);
         await service.fetchTrainers();
 
         expect(console.log).toHaveBeenCalledWith(mockError);

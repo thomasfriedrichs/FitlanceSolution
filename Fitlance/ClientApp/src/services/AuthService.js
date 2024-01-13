@@ -1,4 +1,6 @@
-﻿import apiClient from "./AxiosAPIClient";
+﻿import Cookies from "js-cookie";
+import apiClient from "./AxiosAPIClient";
+
 
 export const login = async (email, password) => {
     try {
@@ -6,6 +8,9 @@ export const login = async (email, password) => {
             email,
             password
         });
+        Cookies.set("Id", response.data.Id)
+        Cookies.set("Role", response.data.userRole[0])
+        window.location.href = '/';   
         return response.data;
     } catch (error) {
         console.error(error);
@@ -15,8 +20,14 @@ export const login = async (email, password) => {
 
 export const logout = async (userId) => {
     try {
-        await apiClient.post('/api/Auth/logout',  userId );
+        await apiClient.post('/api/Auth/logout', userId);
+        Cookies.remove("Id");
+        Cookies.remove("Role");
+        window.location.href = '/';   
     } catch (error) {
+        Cookies.remove("Id");
+        Cookies.remove("Role");
+        window.location.href = '/';   
         console.error(error);
         throw error;
     }
@@ -30,6 +41,9 @@ export const register = async (username, email, password, role) => {
             password,
             role
         });
+        Cookies.set("Id", response.data.Id)
+        Cookies.set("Role", response.data.userRole[0])
+        window.location.href = '/';   
         return response.data;
     } catch (error) {
         console.error(error);

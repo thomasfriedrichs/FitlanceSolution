@@ -1,9 +1,21 @@
-import * as service from '.././ProfileService';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 
-jest.mock('axios');
+import * as service from '.././ProfileService';
+import apiClient from '../AxiosAPIClient';
+
 jest.mock('js-cookie');
+
+jest.mock('.././AxiosAPIClient', () => ({
+    get: jest.fn(),
+    put: jest.fn(),
+    create: jest.fn(() => ({
+        interceptors: {
+            response: {
+                use: jest.fn(),
+            },
+        },
+    })),
+}));
 
 describe('Profile Service', () => {
     const mockToken = 'mock-token';
@@ -26,19 +38,18 @@ describe('Profile Service', () => {
     });
 
     it('fetchProfile should fetch the user profile successfully', async () => {
-        axios.get.mockResolvedValue(mockData);
+        apiClient.get.mockResolvedValue(mockData);
 
         const profile = await service.fetchProfile();
 
-        expect(axios.get).toHaveBeenCalledWith(
-            `${process.env.REACT_APP_API_BASE_URL}/api/Users/${mockId}`,
-            { headers: { authorization: `bearer ${mockToken}` } }
+        expect(apiClient.get).toHaveBeenCalledWith(
+            `/api/Users/${mockId}`,
         );
         expect(profile).toBe(mockData.data);
     });
 
     it('fetchProfile should log an error when request fails', async () => {
-        axios.get.mockRejectedValue(mockError);
+        apiClient.get.mockRejectedValue(mockError);
 
         await service.fetchProfile();
 
@@ -50,14 +61,13 @@ describe('Profile Service', () => {
             name: 'Jane Doe',
             email: 'jane.doe@example.com',
         };
-        axios.put.mockResolvedValue(mockData);
+        apiClient.put.mockResolvedValue(mockData);
 
         const result = await service.putProfile(requestObject);
 
-        expect(axios.put).toHaveBeenCalledWith(
-            `${process.env.REACT_APP_API_BASE_URL}/api/Users/${mockId}`,
-            requestObject,
-            { headers: { authorization: `bearer ${mockToken}` } }
+        expect(apiClient.put).toHaveBeenCalledWith(
+            `/api/Users/${mockId}`,
+            requestObject
         );
         expect(result).toBe(mockData.data);
     });
@@ -67,7 +77,7 @@ describe('Profile Service', () => {
             name: 'Jane Doe',
             email: 'jane.doe@example.com',
         };
-        axios.put.mockRejectedValue(mockError);
+        apiClient.put.mockRejectedValue(mockError);
 
         await service.putProfile(requestObject);
 

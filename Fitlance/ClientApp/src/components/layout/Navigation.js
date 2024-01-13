@@ -16,8 +16,6 @@ const Navigation = () => {
 
     const handleLogout = () => {
         logout(id);
-        Cookies.remove("Id");
-        Cookies.remove("Role");
     };
 
     const [isNavOpen, setIsNavOpen] = useState(false);

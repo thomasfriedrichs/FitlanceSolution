@@ -16,7 +16,7 @@ export const fetchProfile = async () => {
 export const putProfile = async (reqObj) => {
     const id = Cookies.get("Id");
     try {
-        const response = await apiClient.put(`}/api/Users/${id}`, reqObj)
+        const response = await apiClient.put(`/api/Users/${id}`, reqObj)
         return response.data;
     } catch (err) {
         console.log(err)
