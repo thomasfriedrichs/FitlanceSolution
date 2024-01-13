@@ -20,7 +20,10 @@ const Profile = () => {
     if (isLoading) {
         return (
             <div className="fixed inset-0 bg-white bg-opacity-75 flex justify-center items-center z-50">
-                <FontAwesomeIcon icon={faSpinner} className="text-4xl text-primary animate-spin" />
+                <FontAwesomeIcon
+                    data-testid="loading-spinner"
+                    icon={faSpinner}
+                    className="text-4xl text-primary animate-spin" />
             </div>
         );
     };

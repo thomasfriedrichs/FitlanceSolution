@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 import Profile from '.././Profile';
 
 jest.mock('@tanstack/react-query', () => ({
@@ -37,7 +38,7 @@ describe('Profile Component', () => {
     it('displays loading state initially', () => {
         useQuery.mockReturnValue({ isLoading: true });
         render(<Profile />);
-        expect(screen.getByText('Loading...')).toBeInTheDocument();
+        expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
     });
 
     it('displays error state', () => {
@@ -46,7 +47,7 @@ describe('Profile Component', () => {
             error: { message: 'An error occurred' }
         });
         render(<Profile />);
-        expect(screen.getByText('Error: An error occurred')).toBeInTheDocument();
+        expect(screen.getByText('An Error Occurred')).toBeInTheDocument();
     });
 
     it('displays user info correctly', async () => {
