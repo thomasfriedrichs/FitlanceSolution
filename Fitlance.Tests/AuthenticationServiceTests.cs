@@ -31,7 +31,7 @@ public class AuthenticationServiceTests
     { 
 
         var options = new DbContextOptionsBuilder<FitlanceContext>()
-            .UseInMemoryDatabase(databaseName: "TestDb")
+            .UseInMemoryDatabase(databaseName: "AuthenticationServiceDb")
             .Options;
         _context = new FitlanceContext(options);
 
