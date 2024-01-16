@@ -8,7 +8,7 @@ namespace Fitlance.Tests;
 
 public class AppointmentsUnitTests
 {
-    public DbContextOptions<FitlanceContext> BuildOptions(string dbName)
+    public static DbContextOptions<FitlanceContext> BuildOptions(string dbName)
     {
         var optionsBuilder = new DbContextOptionsBuilder<FitlanceContext>();
         optionsBuilder.UseInMemoryDatabase(databaseName: dbName);
