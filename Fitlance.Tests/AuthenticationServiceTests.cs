@@ -29,9 +29,9 @@ public class AuthenticationServiceTests
 
     public AuthenticationServiceTests()
     { 
-
+        string dbName = Guid.NewGuid().ToString();  
         var options = new DbContextOptionsBuilder<FitlanceContext>()
-            .UseInMemoryDatabase(databaseName: "AuthenticationServiceDb")
+            .UseInMemoryDatabase(databaseName: dbName)
             .Options;
         _context = new FitlanceContext(options);
 
@@ -76,6 +76,8 @@ public class AuthenticationServiceTests
             _configurationMock.Object,
             _context,
             _loggerMock.Object);
+
+        ClearDatabase();
     }
 
 
@@ -86,8 +88,8 @@ public class AuthenticationServiceTests
         // Arrange
         var registerRequest = new RegisterRequest
         {
-            Username = "JohnAdams12",
-            Email = "JohnAdams12@gmail.com",
+            Username = "JohnAdams123",
+            Email = "JohnAdams123@gmail.com",
             Password = "Password12345!",
             Role = "User" 
         };
@@ -386,5 +388,10 @@ public class AuthenticationServiceTests
         return string.Join("; ", cookieParts);
     }
 
-
+    private void ClearDatabase()
+    {
+        _context.Users.RemoveRange(_context.Users);
+        _context.RefreshTokens.RemoveRange(_context.RefreshTokens);
+        _context.SaveChanges();
+    }
 }
