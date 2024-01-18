@@ -37,7 +37,7 @@ stages:
           rm -rf node_modules
         displayName: 'Clean up node_modules'
 
-- stage: BuildAppAndTest.NET
+- stage: BuildAppAndTestDOTNET
   jobs:
   - job: BuildJob
     steps:
