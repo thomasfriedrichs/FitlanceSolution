@@ -96,7 +96,7 @@ stages:
           steps:
           - task: AzureCLI@2
             inputs:
-              azureSubscription: $(Subscription)
+              azureSubscription: '$(Subscription)'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
@@ -107,7 +107,7 @@ stages:
           # Deploy to Azure App Service
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: $(Subscription)
+              azureSubscription: '$(Subscription)'
               appType: 'webAppLinux'
-              appName: $(Fitlance)
+              appName: '$(Fitlance)'
               package: '$(Build.ArtifactStagingDirectory)/publish'
