@@ -107,7 +107,7 @@ stages:
           # Deploy to Azure App Service
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: '$AZSUBSCRIPTION'
+              azureSubscription: '$(AZSUBSCRIPTION)'
               appType: 'webAppLinux'
               appName: '$(Fitlance)'
               package: '$(Build.ArtifactStagingDirectory)/publish'
