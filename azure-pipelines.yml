@@ -37,7 +37,7 @@ stages:
           rm -rf node_modules
         displayName: 'Clean up node_modules'
 
-- stage: BuildAndDeploy
+- stage: BuildAppAndTest.NET
   jobs:
   - job: BuildJob
     steps:
@@ -96,14 +96,14 @@ stages:
           steps:
           - task: AzureCLI@2
             inputs:
-              azureSubscription: '$(AZSUBSCRIPTION)'
+              azureSubscription: $(Subscription)
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
                 az --version
-                az webapp config set --resource-group $(Fitlance) --name $(Fitlance) --net-framework-version v8.0
+                az webapp config set --resource-group "Fitlance" --name "Fitlance" --net-framework-version v8.0
             displayName: 'Set .NET 8 as the runtime stack on Azure App Service'
-
+            
           # Deploy to Azure App Service
           - task: AzureWebApp@1
             inputs:
