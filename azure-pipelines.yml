@@ -47,10 +47,6 @@ stages:
           version: '8.x'
           packageType: 'sdk'
 
-      - script: |
-          az webapp config set --resource-group $(Fitlance) --name $(Fitlance) --net-framework-version v8.0
-        displayName: 'Set .NET 8 as the runtime stack on Azure App Service'
-
       # Build .NET Core app
       - script: dotnet build --configuration $(buildConfiguration)
         displayName: 'dotnet build $(buildConfiguration)'
@@ -89,3 +85,29 @@ stages:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)/publish'
           ArtifactName: 'publish'
           publishLocation: 'Container'
+          
+- stage: Deploy
+  jobs:
+  - deployment: DeployToAzure
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: $(Subscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az --version
+                az webapp config set --resource-group $(Fitlance) --name $(Fitlance) --net-framework-version v8.0
+            displayName: 'Set .NET 8 as the runtime stack on Azure App Service'
+
+          # Deploy to Azure App Service
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: $(Subscription)
+              appType: 'webAppLinux'
+              appName: $(Fitlance)
+              package: '$(Build.ArtifactStagingDirectory)/publish'
