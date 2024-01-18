@@ -9,7 +9,7 @@ variables:
   value: 'Release'
 
 stages:
-- stage: Test
+- stage: Test Client
   jobs:
   - job: TestJob
     steps: 
@@ -39,8 +39,14 @@ stages:
 
 - stage: BuildAndDeploy
   jobs:
-  - job:
+  - job: BuildJob
     steps:
+      - task: UseDotNet@2
+        displayName: 'Install .NET 8 SDK'
+        inputs:
+          version: '8.x'
+          packageType: 'sdk'
+          
       # Build .NET Core app
       - script: dotnet build --configuration $(buildConfiguration)
         displayName: 'dotnet build $(buildConfiguration)'
