@@ -46,7 +46,11 @@ stages:
         inputs:
           version: '8.x'
           packageType: 'sdk'
-          
+
+      - script: |
+          az webapp config set --resource-group $(Fitlance) --name $(Fitlance) --net-framework-version v8.0
+        displayName: 'Set .NET 8 as the runtime stack on Azure App Service'
+
       # Build .NET Core app
       - script: dotnet build --configuration $(buildConfiguration)
         displayName: 'dotnet build $(buildConfiguration)'
