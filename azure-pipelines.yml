@@ -96,7 +96,7 @@ stages:
           steps:
           - task: AzureCLI@2
             inputs:
-              azureSubscription: $(Subscription)
+              azureSubscription: '$(AZSUBSCRIPTION)'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
