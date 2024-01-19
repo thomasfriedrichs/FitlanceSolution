@@ -110,4 +110,4 @@ stages:
               azureSubscription: '$(AZSUBSCRIPTION)'
               appType: 'webAppLinux'
               appName: 'Fitlance'
-              package: '$(Build.ArtifactStagingDirectory)/publish'
+              package: '$(Build.ArtifactStagingDirectory)/publish/FItlance.zip'
