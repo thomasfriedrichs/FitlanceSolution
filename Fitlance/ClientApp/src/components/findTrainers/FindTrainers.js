@@ -7,6 +7,7 @@ import useLazyLoadTrainers from "./hooks/useLazyLoadTrainers";
 
 const FindTrainers = () => {
     const { displayedTrainers, isLoading, isError, error, loader } = useLazyLoadTrainers();
+    console.log(displayedTrainers[0]);
 
     if (isLoading) {
         return (
