@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from "react";
 
 // A debouncing function to delay processing based on user input
 const useDebounce = (value, delay) => {
@@ -22,29 +22,50 @@ const useTrainerSearchAndFilter = (trainers) => {
     const [filters, setFilters] = useState({
         availability: [],
         clientSkill: [],
+        hasTrainingCert: false,
+        hasNutritionCert: false,
+        yearsOfExperience: 0,
+        hourlyRate: 0,
     });
 
     // Debounce search query to avoid unnecessary re-renders and computations
-    const debouncedSearchQuery = useDebounce(searchQuery, 300);
+    const debouncedSearchQuery = useDebounce(searchQuery, 200);
 
     const handleSearch = (event) => {
         setSearchQuery(event.target.value.toLowerCase());
     };
 
     const handleFilterChange = (filterName, value) => {
-        // Update filter state based on the filter changed
         setFilters(prevFilters => ({
             ...prevFilters,
             [filterName]: value,
         }));
     };
 
+    const handleToggleChange = (filterName) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            [filterName]: !prevFilters[filterName],
+        }));
+    };
+
+    const handleRangeChange = (filterName, value) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            [filterName]: Number(value),
+        }));
+    };
+
+
     const filteredTrainers = useMemo(() => {
         return trainers.filter(trainer => {
-            //filtering by name and other criteria
             return trainer.firstName.toLowerCase().includes(debouncedSearchQuery) &&
-                (filters.availability.length === 0 || filters.availability.includes(trainer.availability)) &&
-                (filters.clientSkill.length === 0 || filters.clientSkill.includes(trainer.clientSkill));
+                (filters.availability || trainer.availability.includes(filters.availability)) &&
+                (filters.clientSkill || trainer.clientSkill === filters.clientSkill) &&
+                (filters.hasTrainingCert === false || trainer.trainingCertification === filters.hasTrainingCert) &&
+                (filters.hasNutritionCert === false || trainer.nutritionCertification === filters.hasNutritionCert) &&
+                trainer.yearsOfExperience >= filters.yearsOfExperience &&
+                trainer.hourlyRate >= filters.hourlyRate;
         });
     }, [trainers, debouncedSearchQuery, filters]);
 
@@ -55,6 +76,8 @@ const useTrainerSearchAndFilter = (trainers) => {
         setFilters,
         handleSearch,
         handleFilterChange,
+        handleToggleChange,
+        handleRangeChange,
         filteredTrainers,
     };
 };

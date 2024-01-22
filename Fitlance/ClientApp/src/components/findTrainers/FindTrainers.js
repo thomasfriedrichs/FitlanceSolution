@@ -3,10 +3,26 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import SingleTrainer from "./SingleTrainer";
+import SearchInput from "./SearchInput";
 import useLazyLoadTrainers from "./hooks/useLazyLoadTrainers";
+import useTrainerSearchAndFilter from "./hooks/useTrainerSearchAndFilter";
 
 const FindTrainers = () => {
-    const { displayedTrainers, isLoading, isError, error, loader } = useLazyLoadTrainers();
+    const {
+        displayedTrainers,
+        isLoading,
+        isError,
+        error,
+        loader
+    } = useLazyLoadTrainers();
+    const {
+        searchQuery,
+        handleSearch,
+        handleFilterChange,
+        handleToggleChange,
+        handleRangeChange,
+        filteredTrainers,
+    } = useTrainerSearchAndFilter(displayedTrainers);
     console.log(displayedTrainers[0]);
 
     if (isLoading) {
@@ -37,13 +53,22 @@ const FindTrainers = () => {
     return (
         <div className="flex justify-center">
             <div className="mt-8 md:mt-12 mb-20 p-4 md:p-8 w-full md:w-[80vw] h-full">
-                <div className="flex justify-start mt-2">
+                <div className="flex justify-center mt-2">
                     <h1 className="text-4xl">
                         Find Trainers
                     </h1>
                 </div>
+                <SearchInput
+                    type="text"
+                    placeholder="Search trainers"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    handleFilterChange={handleFilterChange}
+                    handleToggleChange={handleToggleChange}
+                    handleRangeChange={handleRangeChange}
+                />
                 <div className="mt-10">
-                    {displayedTrainers.map((trainer, i) => {
+                    {filteredTrainers.map((trainer, i) => {
                         return (
                             <SingleTrainer
                                 key={i}
