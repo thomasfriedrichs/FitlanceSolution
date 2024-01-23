@@ -55,18 +55,24 @@ const SearchInput = ({
                 <div>
                     <button
                         onClick={() => toggleCertificationFilter('trainingCertificationRequired')}
-                        className={`mt-1 px-4 py-2 rounded-md shadow-sm bg-green-600`}
+                        className={`mt-1 px-4 py-2 rounded-md shadow-sm ${filters.trainingCertificationRequired ? "bg-green text-white" : "bg-slate-200"}`}
                     >
                         Certified Trainer
+                        {filters.trainingCertificationRequired && (
+                            <span className="text-white ml-2">&#10003;</span>
+                        )}
                     </button>
                 </div>
                 {/*// Nutrition Certification Button*/}
                 <div>
                     <button
                         onClick={() => toggleCertificationFilter('nutritionCertificationRequired')}
-                        className={`mt-1 px-4 py-2 rounded-md shadow-sm ${filters.nutritionCertificationRequired ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+                        className={`mt-1 px-4 py-2 rounded-md shadow-sm ${filters.nutritionCertificationRequired ? 'bg-green text-white' : 'bg-gray-200'}`}
                     >
-                        {filters.nutritionCertificationRequired ? 'Nutrition Cert Required' : 'Nutrition Cert Not Required'}
+                        Certified Nutritionist
+                        {filters.nutritionCertificationRequired && (
+                            <span className="text-white ml-2">&#10003;</span>
+                        )}
                     </button>
                 </div>
             </div>
