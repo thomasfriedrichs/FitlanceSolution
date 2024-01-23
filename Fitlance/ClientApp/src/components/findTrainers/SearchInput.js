@@ -3,14 +3,14 @@ import React from "react";
 const SearchInput = ({
     searchQuery,
     handleSearch,
-    handleAvailabilityChange,
+    handleFilterChange,
     toggleCertificationFilter,
-    handleSkillLevelChange,
     handleYearsOfExperienceChange,
     handleHourlyRateChange,
     filters = {}
 }) => {
-    console.log("Training Cert", filters.trainingCertificationRequired)
+    console.log("Avilability", filters.availability)
+    console.log("Client Skill", filters.clientSkill)
     return (
         <div className="space-y-4">
             {/* Search Input */}
@@ -26,24 +26,30 @@ const SearchInput = ({
                 <div>
                     <label htmlFor="availability" className="block text-sm font-medium text-gray-700">Availability</label>
                     <select
-                        id="availability"
                         value={filters.availability}
-                        onChange={handleAvailabilityChange}
+                        onChange={(e) => {
+                            const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                            handleFilterChange('availability', selectedOptions);
+                        }}
                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md shadow-sm"
                     >
                         <option value="">Select Availability</option>
                         <option value="Weekends">Weekends</option>
-                        <option value="Evenings">Evenings</option>
+                        <option value="Evening">Evening</option>
                         <option value="Afternoon">Afternoon</option>
+                        <option value="WeekDays">WeekDays</option>
                     </select>
                 </div>            
                 {/* Skill Level Dropdown */}
                 <div>
-                    <label htmlFor="skillLevel" className="block text-sm font-medium text-gray-700">Skill Level</label>
+                    <label htmlFor="clientSkill" className="block text-sm font-medium text-gray-700">Skill Level</label>
                     <select
-                        id="skillLevel"
-                        value={filters.skillLevel}
-                        onChange={handleSkillLevelChange}
+                        id="clientSkill"
+                        value={filters.clientSkill}
+                        onChange={(e) => {
+                            const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                            handleFilterChange('clientSkill', selectedOptions);
+                        }}
                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md shadow-sm"
                     >
                         <option value="">Select Skill Level</option>
