@@ -22,8 +22,8 @@ const useTrainerSearchAndFilter = (trainers) => {
     const [filters, setFilters] = useState({
         availability: [],
         clientSkill: [],
-        hasTrainingCert: false,
-        hasNutritionCert: false,
+        trainingCertificationRequired: false,
+        nutritionCertificationRequired: false,
         yearsOfExperience: 0,
         hourlyRate: 0,
     });
@@ -42,7 +42,7 @@ const useTrainerSearchAndFilter = (trainers) => {
         }));
     };
 
-    const handleToggleChange = (filterName) => {
+    const toggleCertificationFilter = (filterName) => {
         setFilters(prevFilters => ({
             ...prevFilters,
             [filterName]: !prevFilters[filterName],
@@ -62,11 +62,13 @@ const useTrainerSearchAndFilter = (trainers) => {
             return trainer.firstName.toLowerCase().includes(debouncedSearchQuery) &&
                 (filters.availability || trainer.availability.includes(filters.availability)) &&
                 (filters.clientSkill || trainer.clientSkill === filters.clientSkill) &&
-                (filters.hasTrainingCert === false || trainer.trainingCertification === filters.hasTrainingCert) &&
-                (filters.hasNutritionCert === false || trainer.nutritionCertification === filters.hasNutritionCert) &&
                 trainer.yearsOfExperience >= filters.yearsOfExperience &&
-                trainer.hourlyRate >= filters.hourlyRate;
-        });
+                trainer.hourlyRate >= filters.hourlyRate &&
+                (!filters.trainingCertificationRequired ||
+                    (filters.trainingCertificationRequired && (trainer.certifications?.length ?? 0) > 0)) &&
+                (!filters.nutritionCertificationRequired ||
+                    (filters.nutritionCertificationRequired && (trainer.nutritionCertification?.length ?? 0) > 0))
+            });
     }, [trainers, debouncedSearchQuery, filters]);
 
     return {
@@ -76,7 +78,7 @@ const useTrainerSearchAndFilter = (trainers) => {
         setFilters,
         handleSearch,
         handleFilterChange,
-        handleToggleChange,
+        toggleCertificationFilter,
         handleRangeChange,
         filteredTrainers,
     };

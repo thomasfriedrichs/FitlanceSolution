@@ -4,13 +4,13 @@ const SearchInput = ({
     searchQuery,
     handleSearch,
     handleAvailabilityChange,
-    handleTrainingCertificationToggle,
+    toggleCertificationFilter,
     handleSkillLevelChange,
-    handleNutritionCertificationToggle,
     handleYearsOfExperienceChange,
     handleHourlyRateChange,
-    filters = {},
+    filters = {}
 }) => {
+    console.log("Training Cert", filters.trainingCertificationRequired)
     return (
         <div className="space-y-4">
             {/* Search Input */}
@@ -51,28 +51,24 @@ const SearchInput = ({
                         <option value="Advanced">Advanced</option>
                     </select>
                 </div>
-                {/* Training Certification Toggle */}
+                {/*Training certification button*/}
                 <div>
-                    <label htmlFor="trainingCert" className="block text-sm font-medium text-gray-700">Training Certification</label>
                     <button
-                        id="trainingCert"
-                        onClick={handleTrainingCertificationToggle}
-                        className={`mt-1 px-4 py-2 rounded-md shadow-sm ${filters.hasTrainingCert ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+                        onClick={() => toggleCertificationFilter('trainingCertificationRequired')}
+                        className={`mt-1 px-4 py-2 rounded-md shadow-sm bg-green-600`}
                     >
-                        {filters.hasTrainingCert ? 'Certified' : 'Not Certified'}
+                        Certified Trainer
                     </button>
                 </div>
-                {/* Nutrition Certification Toggle */}
+                {/*// Nutrition Certification Button*/}
                 <div>
-                    <label htmlFor="nutritionCert" className="block text-sm font-medium text-gray-700">Nutrition Certification</label>
                     <button
-                        id="nutritionCert"
-                        onClick={handleNutritionCertificationToggle}
-                        className={`mt-1 px-4 py-2 rounded-md shadow-sm ${filters.hasNutritionCert ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+                        onClick={() => toggleCertificationFilter('nutritionCertificationRequired')}
+                        className={`mt-1 px-4 py-2 rounded-md shadow-sm ${filters.nutritionCertificationRequired ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
                     >
-                        {filters.hasNutritionCert ? 'Certified' : 'Not Certified'}
+                        {filters.nutritionCertificationRequired ? 'Nutrition Cert Required' : 'Nutrition Cert Not Required'}
                     </button>
-                </div>                
+                </div>
             </div>
             {/* Years of Experience Range Selector */}
             <div>
