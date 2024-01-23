@@ -24,8 +24,8 @@ const useTrainerSearchAndFilter = (trainers) => {
         clientSkill: [],
         trainingCertificationRequired: false,
         nutritionCertificationRequired: false,
-        yearsOfExperience: 0,
-        hourlyRate: 0,
+        yearsOfExperienceRange: {min: 0, max: 30},
+        hourlyRateRange: { min: 0, max: 150 },
     });
 
     // Debounce search query to avoid unnecessary re-renders and computations
@@ -49,21 +49,25 @@ const useTrainerSearchAndFilter = (trainers) => {
         }));
     };
 
-    const handleRangeChange = (filterName, value) => {
+    const handleRangeChange = (range, value, which) => {
         setFilters(prevFilters => ({
             ...prevFilters,
-            [filterName]: Number(value),
+            [range]: {
+                ...prevFilters[range],
+                [which]: value === "" ? "" : Number(value),
+            },
         }));
     };
-
 
     const filteredTrainers = useMemo(() => {
         return trainers.filter(trainer => {
             return trainer.firstName.toLowerCase().includes(debouncedSearchQuery) &&
                 (filters.availability.length === 0 || filters.availability.some(avail => trainer.availability.includes(avail))) &&
                 (filters.clientSkill.length === 0 || filters.clientSkill.some(skill => trainer.clientSkill.includes(skill))) &&
-                trainer.yearsOfExperience >= filters.yearsOfExperience &&
-                trainer.hourlyRate >= filters.hourlyRate &&
+                trainer.yearsOfExperience >= filters.yearsOfExperienceRange.min &&
+                trainer.yearsOfExperience <= filters.yearsOfExperienceRange.max &&
+                trainer.hourlyRate >= filters.hourlyRateRange.min &&
+                trainer.hourlyRate <= filters.hourlyRateRange.max &&
                 (!filters.trainingCertificationRequired ||
                     (filters.trainingCertificationRequired && (trainer.certifications?.length ?? 0) > 0)) &&
                 (!filters.nutritionCertificationRequired ||
