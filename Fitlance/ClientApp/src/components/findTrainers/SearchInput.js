@@ -1,19 +1,20 @@
 import React from "react";
 
+import MultiSelectCheckbox from "./MultiSelectCheckbox";
+
 const SearchInput = ({
     searchQuery,
     handleSearch,
     handleFilterChange,
     toggleCertificationFilter,
-    handleYearsOfExperienceChange,
     handleRangeChange,
     filters = {}
     }) => {
-    console.log("hourly min", filters.hourlyRateRange.min)
-    console.log("hourly max", filters.hourlyRateRange.max)
 
     const hourlyRateOptions = Array.from({ length: (150 / 5) + 1 }, (_, index) => index * 5);
     const yearsOfExperienceOptions = Array.from({ length: 31 }, (_, index) => index);
+    const availabilityOptions = ["Weekends", "Evening", "Afternoon", "WeekDays"];
+    const skillLevelOptions = ["Beginner", "Advanced"];
 
     return (
         <div className="space-y-4">
@@ -27,40 +28,18 @@ const SearchInput = ({
             />
             <div className="flex justify-row justify-around">
                 {/* Availability Dropdown */}
-                <div>
-                    <label htmlFor="availability" className="block text-sm font-medium text-gray-700">Availability</label>
-                    <select
-                        value={filters.availability}
-                        onChange={(e) => {
-                            const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                            handleFilterChange("availability", selectedOptions);
-                        }}
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md shadow-sm"
-                    >
-                        <option value="">Select Availability</option>
-                        <option value="Weekends">Weekends</option>
-                        <option value="Evening">Evening</option>
-                        <option value="Afternoon">Afternoon</option>
-                        <option value="WeekDays">WeekDays</option>
-                    </select>
-                </div>            
-                {/* Skill Level Dropdown */}
-                <div>
-                    <label htmlFor="clientSkill" className="block text-sm font-medium text-gray-700">Skill Level</label>
-                    <select
-                        id="clientSkill"
-                        value={filters.clientSkill}
-                        onChange={(e) => {
-                            const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                            handleFilterChange("clientSkill", selectedOptions);
-                        }}
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md shadow-sm"
-                    >
-                        <option value="">Select Skill Level</option>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Advanced">Advanced</option>
-                    </select>
-                </div>
+                <MultiSelectCheckbox
+                    label="Select Availability"
+                    options={availabilityOptions}
+                    selectedOptions={filters.availability}
+                    onChange={(selected) => handleFilterChange('availability', selected)}
+                />
+                <MultiSelectCheckbox
+                    label="Select Skill Level"
+                    options={skillLevelOptions}
+                    selectedOptions={filters.clientSkill}
+                    onChange={(selected) => handleFilterChange('clientSkill', selected)}
+                />
                 {/*Training certification button*/}
                 <div>
                     <button
@@ -157,11 +136,8 @@ const SearchInput = ({
                     </div>
                 </div>
             </div>
-
-
         </div>
     );
 };
-
 
 export default SearchInput;

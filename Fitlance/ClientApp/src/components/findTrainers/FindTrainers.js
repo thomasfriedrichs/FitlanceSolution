@@ -24,7 +24,6 @@ const FindTrainers = () => {
         handleRangeChange,
         filteredTrainers,
     } = useTrainerSearchAndFilter(displayedTrainers);
-    console.log(displayedTrainers[0]);
 
     if (isLoading) {
         return (

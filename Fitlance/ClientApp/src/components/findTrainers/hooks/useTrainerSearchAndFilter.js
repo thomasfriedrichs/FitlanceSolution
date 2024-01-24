@@ -38,7 +38,7 @@ const useTrainerSearchAndFilter = (trainers) => {
     const handleFilterChange = (filterName, value) => {
         setFilters(prevFilters => ({
             ...prevFilters,
-            [filterName]: value,
+            [filterName]: Array.isArray(value) ? value : [],
         }));
     };
 
