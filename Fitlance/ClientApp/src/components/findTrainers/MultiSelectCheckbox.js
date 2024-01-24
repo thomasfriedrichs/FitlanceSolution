@@ -33,7 +33,7 @@ const MultiSelectCheckbox = ({ options, selectedOptions, onChange, label }) => {
         <div className="relative" ref={dropdownRef}>
             <button
                 type="button"
-                className="bg-white rounded-md p-2 shadow-sm"
+                className="bg-white rounded-md p-2 shadow-sm  w-full"
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {label}

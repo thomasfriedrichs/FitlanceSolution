@@ -17,16 +17,16 @@ const SearchInput = ({
     const skillLevelOptions = ["Beginner", "Advanced"];
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 md:space-y-0 md:flex md:flex-wrap md:justify-between">
             {/* Search Input */}
             <input
                 type="text"
                 value={searchQuery}
                 onChange={handleSearch}
                 placeholder="Search trainers"
-                className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary mb-4 md:mb-0"
             />
-            <div className="flex justify-row justify-around">
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
                 {/* Availability Dropdown */}
                 <MultiSelectCheckbox
                     label="Select Availability"
@@ -41,10 +41,10 @@ const SearchInput = ({
                     onChange={(selected) => handleFilterChange('clientSkill', selected)}
                 />
                 {/*Training certification button*/}
-                <div>
+                <div className="flex flex-col md:flex-row md:space-x-4">
                     <button
                         onClick={() => toggleCertificationFilter("trainingCertificationRequired")}
-                        className={`mt-1 px-4 py-2 rounded-md shadow-sm ${filters.trainingCertificationRequired ? "bg-green text-white" : "bg-slate-200"}`}
+                        className={`w-full px-4 py-2 rounded-md shadow-sm ${filters.trainingCertificationRequired ? "bg-green text-white" : "bg-slate-200"}`}
                     >
                         Certified Trainer
                         {filters.trainingCertificationRequired && (
@@ -56,7 +56,7 @@ const SearchInput = ({
                 <div>
                     <button
                         onClick={() => toggleCertificationFilter("nutritionCertificationRequired")}
-                        className={`mt-1 px-4 py-2 rounded-md shadow-sm ${filters.nutritionCertificationRequired ? "bg-green text-white" : "bg-gray-200"}`}
+                        className={`w-full px-4 py-2 rounded-md shadow-sm ${filters.nutritionCertificationRequired ? "bg-green text-white" : "bg-slate-200"}`}
                     >
                         Certified Nutritionist
                         {filters.nutritionCertificationRequired && (
@@ -66,7 +66,7 @@ const SearchInput = ({
                 </div>
             </div>
             {/* Years of Experience Range Selector */}
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col space-y-2">
                 <label className="text-lg font-medium text-gray-700">Years of Experience</label>
                 <div className="flex flex-row space-x-4">
                     {/* Min Years of Experience Selector */}
