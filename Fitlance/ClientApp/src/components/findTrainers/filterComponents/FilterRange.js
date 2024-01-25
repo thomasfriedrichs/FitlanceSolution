@@ -9,6 +9,9 @@ const FilterRange = ({
     filter,
     options }) => {
 
+    const minOptions = options.filter(option => option <= filter.max);
+    const maxOptions = options.filter(option => option >= filter.min);
+
     return (
         <div className="flex flex-col space-y-2">
             <label className="text-lg font-medium text-gray-700">{label }</label>
@@ -21,7 +24,7 @@ const FilterRange = ({
                         onChange={(e) => handleRangeChange(range, e.target.value, "min")}
                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md shadow-sm"
                     >
-                        {options.map((year) => (
+                        {minOptions.map((year) => (
                             <option key={year} value={year}>{year}</option>
                         ))}
                     </select>
@@ -34,7 +37,7 @@ const FilterRange = ({
                         onChange={(e) => handleRangeChange(range, e.target.value, "max")}
                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md shadow-sm"
                     >
-                        {options.map((year) => (
+                        {maxOptions.map((year) => (
                             <option key={year} value={year}>{year}</option>
                         ))}
                     </select>
