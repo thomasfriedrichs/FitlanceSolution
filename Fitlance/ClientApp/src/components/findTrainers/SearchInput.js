@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
-import MultiSelectCheckbox from "./MultiSelectCheckbox";
+import MultiSelectCheckbox from "./filterComponents/MultiSelectCheckbox";
+import FilterButton from "./filterComponents/FilterButton";
 
 const SearchInput = ({
     searchQuery,
@@ -10,11 +11,21 @@ const SearchInput = ({
     handleRangeChange,
     filters = {}
     }) => {
+    const [activeFilters, setActiveFilters] = useState([]);
+    const [inActiveFilters, setInActiveFilters] = useState([]);
 
     const hourlyRateOptions = Array.from({ length: (150 / 5) + 1 }, (_, index) => index * 5);
     const yearsOfExperienceOptions = Array.from({ length: 31 }, (_, index) => index);
     const availabilityOptions = ["Weekends", "Evening", "Afternoon", "WeekDays"];
     const skillLevelOptions = ["Beginner", "Advanced"];
+
+    const handleAddFilter = (filter) => {
+        setActiveFilters([...activeFilters, filter]);
+    };
+
+    const handleRemoveFilter = (filter) => {
+        setInActiveFilters([...inActiveFilters, filter]);
+    };
 
     return (
         <div className="space-y-4 md:space-y-0 md:flex md:flex-wrap md:justify-between">
@@ -41,29 +52,17 @@ const SearchInput = ({
                     onChange={(selected) => handleFilterChange('clientSkill', selected)}
                 />
                 {/*Training certification button*/}
-                <div className="flex flex-col md:flex-row md:space-x-4">
-                    <button
-                        onClick={() => toggleCertificationFilter("trainingCertificationRequired")}
-                        className={`w-full px-4 py-2 rounded-md shadow-sm ${filters.trainingCertificationRequired ? "bg-green text-white" : "bg-slate-200"}`}
-                    >
-                        Certified Trainer
-                        {filters.trainingCertificationRequired && (
-                            <span className="text-white ml-2">&#10003;</span>
-                        )}
-                    </button>
-                </div>
+                <FilterButton
+                    label="Certified Trainer"
+                    filter={filters.trainingCertificationRequired}   
+                    toggleFilter={() => toggleCertificationFilter("trainingCertificationRequired")}
+                />
                 {/*// Nutrition Certification Button*/}
-                <div>
-                    <button
-                        onClick={() => toggleCertificationFilter("nutritionCertificationRequired")}
-                        className={`w-full px-4 py-2 rounded-md shadow-sm ${filters.nutritionCertificationRequired ? "bg-green text-white" : "bg-slate-200"}`}
-                    >
-                        Certified Nutritionist
-                        {filters.nutritionCertificationRequired && (
-                            <span className="text-white ml-2">&#10003;</span>
-                        )}
-                    </button>
-                </div>
+                <FilterButton
+                    label="Certified Nutritionist"
+                    filter={filters.nutritionCertificationRequired}
+                    toggleFilter={() => toggleCertificationFilter("nutritionCertificationRequired")}
+                />
             </div>
             {/* Years of Experience Range Selector */}
             <div className="flex flex-col space-y-2">
