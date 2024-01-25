@@ -1,11 +1,18 @@
-import React from "react"
+import React from "react";
 
-const FilterRange = (({ label, minId, maxId, handleRangeChange, range, filter, options }) => {
+const FilterRange = ({
+    label,
+    minId,
+    maxId,
+    handleRangeChange,
+    range,
+    filter,
+    options }) => {
+
     return (
         <div className="flex flex-col space-y-2">
             <label className="text-lg font-medium text-gray-700">{label }</label>
             <div className="flex flex-row space-x-4">
-                {/* Min Years of Experience Selector */}
                 <div className="flex flex-col">
                     <label htmlFor={minId} className="block text-sm font-medium text-gray-700">Min</label>
                     <select
@@ -19,8 +26,6 @@ const FilterRange = (({ label, minId, maxId, handleRangeChange, range, filter, o
                         ))}
                     </select>
                 </div>
-
-                {/* Max Years of Experience Selector */}
                 <div className="flex flex-col">
                     <label htmlFor={maxId} className="block text-sm font-medium text-gray-700">Max</label>
                     <select
@@ -37,6 +42,6 @@ const FilterRange = (({ label, minId, maxId, handleRangeChange, range, filter, o
             </div>
         </div>
     )
-});
+};
 
 export default FilterRange;
