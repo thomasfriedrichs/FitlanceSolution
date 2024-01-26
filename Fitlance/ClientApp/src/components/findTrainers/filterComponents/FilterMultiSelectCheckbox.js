@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import useDropdownControl from "../hooks/useDropdownControl";
+
 const MultiSelectCheckbox = ({ options, selectedOptions, onChange, label }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef(null);
+    const { isOpen, setIsOpen, dropdownRef } = useDropdownControl();
 
     const handleToggle = (option) => {
         let newSelectedOptions;
@@ -15,19 +16,6 @@ const MultiSelectCheckbox = ({ options, selectedOptions, onChange, label }) => {
         }
         onChange(newSelectedOptions);
     };
-
-    const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setIsOpen(false);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
 
     return (
         <div className="relative" ref={dropdownRef}>

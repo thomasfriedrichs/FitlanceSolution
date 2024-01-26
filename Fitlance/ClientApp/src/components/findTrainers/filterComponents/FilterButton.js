@@ -12,10 +12,10 @@ const FilterButton = ({ label, filter, toggleFilter, onRemove, onAdd }) => {
     };
 
     return (
-        <div className="flex flex-col md:flex-row md:space-x-4">
+        <div>
             <button
                 onClick={handleClick}
-                className={`w-full px-4 py-2 rounded-md shadow-sm ${filter ? "bg-green text-white" : "bg-slate-200"}`}
+                className={`px-4 py-2 rounded-md shadow-sm ${filter ? "bg-green text-white" : "bg-slate-200"}`}
             >
                 { label }
                 {filter && (

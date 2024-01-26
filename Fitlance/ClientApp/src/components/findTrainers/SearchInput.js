@@ -88,6 +88,8 @@ const SearchInput = ({
     const initialInactiveFilters = Object.keys(filterDefinitions);
     const [activeFilters, setActiveFilters] = useState([]);
     const [inactiveFilters, setInactiveFilters] = useState(initialInactiveFilters);
+    const [showAllFilters, setShowAllFilters] = useState(false);
+
 
     const handleAddFilter = (filter) => {
         if (!activeFilters.includes(filter)) {
@@ -100,10 +102,15 @@ const SearchInput = ({
         if (!inactiveFilters.includes(filter)) {
             setInactiveFilters([...inactiveFilters, filter]);
             setActiveFilters(activeFilters.filter(id => id !== filter));
-        }    };
+        }
+    };
 
     const handleClearFilters = () => {
         setActiveFilters([]);
+    };
+
+    const handleToggleFilterView = () => {
+        setShowAllFilters(!showAllFilters);
     };
 
     return (
