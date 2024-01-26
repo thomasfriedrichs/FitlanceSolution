@@ -88,8 +88,6 @@ const SearchInput = ({
     const initialInactiveFilters = Object.keys(filterDefinitions);
     const [activeFilters, setActiveFilters] = useState([]);
     const [inactiveFilters, setInactiveFilters] = useState(initialInactiveFilters);
-    const [showAllFilters, setShowAllFilters] = useState(false);
-
 
     const handleAddFilter = (filter) => {
         if (!activeFilters.includes(filter)) {
@@ -106,11 +104,8 @@ const SearchInput = ({
     };
 
     const handleClearFilters = () => {
+        setInactiveFilters(initialInactiveFilters);
         setActiveFilters([]);
-    };
-
-    const handleToggleFilterView = () => {
-        setShowAllFilters(!showAllFilters);
     };
 
     return (
@@ -151,7 +146,7 @@ const SearchInput = ({
                     )
                 })}
             </div>
-            <button onclick={handleClearFilters}>
+            <button onClick={handleClearFilters}>
                 Reset
             </button>
         </div>
