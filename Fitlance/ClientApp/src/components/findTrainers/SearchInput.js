@@ -10,7 +10,8 @@ const SearchInput = ({
     handleFilterChange,
     toggleCertificationFilter,
     handleRangeChange,
-    filters = {}
+    filters = {},
+    deactiveAllFilters
 }) => {
 
     const hourlyRateOptions = Array.from({ length: (150 / 5) + 1 }, (_, index) => index * 5);
@@ -23,9 +24,11 @@ const SearchInput = ({
             id: 1,
             component: FilterMultiSelectCheckbox,
             props: {
+                isActive: false,
                 label: "Select Availability",
                 options: availabilityOptions,
                 selectedOptions: filters.availability,
+                onDeactivate: () => handleFilterChange('availability', []),
                 onChange: (selected) => handleFilterChange('availability', selected)
             }
         },
@@ -33,9 +36,11 @@ const SearchInput = ({
             id: 2,
             component: FilterMultiSelectCheckbox,
             props: {
+                isActive: false,
                 label: "Select Skill Level",
                 options: skillLevelOptions,
                 selectedOptions: filters.clientSkill,
+                onDeactivate: () => handleFilterChange('clientSkill', []),
                 onChange: (selected) => handleFilterChange('clientSkill', selected)
             }
         },
@@ -43,8 +48,10 @@ const SearchInput = ({
             id: 3,
             component: FilterButton,
             props: {
+                isActive: false,
                 label: "Certified Trainer",
                 filter: filters.trainingCertificationRequired,
+                onDeactivate: () => toggleCertificationFilter("trainingCertificationRequired"),
                 toggleFilter: () => toggleCertificationFilter("trainingCertificationRequired")
             }
         },
@@ -52,8 +59,10 @@ const SearchInput = ({
             id: 4,
             component: FilterButton,
             props: {
+                isActive: false,
                 label: "Certified Nutritionist",
                 filter: filters.nutritionCertificationRequired,
+                onDeactivate: () => toggleCertificationFilter("nutritionCertificationRequired"),
                 toggleFilter: () => toggleCertificationFilter("nutritionCertificationRequired")
             }
         },
@@ -61,12 +70,14 @@ const SearchInput = ({
             id: 5,
             component: FilterRange,
             props: {
+                isActive: false,
                 label: "Years of Experience",
                 minId: "minYearsOfExperience",
                 maxId: "maxYearsOfExperience",
                 handleRangeChange: handleRangeChange,
                 range: "yearsOfExperienceRange",
                 filter: filters.yearsOfExperienceRange,
+                onDeactivate: () => handleRangeChange("yearsOfExperienceRange", { min: 0, max: 30 }),
                 options: yearsOfExperienceOptions
             }
         },
@@ -74,12 +85,14 @@ const SearchInput = ({
             id: 6,
             component: FilterRange,
             props: {
+                isActive: false,
                 label: "Hourly Rate",
                 minId: "minHourlyRate",
                 maxId: "maxHourlyRate",
                 handleRangeChange: handleRangeChange,
                 range: "hourlyRateRange",
                 filter: filters.hourlyRateRange,
+                onDeactivate: () => handleRangeChange("hourlyRateRange", { min: 0, max: 150 }),
                 options: hourlyRateOptions
             }
         }
@@ -104,6 +117,7 @@ const SearchInput = ({
     };
 
     const handleClearFilters = () => {
+        deactiveAllFilters();
         setInactiveFilters(initialInactiveFilters);
         setActiveFilters([]);
     };

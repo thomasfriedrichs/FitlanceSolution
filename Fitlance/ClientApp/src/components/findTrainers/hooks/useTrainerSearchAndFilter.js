@@ -34,18 +34,18 @@ const useTrainerSearchAndFilter = (trainers) => {
     const handleSearch = (event) => {
         setSearchQuery(event.target.value.toLowerCase());
     };
+    
+    const toggleCertificationFilter = (filterName) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            [filterName]: !prevFilters[filterName],
+        }));
+    };
 
     const handleFilterChange = (filterName, value) => {
         setFilters(prevFilters => ({
             ...prevFilters,
             [filterName]: Array.isArray(value) ? value : [],
-        }));
-    };
-
-    const toggleCertificationFilter = (filterName) => {
-        setFilters(prevFilters => ({
-            ...prevFilters,
-            [filterName]: !prevFilters[filterName],
         }));
     };
 
@@ -57,6 +57,17 @@ const useTrainerSearchAndFilter = (trainers) => {
                 [which]: value === "" ? "" : Number(value),
             },
         }));
+    };
+
+    const deactivateAllFilters = () => {
+        setFilters({
+            availability: [],
+            clientSkill: [],
+            trainingCertificationRequired: false,
+            nutritionCertificationRequired: false,
+            yearsOfExperienceRange: { min: 0, max: 30 },
+            hourlyRateRange: { min: 0, max: 150 },
+        });
     };
 
     const filteredTrainers = useMemo(() => {
@@ -85,6 +96,7 @@ const useTrainerSearchAndFilter = (trainers) => {
         toggleCertificationFilter,
         handleRangeChange,
         filteredTrainers,
+        deactivateAllFilters
     };
 };
 

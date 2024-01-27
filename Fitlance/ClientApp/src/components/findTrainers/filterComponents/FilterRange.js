@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -11,13 +11,24 @@ const FilterRange = ({
     handleRangeChange,
     range,
     filter,
-    options }) => {
+    options,
+    onAdd,
+    isActive
+}) => {
 
-    const { isOpen, setIsOpen, dropdownRef } = useDropdownControl(); 
+    const { isOpen, setIsOpen, dropdownRef } = useDropdownControl();
+    const [tempMin, setTempMin] = useState(filter.min);
+    const [tempMax, setTempMax] = useState(filter.max);
 
-    const minOptions = options.filter(option => option <= filter.max);
-    const maxOptions = options.filter(option => option >= filter.min);
+    const minOptions = options.filter(option => option <= tempMax);
+    const maxOptions = options.filter(option => option >= tempMin);
 
+    const handleAddFilter = () => {
+        handleRangeChange(range, tempMin, "min");
+        handleRangeChange(range, tempMax, "max");
+        setIsOpen(false);
+        onAdd();
+    };
     return (
         <div className="relative" ref={dropdownRef}>
             <button
@@ -34,8 +45,8 @@ const FilterRange = ({
                         <label htmlFor={minId} className="block text-sm font-medium text-gray-700">Min</label>
                         <select
                             id={minId}
-                            value={filter.min}
-                            onChange={(e) => handleRangeChange(range, e.target.value, "min")}
+                            value={tempMin}
+                            onChange={(e) => setTempMin(Number(e.target.value))}
                             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md shadow-sm"
                         >
                             {minOptions.map((year) => (
@@ -47,8 +58,8 @@ const FilterRange = ({
                         <label htmlFor={maxId} className="block text-sm font-medium text-gray-700">Max</label>
                         <select
                             id={maxId}
-                            value={filter.max}
-                            onChange={(e) => handleRangeChange(range, e.target.value, "max")}
+                            value={tempMax}
+                            onChange={(e) => setTempMax(Number(e.target.value))}
                             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md shadow-sm"
                         >
                             {maxOptions.map((year) => (
@@ -56,6 +67,12 @@ const FilterRange = ({
                             ))}
                         </select>
                     </div>
+                    <button
+                        className="bg-blue-500 text-white p-2 rounded-md mt-2"
+                        onClick={handleAddFilter}
+                    >
+                        Add Filter
+                    </button>
                 </div>
             )}
         </div>

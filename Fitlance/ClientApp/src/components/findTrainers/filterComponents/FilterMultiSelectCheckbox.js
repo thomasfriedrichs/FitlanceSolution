@@ -1,20 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import useDropdownControl from "../hooks/useDropdownControl";
 
-const MultiSelectCheckbox = ({ options, selectedOptions, onChange, label }) => {
+const MultiSelectCheckbox = ({
+    options,
+    selectedOptions,
+    onChange,
+    label,
+    isActive,
+    onAdd,
+}) => {
+
     const { isOpen, setIsOpen, dropdownRef } = useDropdownControl();
+    const [tempSelectedOptions, setTempSelectedOptions] = useState(selectedOptions);
 
     const handleToggle = (option) => {
-        let newSelectedOptions;
-        if (selectedOptions.includes(option)) {
-            newSelectedOptions = selectedOptions.filter(item => item !== option);
-        } else {
-            newSelectedOptions = [...selectedOptions, option];
-        }
-        onChange(newSelectedOptions);
+        setTempSelectedOptions(prev => {
+            if (prev.includes(option)) {
+                return prev.filter(item => item !== option);
+            } else {
+                return [...prev, option];
+            }
+        });
+    };
+
+    const handleAddFilter = () => {
+        onChange(tempSelectedOptions);
+        setIsOpen(false);
+        onAdd();
     };
 
     return (
@@ -33,12 +48,18 @@ const MultiSelectCheckbox = ({ options, selectedOptions, onChange, label }) => {
                         <label key={option} className="flex items-center space-x-3 p-2">
                             <input
                                 type="checkbox"
-                                checked={selectedOptions.includes(option)}
+                                checked={tempSelectedOptions.includes(option)}
                                 onChange={() => handleToggle(option)}
                             />
                             <span>{option}</span>
                         </label>
                     ))}
+                    <button
+                        className="bg-blue-500 text-white p-2 rounded-md mt-2"
+                        onClick={handleAddFilter}
+                    >
+                        Add Filter
+                    </button>
                 </div>
             )}
         </div>

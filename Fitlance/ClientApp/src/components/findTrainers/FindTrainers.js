@@ -17,6 +17,7 @@ const FindTrainers = () => {
     } = useLazyLoadTrainers();
     const {
         filters,
+        deactivateAllFilters,
         searchQuery,
         handleSearch,
         handleFilterChange,
@@ -67,6 +68,7 @@ const FindTrainers = () => {
                     toggleCertificationFilter={toggleCertificationFilter}
                     handleRangeChange={handleRangeChange}
                     filters={filters}
+                    deactivateAllFilters={deactivateAllFilters}
                 />
                 <div className="mt-10">
                     {filteredTrainers.map((trainer, i) => {
