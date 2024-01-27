@@ -28,7 +28,6 @@ const SearchInput = ({
                 label: "Select Availability",
                 options: availabilityOptions,
                 selectedOptions: filters.availability,
-                onDeactivate: () => handleFilterChange('availability', []),
                 onChange: (selected) => handleFilterChange('availability', selected)
             }
         },
@@ -40,7 +39,6 @@ const SearchInput = ({
                 label: "Select Skill Level",
                 options: skillLevelOptions,
                 selectedOptions: filters.clientSkill,
-                onDeactivate: () => handleFilterChange('clientSkill', []),
                 onChange: (selected) => handleFilterChange('clientSkill', selected)
             }
         },
@@ -51,7 +49,6 @@ const SearchInput = ({
                 isActive: false,
                 label: "Certified Trainer",
                 filter: filters.trainingCertificationRequired,
-                onDeactivate: () => toggleCertificationFilter("trainingCertificationRequired"),
                 toggleFilter: () => toggleCertificationFilter("trainingCertificationRequired")
             }
         },
@@ -62,7 +59,6 @@ const SearchInput = ({
                 isActive: false,
                 label: "Certified Nutritionist",
                 filter: filters.nutritionCertificationRequired,
-                onDeactivate: () => toggleCertificationFilter("nutritionCertificationRequired"),
                 toggleFilter: () => toggleCertificationFilter("nutritionCertificationRequired")
             }
         },
@@ -77,7 +73,6 @@ const SearchInput = ({
                 handleRangeChange: handleRangeChange,
                 range: "yearsOfExperienceRange",
                 filter: filters.yearsOfExperienceRange,
-                onDeactivate: () => handleRangeChange("yearsOfExperienceRange", { min: 0, max: 30 }),
                 options: yearsOfExperienceOptions
             }
         },
@@ -92,7 +87,6 @@ const SearchInput = ({
                 handleRangeChange: handleRangeChange,
                 range: "hourlyRateRange",
                 filter: filters.hourlyRateRange,
-                onDeactivate: () => handleRangeChange("hourlyRateRange", { min: 0, max: 150 }),
                 options: hourlyRateOptions
             }
         }
