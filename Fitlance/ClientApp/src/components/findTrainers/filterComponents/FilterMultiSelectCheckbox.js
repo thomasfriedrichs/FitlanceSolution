@@ -9,10 +9,10 @@ const MultiSelectCheckbox = ({
     selectedOptions,
     onChange,
     label,
-    isActive,
     onAdd,
 }) => {
 
+    const [isActive, setIsActive] = useState(false); 
     const { isOpen, setIsOpen, dropdownRef } = useDropdownControl();
     const [tempSelectedOptions, setTempSelectedOptions] = useState(selectedOptions);
 
@@ -30,6 +30,7 @@ const MultiSelectCheckbox = ({
         onChange(tempSelectedOptions);
         setIsOpen(false);
         onAdd();
+        setIsActive(true);
     };
 
     return (

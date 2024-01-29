@@ -11,20 +11,21 @@ const SearchInput = ({
     toggleCertificationFilter,
     handleRangeChange,
     filters = {},
-    deactiveAllFilters
+    deactivateAllFilters
 }) => {
 
     const hourlyRateOptions = Array.from({ length: (150 / 5) + 1 }, (_, index) => index * 5);
     const yearsOfExperienceOptions = Array.from({ length: 31 }, (_, index) => index);
     const availabilityOptions = ["Weekends", "Evening", "Afternoon", "WeekDays"];
     const skillLevelOptions = ["Beginner", "Advanced"];
+    const defaultHourlyRangeMax = 150;
+    const defaultYearsOfExperienceMax = 30;
 
     const filterDefinitions = {
         availability: {
             id: 1,
             component: FilterMultiSelectCheckbox,
             props: {
-                isActive: false,
                 label: "Select Availability",
                 options: availabilityOptions,
                 selectedOptions: filters.availability,
@@ -35,7 +36,6 @@ const SearchInput = ({
             id: 2,
             component: FilterMultiSelectCheckbox,
             props: {
-                isActive: false,
                 label: "Select Skill Level",
                 options: skillLevelOptions,
                 selectedOptions: filters.clientSkill,
@@ -46,7 +46,6 @@ const SearchInput = ({
             id: 3,
             component: FilterButton,
             props: {
-                isActive: false,
                 label: "Certified Trainer",
                 filter: filters.trainingCertificationRequired,
                 toggleFilter: () => toggleCertificationFilter("trainingCertificationRequired")
@@ -56,7 +55,6 @@ const SearchInput = ({
             id: 4,
             component: FilterButton,
             props: {
-                isActive: false,
                 label: "Certified Nutritionist",
                 filter: filters.nutritionCertificationRequired,
                 toggleFilter: () => toggleCertificationFilter("nutritionCertificationRequired")
@@ -66,28 +64,28 @@ const SearchInput = ({
             id: 5,
             component: FilterRange,
             props: {
-                isActive: false,
                 label: "Years of Experience",
                 minId: "minYearsOfExperience",
                 maxId: "maxYearsOfExperience",
                 handleRangeChange: handleRangeChange,
                 range: "yearsOfExperienceRange",
                 filter: filters.yearsOfExperienceRange,
-                options: yearsOfExperienceOptions
+                options: yearsOfExperienceOptions,
+                defaultMax: defaultYearsOfExperienceMax
             }
         },
         hourlyRate: {
             id: 6,
             component: FilterRange,
             props: {
-                isActive: false,
                 label: "Hourly Rate",
                 minId: "minHourlyRate",
                 maxId: "maxHourlyRate",
                 handleRangeChange: handleRangeChange,
                 range: "hourlyRateRange",
                 filter: filters.hourlyRateRange,
-                options: hourlyRateOptions
+                options: hourlyRateOptions,
+                defaultMax: defaultHourlyRangeMax
             }
         }
     };
@@ -111,7 +109,7 @@ const SearchInput = ({
     };
 
     const handleClearFilters = () => {
-        deactiveAllFilters();
+        deactivateAllFilters();
         setInactiveFilters(initialInactiveFilters);
         setActiveFilters([]);
     };

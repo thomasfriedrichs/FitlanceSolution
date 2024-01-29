@@ -1,6 +1,6 @@
 import React from "react";
 
-const FilterButton = ({ label, filter, toggleFilter, onRemove, onAdd, isActive }) => {
+const FilterButton = ({ label, filter, toggleFilter, onRemove, onAdd }) => {
 
     const handleClick = () => {
         toggleFilter();

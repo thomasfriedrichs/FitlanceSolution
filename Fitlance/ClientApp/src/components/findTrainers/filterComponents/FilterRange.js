@@ -3,6 +3,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import useDropdownControl from "../hooks/useDropdownControl";
+import useIsActiveFilterRange from "./hooks/useIsActiveFilterRange";
 
 const FilterRange = ({
     label,
@@ -13,10 +14,13 @@ const FilterRange = ({
     filter,
     options,
     onAdd,
-    isActive
+    onRemove,
+    defaultMax
 }) => {
 
     const { isOpen, setIsOpen, dropdownRef } = useDropdownControl();
+    const { isActive } = useIsActiveFilterRange(filter, defaultMax);
+    console.log(range)
     const [tempMin, setTempMin] = useState(filter.min);
     const [tempMax, setTempMax] = useState(filter.max);
 
@@ -29,6 +33,16 @@ const FilterRange = ({
         setIsOpen(false);
         onAdd();
     };
+
+    const handleRemoveFilter = () => {
+        handleRangeChange(range, 0, "min");
+        handleRangeChange(range, defaultMax, "max");
+        setIsOpen(false);
+        onRemove();
+    };
+
+    console.log("Range", range, "active?",isActive)
+
     return (
         <div className="relative" ref={dropdownRef}>
             <button
@@ -71,7 +85,13 @@ const FilterRange = ({
                         className="bg-blue-500 text-white p-2 rounded-md mt-2"
                         onClick={handleAddFilter}
                     >
-                        Add Filter
+                        {isActive ? "Update" : "Add Filter"}
+                    </button>
+                    <button
+                        className="bg-red-500 text-white p-2 rounded-md mt-2"
+                        onClick={handleRemoveFilter}
+                    >
+                        Remove Filter
                     </button>
                 </div>
             )}
