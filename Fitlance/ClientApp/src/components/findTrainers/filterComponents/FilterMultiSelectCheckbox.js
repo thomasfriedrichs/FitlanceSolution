@@ -3,6 +3,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import useDropdownControl from "../hooks/useDropdownControl";
+import useIsActiveFilterCheckbox from "./hooks/useIsActiveFilterCheckBox";
 
 const MultiSelectCheckbox = ({
     options,
@@ -10,11 +11,12 @@ const MultiSelectCheckbox = ({
     onChange,
     label,
     onAdd,
+    onRemove
 }) => {
 
-    const [isActive, setIsActive] = useState(false); 
     const { isOpen, setIsOpen, dropdownRef } = useDropdownControl();
     const [tempSelectedOptions, setTempSelectedOptions] = useState(selectedOptions);
+    const { isActive } = useIsActiveFilterCheckbox(selectedOptions);
 
     const handleToggle = (option) => {
         setTempSelectedOptions(prev => {
@@ -30,14 +32,19 @@ const MultiSelectCheckbox = ({
         onChange(tempSelectedOptions);
         setIsOpen(false);
         onAdd();
-        setIsActive(true);
+    };
+
+    const handleRemoveFilter = () => {
+        onChange([]);
+        setIsOpen(false);
+        onRemove();
     };
 
     return (
         <div className="relative" ref={dropdownRef}>
             <button
                 type="button"
-                className="bg-white rounded-md p-2 shadow-sm  w-full"
+                className={`${isActive ? "bg-green" : "bg-white"} rounded-md p-2 shadow-sm  w-full`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {label}
@@ -59,7 +66,13 @@ const MultiSelectCheckbox = ({
                         className="bg-blue-500 text-white p-2 rounded-md mt-2"
                         onClick={handleAddFilter}
                     >
-                        Add Filter
+                        {isActive ? "Update" : "Add Filter"}
+                    </button>
+                    <button
+                        onClick={handleRemoveFilter}
+                        className="bg-red-500 text-white p-2 rounded-md mt-2 ml-2"
+                    >
+                        Remove Filter
                     </button>
                 </div>
             )}
