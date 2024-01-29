@@ -20,7 +20,6 @@ const FilterRange = ({
 
     const { isOpen, setIsOpen, dropdownRef } = useDropdownControl();
     const { isActive } = useIsActiveFilterRange(filter, defaultMax);
-    console.log(range)
     const [tempMin, setTempMin] = useState(filter.min);
     const [tempMax, setTempMax] = useState(filter.max);
 
@@ -40,8 +39,6 @@ const FilterRange = ({
         setIsOpen(false);
         onRemove();
     };
-
-    console.log("Range", range, "active?",isActive)
 
     return (
         <div className="relative" ref={dropdownRef}>
