@@ -18,9 +18,6 @@ const FilterButton = ({ label, filter, toggleFilter, onRemove, onAdd }) => {
                 className={`px-4 py-2 rounded-md shadow-sm ${filter ? "bg-green text-white" : "bg-white"}`}
             >
                 { label }
-                {filter && (
-                    <span className="text-white ml-2">&#10003;</span>
-                )}
             </button>
         </div> 
     )
