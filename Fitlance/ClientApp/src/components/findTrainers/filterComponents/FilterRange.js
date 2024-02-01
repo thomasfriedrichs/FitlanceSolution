@@ -44,7 +44,7 @@ const FilterRange = ({
         <div className="relative" ref={dropdownRef}>
             <button
                 type="button"
-                className={`${isActive ? "bg-green text-white" : "bg-white"} font-semibold rounded-md p-2 shadow-sm  w-full`}
+                className={`${isActive ? "bg-green text-white font-bold" : "bg-white font-semibold"}  rounded-md p-2 shadow-sm  w-full`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {label}
