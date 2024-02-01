@@ -15,7 +15,7 @@ const FilterButton = ({ label, filter, toggleFilter, onRemove, onAdd }) => {
         <div>
             <button
                 onClick={handleClick}
-                className={`px-4 py-2 rounded-md shadow-sm ${filter ? "bg-green text-white" : "bg-white"}`}
+                className={`px-4 py-2 rounded-md shadow-sm font-semibold ${filter ? "bg-green text-white" : "bg-white"}`}
             >
                 { label }
             </button>
