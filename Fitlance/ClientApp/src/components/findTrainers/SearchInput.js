@@ -126,11 +126,14 @@ const SearchInput = ({
 
             <div className="bg-slate-100 p-2 rounded-lg grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
                 {activeFilters.length >= 1 ?
-                    <button
-                        className="bg-red-500 text-white p-2 rounded-md col-span-1"
-                        onClick={handleClearFilters}>
-                        Reset
-                    </button>
+                    <>
+                        <button
+                            className="text-grey px-4 py-2 rounded-md font-semibold transition-colors duration-150 ease-in-out"
+                            onClick={handleClearFilters}
+                        >
+                            Reset
+                        </button>
+                    </>
                     : null
                 }
                 {activeFilters.map((filterDef) => {
