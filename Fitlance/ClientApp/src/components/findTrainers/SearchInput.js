@@ -124,7 +124,15 @@ const SearchInput = ({
                 className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary mb-4 md:mb-0"
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
+            <div className="bg-slate-100 p-2 rounded-lg grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
+                {activeFilters.length >= 1 ?
+                    <button
+                        className="bg-red-500 text-white p-2 rounded-md col-span-1"
+                        onClick={handleClearFilters}>
+                        Reset
+                    </button>
+                    : null
+                }
                 {activeFilters.map((filterDef) => {
                     const FilterComponent = filterDefinitions[filterDef].component;
                     const props = filterDefinitions[filterDef].props;
@@ -152,9 +160,7 @@ const SearchInput = ({
                     )
                 })}
             </div>
-            <button onClick={handleClearFilters}>
-                Reset
-            </button>
+           
         </div>
     );
 };
