@@ -12,14 +12,12 @@ const FilterButton = ({ label, filter, toggleFilter, onRemove, onAdd }) => {
     };
 
     return (
-        <div>
-            <button
-                onClick={handleClick}
-                className={`px-4 py-2 rounded-md shadow-sm ${filter ? "bg-green text-white font-bold" : "bg-white font-semibold"}`}
-            >
-                { label }
-            </button>
-        </div> 
+        <button
+            onClick={handleClick}
+            className={`px-4 py-2 rounded-md shadow-sm ${filter ? "bg-green text-white font-bold" : "bg-white font-semibold"}`}
+        >
+            { label }
+        </button>
     )
 };
 
