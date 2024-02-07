@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import FilterMultiSelectCheckbox from "./filterComponents/FilterMultiSelectCheckbox";
 import FilterButton from "./filterComponents/FilterButton";
 import FilterRange from "./filterComponents/FilterRange";
+import useOverflowFilters from "./filterComponents/hooks/useOverflowFilters";
 
 const SearchInput = ({
     searchQuery,
@@ -20,6 +21,8 @@ const SearchInput = ({
     const skillLevelOptions = ["Beginner", "Advanced"];
     const defaultHourlyRangeMax = 150;
     const defaultYearsOfExperienceMax = 30;
+    const filtersRef = useRef(null);
+    const { showOverflowIndicator } = useOverflowFilters(filtersRef);
 
     const filterDefinitions = {
         availability: {
@@ -124,7 +127,7 @@ const SearchInput = ({
                 className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary mb-4 md:mb-0"
             />
 
-            <div className="bg-slate-100 p-2 rounded-lg grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
+            <div ref={filtersRef} className="bg-slate-100 p-2 rounded-lg grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
                 {activeFilters.length >= 1 ?
                     <>
                         <button
@@ -162,6 +165,14 @@ const SearchInput = ({
                         />
                     )
                 })}
+                {showOverflowIndicator && (
+                    <button
+                        className="ml-auto px-4 py-2 text-sm text-white bg-blue-500 rounded-md"
+                    // Toggle functionality to show overflow filters
+                    >
+                        More Filters
+                    </button>
+                )}
             </div>
            
         </div>
