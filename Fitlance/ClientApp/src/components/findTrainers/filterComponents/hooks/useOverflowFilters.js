@@ -1,12 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 
-/**
- * A custom hook that checks for overflow in a container and toggles the visibility
- * of an overflow indicator (e.g., a "More Filters" button).
- *
- * @param {React.RefObject} ref - A ref attached to the container element.
- * @returns {Object} An object containing the state and functions to manage overflow.
- */
 const useOverflowFilters = (ref) => {
     const [showOverflowIndicator, setShowOverflowIndicator] = useState(false);
 
