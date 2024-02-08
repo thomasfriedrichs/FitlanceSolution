@@ -127,7 +127,7 @@ const SearchInput = ({
                 className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary mb-4 md:mb-0"
             />
 
-            <div ref={filtersRef} className="bg-slate-100 p-2 rounded-lg grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
+            <div ref={filtersRef} className="flex flex-wrap items-center gap-4 p-2 rounded-lg bg-slate-100 w-full">
                 {activeFilters.length >= 1 ?
                     <>
                         <button
