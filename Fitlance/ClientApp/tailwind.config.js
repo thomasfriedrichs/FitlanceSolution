@@ -10,6 +10,7 @@
         },
         extend: {
             colors: {
+                'darkGreen': '#166906',
                 'green': '#1b8207',
                 'lavender': '#e6e6fa'
             },

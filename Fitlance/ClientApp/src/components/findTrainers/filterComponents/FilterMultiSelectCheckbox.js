@@ -61,7 +61,7 @@ const MultiSelectCheckbox = ({
                                 onChange={() => handleToggle(option)}
                             />
                             <span
-                                className={`w-4 h-4 inline-block mr-2 rounded-full border border-gray-300 align-middle ${tempSelectedOptions.includes(option) ? 'bg-green' : ''
+                                className={`transition-colors duration-300 ease-in-out w-4 h-4 inline-block mr-2 rounded-full border-2 border-gray-300 hover:border-gray-600 align-middle ${tempSelectedOptions.includes(option) ? 'bg-green hover:bg-darkGreen' : ''
                                     }`}
                             ></span>
                             <span>{option}</span>
