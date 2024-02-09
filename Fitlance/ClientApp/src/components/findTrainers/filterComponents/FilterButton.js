@@ -14,7 +14,7 @@ const FilterButton = ({ label, filter, toggleFilter, onRemove, onAdd }) => {
     return (
         <button
             onClick={handleClick}
-            className={`${filter ? "bg-green text-white font-bold" : "bg-white font-semibold"} px-4 py-2 rounded-full shadow-sm`}
+            className={`${filter ? "bg-green hover:bg-darkGreen text-white font-bold" : "bg-white font-semibold"} transition-colors border-2 hover:border-slate-400 duration-300 ease-in-out px-4 py-2 rounded-full shadow-sm`}
         >
             { label }
         </button>
