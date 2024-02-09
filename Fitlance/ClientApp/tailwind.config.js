@@ -10,7 +10,7 @@
         },
         extend: {
             colors: {
-                'green': '#0c0',
+                'green': '#1b8207',
                 'lavender': '#e6e6fa'
             },
             rotate: {

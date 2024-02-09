@@ -44,7 +44,7 @@ const MultiSelectCheckbox = ({
         <div className="relative" ref={dropdownRef}>
             <button
                 type="button"
-                className={`${isActive ? "bg-green text-white font-bold" : "bg-white font-semibold"} rounded-md p-2 shadow-sm  w-full`}
+                className={`${isActive ? "bg-green text-white font-bold" : "bg-white font-semibold"} rounded-full p-2 shadow-sm  w-full`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {label}
@@ -56,24 +56,31 @@ const MultiSelectCheckbox = ({
                         <label key={option} className="flex items-center space-x-3 p-2">
                             <input
                                 type="checkbox"
+                                className="hidden"
                                 checked={tempSelectedOptions.includes(option)}
                                 onChange={() => handleToggle(option)}
                             />
+                            <span
+                                className={`w-4 h-4 inline-block mr-2 rounded-full border border-gray-300 align-middle ${tempSelectedOptions.includes(option) ? 'bg-green' : ''
+                                    }`}
+                            ></span>
                             <span>{option}</span>
                         </label>
                     ))}
-                    <button
-                        className="bg-blue-500 text-white p-2 rounded-md mt-2"
-                        onClick={handleAddFilter}
-                    >
-                        {isActive ? "Update" : "Add Filter"}
-                    </button>
-                    <button
-                        onClick={handleRemoveFilter}
-                        className="bg-red-500 text-white p-2 rounded-md mt-2 ml-2"
-                    >
-                        Remove Filter
-                    </button>
+                    <div className="flex justify-around">
+                        <button
+                            className="transition-colors duration-300 ease-in-out hover:bg-green hover:text-white p-2 rounded-md mt-2"
+                            onClick={handleAddFilter}
+                        >
+                            {isActive ? "Update" : "Add"}
+                        </button>
+                        <button
+                            onClick={handleRemoveFilter}
+                            className="transition-colors duration-300 ease-in-out hover:bg-slate-200 hover:text-slate-600 p-2 rounded-md mt-2 ml-2"
+                        >
+                            Reset
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
