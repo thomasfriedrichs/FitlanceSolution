@@ -78,18 +78,20 @@ const FilterRange = ({
                             ))}
                         </select>
                     </div>
-                    <button
-                        className="bg-blue-500 text-white p-2 rounded-md mt-2"
-                        onClick={handleAddFilter}
-                    >
-                        {isActive ? "Update" : "Add Filter"}
-                    </button>
-                    <button
-                        className="bg-red-500 text-white p-2 rounded-md mt-2"
-                        onClick={handleRemoveFilter}
-                    >
-                        Remove Filter
-                    </button>
+                    <div className="flex justify-around">
+                        <button
+                            className="transition-colors duration-300 ease-in-out hover:bg-green hover:text-white p-2 rounded-md mt-2"
+                            onClick={handleAddFilter}
+                        >
+                            {isActive ? "Update" : "Add"}
+                        </button>
+                        <button
+                            className="transition-colors duration-300 ease-in-out hover:bg-slate-200 hover:text-slate-600 p-2 rounded-md mt-2 ml-2"
+                            onClick={handleRemoveFilter}
+                        >
+                            Reset
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
