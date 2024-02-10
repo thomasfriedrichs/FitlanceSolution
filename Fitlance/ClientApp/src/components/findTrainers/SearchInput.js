@@ -126,19 +126,7 @@ const SearchInput = ({
                 placeholder="Search trainers"
                 className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary mb-4 md:mb-0"
             />
-
-            <div ref={filtersRef} className="flex flex-wrap items-center gap-4 p-2 rounded-lg bg-slate-100 w-full">
-                {activeFilters.length >= 1 ?
-                    <>
-                        <button
-                            className="text-grey px-4 py-2 rounded-md font-semibold transition-colors duration-150 ease-in-out"
-                            onClick={handleClearFilters}
-                        >
-                            Reset
-                        </button>
-                    </>
-                    : null
-                }
+            <div ref={filtersRef} className="flex flex-wrap bg-slate-100 items-center gap-4 p-2 rounded-lg">
                 {activeFilters.map((filterDef) => {
                     const FilterComponent = filterDefinitions[filterDef].component;
                     const props = filterDefinitions[filterDef].props;
@@ -165,16 +153,15 @@ const SearchInput = ({
                         />
                     )
                 })}
-                {showOverflowIndicator && (
+                {activeFilters.length >= 1 && (
                     <button
-                        className="ml-auto px-4 py-2 text-sm text-white bg-blue-500 rounded-md"
-                    // Toggle functionality to show overflow filters
+                        className="text-grey px-4 py-2 rounded-md font-semibold transition-colors duration-300 ease-in-out hover:bg-slate-200 "
+                        onClick={handleClearFilters}
                     >
-                        More Filters
+                        Reset
                     </button>
                 )}
-            </div>
-           
+            </div>           
         </div>
     );
 };
