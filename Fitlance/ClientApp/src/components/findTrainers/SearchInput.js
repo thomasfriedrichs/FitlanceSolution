@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import FilterMultiSelectCheckbox from "./filterComponents/FilterMultiSelectCheckbox";
 import FilterButton from "./filterComponents/FilterButton";
@@ -93,6 +95,11 @@ const SearchInput = ({
     const initialInactiveFilters = Object.keys(filterDefinitions);
     const [activeFilters, setActiveFilters] = useState([]);
     const [inactiveFilters, setInactiveFilters] = useState(initialInactiveFilters);
+    const [showFilters, setShowFilters] = useState(true);
+
+    const toggleFilters = () => {
+        setShowFilters(!showFilters);
+    };
 
     const handleAddFilter = (filter) => {
         if (!activeFilters.includes(filter)) {
@@ -116,49 +123,61 @@ const SearchInput = ({
 
     return (
         <div className="space-y-4 md:space-y-0 md:flex md:flex-wrap md:justify-between">
-            <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearch}
-                placeholder="Search trainers"
-                className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary mb-4 md:mb-0"
-            />
-            <div className="flex flex-wrap bg-slate-100 items-center gap-4 p-2 rounded-lg w-full">
-                {activeFilters.map((filterDef) => {
-                    const FilterComponent = filterDefinitions[filterDef].component;
-                    const props = filterDefinitions[filterDef].props;
-                    const id = filterDefinitions[filterDef].id;
-                    return (
-                        <FilterComponent
-                            key={id}
-                            {...props}
-                            onRemove={() => handleRemoveFilter(filterDef)}
-                            onAdd={() => handleAddFilter(filterDef)}
-                            />
-                    )
-                })}
-                {inactiveFilters.map((filterDef) => {
-                    const FilterComponent = filterDefinitions[filterDef].component;
-                    const props = filterDefinitions[filterDef].props;
-                    const id = filterDefinitions[filterDef].id;
-                    return (
-                        <FilterComponent
-                            key={id}
-                            {...props}
-                            onRemove={() => handleRemoveFilter(filterDef)}
-                            onAdd={() => handleAddFilter(filterDef)}
-                            />
-                    )
-                })}
-                {activeFilters.length >= 1 && (
-                    <button
-                        className="text-grey px-4 py-2 rounded-md font-semibold transition-colors duration-300 ease-in-out hover:bg-slate-200 "
-                        onClick={handleClearFilters}
-                    >
-                        Reset
-                    </button>
-                )}
+            <div className="relative w-full mb-4 md:mb-0">
+                <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    placeholder="Search trainers"
+                    className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                />
+                <button
+                    onClick={toggleFilters}
+                    className="absolute transition-colors duration-300 ease-in-out inset-y-0 right-0 px-4 text-gray-600 hover:text-gray-800 flex items-center bg-transparent border-none"
+                >
+                    {showFilters ? 'Hide' : 'Show'} Filters
+                    <FontAwesomeIcon icon={showFilters ? faChevronUp : faChevronDown} className="ml-2"/>
+
+                </button>
             </div>
+            {showFilters && (
+                <div className="flex flex-wrap bg-slate-100 items-center gap-4 p-2 rounded-lg w-full">
+                    {activeFilters.map((filterDef) => {
+                        const FilterComponent = filterDefinitions[filterDef].component;
+                        const props = filterDefinitions[filterDef].props;
+                        const id = filterDefinitions[filterDef].id;
+                        return (
+                            <FilterComponent
+                                key={id}
+                                {...props}
+                                onRemove={() => handleRemoveFilter(filterDef)}
+                                onAdd={() => handleAddFilter(filterDef)}
+                                />
+                        )
+                    })}
+                    {inactiveFilters.map((filterDef) => {
+                        const FilterComponent = filterDefinitions[filterDef].component;
+                        const props = filterDefinitions[filterDef].props;
+                        const id = filterDefinitions[filterDef].id;
+                        return (
+                            <FilterComponent
+                                key={id}
+                                {...props}
+                                onRemove={() => handleRemoveFilter(filterDef)}
+                                onAdd={() => handleAddFilter(filterDef)}
+                                />
+                        )
+                    })}
+                    {activeFilters.length >= 1 && (
+                        <button
+                            className="text-grey px-4 py-2 rounded-md font-semibold transition-colors duration-300 ease-in-out hover:bg-slate-200 "
+                            onClick={handleClearFilters}
+                        >
+                            Reset
+                        </button>
+                    )}
+                </div>
+            )}
         </div>           
     );
 };
