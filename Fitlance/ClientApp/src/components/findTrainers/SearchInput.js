@@ -141,7 +141,7 @@ const SearchInput = ({
                 </button>
             </div>
             {showFilters && (
-                <div className="flex flex-wrap bg-slate-100 items-center gap-4 p-2 rounded-lg w-full">
+                <div className="flex flex-wrap bg-slate-100 justify-around gap-4 p-2 rounded-lg w-full">
                     {activeFilters.map((filterDef) => {
                         const FilterComponent = filterDefinitions[filterDef].component;
                         const props = filterDefinitions[filterDef].props;
