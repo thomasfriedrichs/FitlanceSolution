@@ -1,9 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 
 import FilterMultiSelectCheckbox from "./filterComponents/FilterMultiSelectCheckbox";
 import FilterButton from "./filterComponents/FilterButton";
 import FilterRange from "./filterComponents/FilterRange";
-import useOverflowFilters from "./filterComponents/hooks/useOverflowFilters";
 
 const SearchInput = ({
     searchQuery,
@@ -21,8 +20,6 @@ const SearchInput = ({
     const skillLevelOptions = ["Beginner", "Advanced"];
     const defaultHourlyRangeMax = 150;
     const defaultYearsOfExperienceMax = 30;
-    const filtersRef = useRef(null);
-    const { showOverflowIndicator } = useOverflowFilters(filtersRef);
 
     const filterDefinitions = {
         availability: {
@@ -126,7 +123,7 @@ const SearchInput = ({
                 placeholder="Search trainers"
                 className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary mb-4 md:mb-0"
             />
-            <div ref={filtersRef} className="flex flex-wrap bg-slate-100 items-center gap-4 p-2 rounded-lg">
+            <div className="flex flex-wrap bg-slate-100 items-center gap-4 p-2 rounded-lg w-full">
                 {activeFilters.map((filterDef) => {
                     const FilterComponent = filterDefinitions[filterDef].component;
                     const props = filterDefinitions[filterDef].props;
@@ -137,7 +134,7 @@ const SearchInput = ({
                             {...props}
                             onRemove={() => handleRemoveFilter(filterDef)}
                             onAdd={() => handleAddFilter(filterDef)}
-                        />
+                            />
                     )
                 })}
                 {inactiveFilters.map((filterDef) => {
@@ -150,7 +147,7 @@ const SearchInput = ({
                             {...props}
                             onRemove={() => handleRemoveFilter(filterDef)}
                             onAdd={() => handleAddFilter(filterDef)}
-                        />
+                            />
                     )
                 })}
                 {activeFilters.length >= 1 && (
@@ -161,8 +158,8 @@ const SearchInput = ({
                         Reset
                     </button>
                 )}
-            </div>           
-        </div>
+            </div>
+        </div>           
     );
 };
 
