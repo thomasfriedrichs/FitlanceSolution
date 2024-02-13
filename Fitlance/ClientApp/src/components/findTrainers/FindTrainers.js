@@ -18,12 +18,13 @@ const FindTrainers = () => {
     const {
         filters,
         deactivateAllFilters,
-        searchQuery,
+        input,
         handleSearch,
         handleFilterChange,
         toggleCertificationFilter,
         handleRangeChange,
         filteredTrainers,
+        handleInputChange
     } = useTrainerSearchAndFilter(displayedTrainers);
 
     if (isLoading) {
@@ -62,13 +63,14 @@ const FindTrainers = () => {
                 <SearchInput
                     type="text"
                     placeholder="Search trainers"
-                    value={searchQuery}
+                    value={input}
                     onChange={handleSearch}
                     handleFilterChange={handleFilterChange}
                     toggleCertificationFilter={toggleCertificationFilter}
                     handleRangeChange={handleRangeChange}
                     filters={filters}
                     deactivateAllFilters={deactivateAllFilters}
+                    handleInputChange={handleInputChange}
                 />
                 <div className="mt-10">
                     {filteredTrainers.map((trainer, i) => {

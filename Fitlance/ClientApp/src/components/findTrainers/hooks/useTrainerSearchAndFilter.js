@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 // A debouncing function to delay processing based on user input
-const useDebounce = (value, delay) => {
+/*const useDebounce = (value, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
 
     useEffect(() => {
@@ -15,10 +15,11 @@ const useDebounce = (value, delay) => {
     }, [value, delay]);
 
     return debouncedValue;
-};
+};*/
 
 const useTrainerSearchAndFilter = (trainers) => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [input , setInput] = useState('');
     const [filters, setFilters] = useState({
         availability: [],
         clientSkill: [],
@@ -29,10 +30,13 @@ const useTrainerSearchAndFilter = (trainers) => {
     });
 
     // Debounce search query to avoid unnecessary re-renders and computations
-    const debouncedSearchQuery = useDebounce(searchQuery, 200);
+    //const debouncedSearchQuery = useDebounce(searchQuery, 200);
+    const handleInputChange = (event) => {
+        setInput(event.target.value);
+    };
 
-    const handleSearch = (event) => {
-        setSearchQuery(event.target.value.toLowerCase());
+    const handleSearch = () => {
+        setSearchQuery(input);
     };
     
     const toggleCertificationFilter = (filterName) => {
@@ -70,9 +74,12 @@ const useTrainerSearchAndFilter = (trainers) => {
         });
     };
 
+    console.log("searchQuery", searchQuery)
+    console.log("input", input)
+
     const filteredTrainers = useMemo(() => {
         return trainers.filter(trainer => {
-            return trainer.firstName.toLowerCase().includes(debouncedSearchQuery) &&
+            return trainer.firstName.toLowerCase().includes(searchQuery) &&
                 (filters.availability.length === 0 || filters.availability.some(avail => trainer.availability.includes(avail))) &&
                 (filters.clientSkill.length === 0 || filters.clientSkill.some(skill => trainer.clientSkill.includes(skill))) &&
                 trainer.yearsOfExperience >= filters.yearsOfExperienceRange.min &&
@@ -84,10 +91,10 @@ const useTrainerSearchAndFilter = (trainers) => {
                 (!filters.nutritionCertificationRequired ||
                     (filters.nutritionCertificationRequired && (trainer.nutritionCertification?.length ?? 0) > 0))
             });
-    }, [trainers, debouncedSearchQuery, filters]);
+    }, [trainers, searchQuery, filters]);
 
     return {
-        searchQuery,
+        input,
         setSearchQuery,
         filters,
         setFilters,
@@ -96,7 +103,8 @@ const useTrainerSearchAndFilter = (trainers) => {
         toggleCertificationFilter,
         handleRangeChange,
         filteredTrainers,
-        deactivateAllFilters
+        deactivateAllFilters,
+        handleInputChange
     };
 };
 

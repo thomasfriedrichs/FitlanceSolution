@@ -7,13 +7,14 @@ import FilterButton from "./filterComponents/FilterButton";
 import FilterRange from "./filterComponents/FilterRange";
 
 const SearchInput = ({
-    searchQuery,
+    input,
     handleSearch,
     handleFilterChange,
     toggleCertificationFilter,
     handleRangeChange,
     filters = {},
-    deactivateAllFilters
+    deactivateAllFilters,
+    handleInputChange
 }) => {
 
     const hourlyRateOptions = Array.from({ length: (150 / 5) + 1 }, (_, index) => index * 5);
@@ -126,7 +127,8 @@ const SearchInput = ({
             <div className="relative w-full mb-4 md:mb-0">
                 <input
                     type="text"
-                    value={searchQuery}
+                    value={input}
+                    onChange={handleInputChange}
                     placeholder="Search trainers"
                     className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 />
