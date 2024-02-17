@@ -120,7 +120,7 @@ const SearchInput = ({
         deactivateAllFilters();
         setInactiveFilters(initialInactiveFilters);
         setActiveFilters([]);
-    };
+    };   
 
     return (
         <div className="space-y-4 md:space-y-0 md:flex md:flex-wrap md:justify-between">
