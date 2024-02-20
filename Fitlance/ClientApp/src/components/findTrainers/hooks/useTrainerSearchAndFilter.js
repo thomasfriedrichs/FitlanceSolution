@@ -108,4 +108,4 @@ const useTrainerSearchAndFilter = (trainers) => {
     };
 };
 
-export default useTrainerSearchAndFilter;  
+export default useTrainerSearchAndFilter;   
