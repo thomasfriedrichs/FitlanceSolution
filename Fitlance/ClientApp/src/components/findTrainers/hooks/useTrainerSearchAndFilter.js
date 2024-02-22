@@ -82,6 +82,7 @@ const useTrainerSearchAndFilter = (trainers) => {
             return trainer.firstName.toLowerCase().includes(searchQuery.toLowerCase()) &&
                 trainer.lastName.toLowerCase().includes(searchQuery.toLowerCase()) &&
                 trainer.clientSkill.toLowerCase().includes(searchQuery.toLowerCase()) &&
+                trainer.bio.toLowerCase().includes(searchQuery.toLowerCase()) &&
                 (filters.availability.length === 0 || filters.availability.some(avail => trainer.availability.includes(avail))) &&
                 (filters.clientSkill.length === 0 || filters.clientSkill.some(skill => trainer.clientSkill.includes(skill))) &&
                 trainer.yearsOfExperience >= filters.yearsOfExperienceRange.min &&
