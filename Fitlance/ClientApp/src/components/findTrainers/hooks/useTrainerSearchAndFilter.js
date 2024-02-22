@@ -1,21 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
-
-// A debouncing function to delay processing based on user input
-/*const useDebounce = (value, delay) => {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
-
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [value, delay]);
-
-    return debouncedValue;
-};*/
+import { useState, useMemo } from "react";
 
 const useTrainerSearchAndFilter = (trainers) => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -29,8 +12,6 @@ const useTrainerSearchAndFilter = (trainers) => {
         hourlyRateRange: { min: 0, max: 150 },
     });
 
-    // Debounce search query to avoid unnecessary re-renders and computations
-    //const debouncedSearchQuery = useDebounce(searchQuery, 200);
     const handleInputChange = (event) => {
         setInput(event.target.value);
     };
