@@ -79,8 +79,8 @@ const useTrainerSearchAndFilter = (trainers) => {
 
     const filteredTrainers = useMemo(() => {
         return trainers.filter(trainer => {
-            return trainer.firstName.toLowerCase().includes(searchQuery) &&
-                trainer.lastName.toLowerCase().includes(searchQuery) &&
+            return trainer.firstName.toLowerCase().includes(searchQuery.toLowerCase()) &&
+                trainer.lastName.toLowerCase().includes(searchQuery.toLowerCase()) &&
                 (filters.availability.length === 0 || filters.availability.some(avail => trainer.availability.includes(avail))) &&
                 (filters.clientSkill.length === 0 || filters.clientSkill.some(skill => trainer.clientSkill.includes(skill))) &&
                 trainer.yearsOfExperience >= filters.yearsOfExperienceRange.min &&
