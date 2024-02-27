@@ -19,7 +19,7 @@ const FindTrainers = () => {
         filters,
         deactivateAllFilters,
         input,
-        handleSearch,
+        handleSearchClick,
         handleFilterChange,
         toggleCertificationFilter,
         handleRangeChange,
@@ -64,7 +64,7 @@ const FindTrainers = () => {
                     type="text"
                     placeholder="Search trainers"
                     value={input}
-                    onChange={handleSearch}
+                    handleSearchClick={handleSearchClick}
                     handleFilterChange={handleFilterChange}
                     toggleCertificationFilter={toggleCertificationFilter}
                     handleRangeChange={handleRangeChange}

@@ -16,7 +16,7 @@ const useTrainerSearchAndFilter = (trainers) => {
         setInput(event.target.value);
     };
 
-    const handleSearch = () => {
+    const handleSearchClick = () => {
         setSearchQuery(input);
     };
     
@@ -57,13 +57,19 @@ const useTrainerSearchAndFilter = (trainers) => {
 
     console.log("searchQuery", searchQuery)
     console.log("input", input)
+    console.log("trainer", trainers[0])
+
+    const lowerCaseSearchQuery = searchQuery.toLowerCase();
 
     const filteredTrainers = useMemo(() => {
         return trainers.filter(trainer => {
-            return trainer.firstName.toLowerCase().includes(searchQuery.toLowerCase()) &&
-                trainer.lastName.toLowerCase().includes(searchQuery.toLowerCase()) &&
-                trainer.clientSkill.toLowerCase().includes(searchQuery.toLowerCase()) &&
-                trainer.bio.toLowerCase().includes(searchQuery.toLowerCase()) &&
+            const matchesSearchQuery = searchQuery ?
+                trainer.firstName.toLowerCase().includes(lowerCaseSearchQuery) &&
+                trainer.lastName.toLowerCase().includes(lowerCaseSearchQuery) &&
+                trainer.bio.toLowerCase().includes(lowerCaseSearchQuery)
+                : true;
+
+            const matchesFilters =
                 (filters.availability.length === 0 || filters.availability.some(avail => trainer.availability.includes(avail))) &&
                 (filters.clientSkill.length === 0 || filters.clientSkill.some(skill => trainer.clientSkill.includes(skill))) &&
                 trainer.yearsOfExperience >= filters.yearsOfExperienceRange.min &&
@@ -73,16 +79,18 @@ const useTrainerSearchAndFilter = (trainers) => {
                 (!filters.trainingCertificationRequired ||
                     (filters.trainingCertificationRequired && (trainer.certifications?.length ?? 0) > 0)) &&
                 (!filters.nutritionCertificationRequired ||
-                    (filters.nutritionCertificationRequired && (trainer.nutritionCertification?.length ?? 0) > 0))
-            });
-    }, [trainers, searchQuery, filters]);
+                    (filters.nutritionCertificationRequired && (trainer.nutritionCertification?.length ?? 0) > 0));
+
+           return matchesSearchQuery && matchesFilters;
+        });
+    }, [trainers, searchQuery, lowerCaseSearchQuery, filters]);
 
     return {
         input,
         setSearchQuery,
         filters,
         setFilters,
-        handleSearch,
+        handleSearchClick,
         handleFilterChange,
         toggleCertificationFilter,
         handleRangeChange,

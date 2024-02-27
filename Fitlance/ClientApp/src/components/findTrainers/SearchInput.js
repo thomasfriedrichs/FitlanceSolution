@@ -8,7 +8,7 @@ import FilterRange from "./filterComponents/FilterRange";
 
 const SearchInput = ({
     input,
-    handleSearch,
+    handleSearchClick,
     handleFilterChange,
     toggleCertificationFilter,
     handleRangeChange,
@@ -133,7 +133,7 @@ const SearchInput = ({
                     className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 /> 
                 <button
-                    onClick={handleSearch}
+                    onClick={handleSearchClick}
                     className="absolute transition-colors duration-300 ease-in-out inset-y-0 right-36 px-4 text-gray-600 hover:text-gray-800 flex items-center bg-transparent border-none"
                     >
                     Search
