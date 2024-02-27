@@ -59,14 +59,18 @@ const useTrainerSearchAndFilter = (trainers) => {
     console.log("input", input)
     console.log("trainer", trainers[0])
 
-    const lowerCaseSearchQuery = searchQuery.toLowerCase();
 
     const filteredTrainers = useMemo(() => {
+        const lowerCaseSearchQuery = searchQuery.toLowerCase();
+
         return trainers.filter(trainer => {
             const matchesSearchQuery = searchQuery ?
                 trainer.firstName.toLowerCase().includes(lowerCaseSearchQuery) ||
                 trainer.lastName.toLowerCase().includes(lowerCaseSearchQuery) ||
-                trainer.bio.toLowerCase().includes(lowerCaseSearchQuery)
+                trainer.bio.toLowerCase().includes(lowerCaseSearchQuery) ||
+                (trainer.certifications && trainer.certifications.some(cert => cert.toLowerCase().includes(lowerCaseSearchQuery))) ||
+                (trainer.clientSkill && trainer.clientSkill.some(skill => skill.toLowerCase().includes(lowerCaseSearchQuery))) ||
+                (trainer.availability && trainer.availability.some(cert => cert.toLowerCase().includes(lowerCaseSearchQuery)))
                 : true;
 
             const matchesFilters =
@@ -81,9 +85,9 @@ const useTrainerSearchAndFilter = (trainers) => {
                 (!filters.nutritionCertificationRequired ||
                     (filters.nutritionCertificationRequired && (trainer.nutritionCertification?.length ?? 0) > 0));
 
-           return matchesSearchQuery && matchesFilters;
+            return matchesSearchQuery && matchesFilters;
         });
-    }, [trainers, searchQuery, lowerCaseSearchQuery, filters]);
+    }, [trainers, searchQuery, filters]);
 
     return {
         input,
