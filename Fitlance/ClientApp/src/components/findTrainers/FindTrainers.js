@@ -33,7 +33,6 @@ const FindTrainers = () => {
         setInput('');
         setSearchQuery('');
         deactivateAllFilters();
-        handleSearchClick('');
     };
 
     if (isLoading) {
