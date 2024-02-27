@@ -97,7 +97,7 @@ const FindTrainers = () => {
                                         onClick={() => handleSearchReset()}
                                         className="px-6 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition-colors duration-200 ease-in-out"
                                     >
-                                        Reset Filters
+                                        Reset Search
                                     </button>
                                 </div>
                             </div>
