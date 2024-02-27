@@ -64,8 +64,8 @@ const useTrainerSearchAndFilter = (trainers) => {
     const filteredTrainers = useMemo(() => {
         return trainers.filter(trainer => {
             const matchesSearchQuery = searchQuery ?
-                trainer.firstName.toLowerCase().includes(lowerCaseSearchQuery) &&
-                trainer.lastName.toLowerCase().includes(lowerCaseSearchQuery) &&
+                trainer.firstName.toLowerCase().includes(lowerCaseSearchQuery) ||
+                trainer.lastName.toLowerCase().includes(lowerCaseSearchQuery) ||
                 trainer.bio.toLowerCase().includes(lowerCaseSearchQuery)
                 : true;
 
