@@ -129,6 +129,11 @@ const SearchInput = ({
                     type="text"
                     value={input} 
                     onChange={handleInputChange}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSearchClick();
+                        }
+                    }}
                     placeholder="Search trainers"
                     className="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 /> 
