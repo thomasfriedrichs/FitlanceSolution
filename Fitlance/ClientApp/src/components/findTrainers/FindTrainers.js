@@ -20,6 +20,7 @@ const FindTrainers = () => {
         deactivateAllFilters,
         input,
         setInput,
+        setSearchQuery,
         handleSearchClick,
         handleFilterChange,
         toggleCertificationFilter,
@@ -30,8 +31,9 @@ const FindTrainers = () => {
 
     const handleSearchReset = () => {
         setInput('');
+        setSearchQuery('');
         deactivateAllFilters();
-        handleSearchClick();
+        handleSearchClick('');
     };
 
     if (isLoading) {

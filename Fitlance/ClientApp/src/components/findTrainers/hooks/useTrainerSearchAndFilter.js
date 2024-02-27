@@ -16,7 +16,7 @@ const useTrainerSearchAndFilter = (trainers) => {
         setInput(event.target.value);
     };
 
-    const handleSearchClick = () => {
+    const handleSearchClick = (query = input) => {
         setSearchQuery(input);
     };
     
