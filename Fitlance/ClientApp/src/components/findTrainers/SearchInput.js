@@ -122,6 +122,7 @@ const SearchInput = ({
         setActiveFilters([]);
     };   
 
+    console.log("input", input)
     return (
         <div className="space-y-4 md:space-y-0 md:flex md:flex-wrap md:justify-between">
             <div className="relative w-full mb-4 md:mb-0">

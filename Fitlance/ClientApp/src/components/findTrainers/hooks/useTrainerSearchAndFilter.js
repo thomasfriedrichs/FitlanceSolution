@@ -91,6 +91,7 @@ const useTrainerSearchAndFilter = (trainers) => {
 
     return {
         input,
+        setInput,
         setSearchQuery,
         filters,
         setFilters,

@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import SingleTrainer from "./SingleTrainer";
@@ -19,6 +19,7 @@ const FindTrainers = () => {
         filters,
         deactivateAllFilters,
         input,
+        setInput,
         handleSearchClick,
         handleFilterChange,
         toggleCertificationFilter,
@@ -26,6 +27,12 @@ const FindTrainers = () => {
         filteredTrainers,
         handleInputChange
     } = useTrainerSearchAndFilter(displayedTrainers);
+
+    const handleSearchReset = () => {
+        setInput('');
+        deactivateAllFilters();
+        handleSearchClick();
+    };
 
     if (isLoading) {
         return (
@@ -63,7 +70,7 @@ const FindTrainers = () => {
                 <SearchInput
                     type="text"
                     placeholder="Search trainers"
-                    value={input}
+                    input={input}
                     handleSearchClick={handleSearchClick}
                     handleFilterChange={handleFilterChange}
                     toggleCertificationFilter={toggleCertificationFilter}
@@ -73,14 +80,27 @@ const FindTrainers = () => {
                     handleInputChange={handleInputChange}
                 />
                 <div className="mt-10">
-                    {filteredTrainers.map((trainer, i) => {
-                        return (
-                            <SingleTrainer
-                                key={i}
-                                trainer={trainer}
-                            />
-                        );
-                    })}
+                    {filteredTrainers.length > 0 ? (
+                        filteredTrainers.map((trainer, i) => (
+                            <SingleTrainer key={i} trainer={trainer} />
+                        ))
+                    ) : (
+                            <div className="text-center mt-10 p-4 md:p-8 bg-white rounded-lg shadow">
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-4">No Trainers Found</h2>
+                                <p className="text-md text-gray-600">We couldn't find any trainers matching your search criteria.</p>
+                                <div className="mt-6">
+                                    <FontAwesomeIcon icon={faSearch} size="3x" className="text-gray-400 mb-4" />
+                                    <p className="mb-6">Try adjusting your search or filter settings.</p>
+                                    <button
+                                        onClick={() => handleSearchReset()}
+                                        className="px-6 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition-colors duration-200 ease-in-out"
+                                    >
+                                        Reset Filters
+                                    </button>
+                                </div>
+                            </div>
+
+                    )}
                     <div ref={loader} className="loading-indicator">
                         {isLoading && <span>Loading more trainers...</span>}
                     </div>
