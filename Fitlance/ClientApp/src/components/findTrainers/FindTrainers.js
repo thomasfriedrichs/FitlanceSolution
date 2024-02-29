@@ -26,7 +26,8 @@ const FindTrainers = () => {
         toggleCertificationFilter,
         handleRangeChange,
         filteredTrainers,
-        handleInputChange
+        handleInputChange,
+        handleRatingChange
     } = useTrainerSearchAndFilter(displayedTrainers);
 
     const handleSearchReset = () => {
@@ -79,6 +80,7 @@ const FindTrainers = () => {
                     filters={filters}
                     deactivateAllFilters={deactivateAllFilters}
                     handleInputChange={handleInputChange}
+                    handleRatingChange={handleRatingChange}
                 />
                 <div className="mt-10">
                     {filteredTrainers.length > 0 ? (

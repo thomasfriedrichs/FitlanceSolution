@@ -13,6 +13,7 @@ const SearchInput = ({
     handleArrayFilterChange,
     toggleCertificationFilter,
     handleRangeChange,
+    handleRatingChange,
     filters = {},
     deactivateAllFilters,
     handleInputChange
@@ -99,7 +100,7 @@ const SearchInput = ({
                 label: "Select Rating",
                 ratingOptions: ["3.6", "3.8", "4.0", "4.2", "4.4", "4.6", "4.8"],
                 filter: filters.rating,
-                onChange: (newRating) => handleFilterChange('rating', newRating),
+                onChange: (newRating) => handleRatingChange(newRating),
                 onAdd: () => handleAddFilter('ratingFilter'),
                 onRemove: () => handleRemoveFilter('ratingFilter'),
             }

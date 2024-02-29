@@ -45,6 +45,13 @@ const useTrainerSearchAndFilter = (trainers) => {
         }));
     };
 
+    const handleRatingChange = (value) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            rating: value,
+        }));
+    };
+
     const deactivateAllFilters = () => {
         setFilters({
             availability: [],
@@ -98,7 +105,8 @@ const useTrainerSearchAndFilter = (trainers) => {
         handleRangeChange,
         filteredTrainers,
         deactivateAllFilters,
-        handleInputChange
+        handleInputChange,
+        handleRatingChange
     };
 };
 
