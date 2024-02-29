@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterMultiSelectCheckbox from "./filterComponents/FilterMultiSelectCheckbox";
 import FilterButton from "./filterComponents/FilterButton";
 import FilterRange from "./filterComponents/FilterRange";
+import RatingFilter from "./filterComponents/RatingFilter";
 
 const SearchInput = ({
     input,
@@ -89,6 +90,18 @@ const SearchInput = ({
                 filter: filters.hourlyRateRange,
                 options: hourlyRateOptions,
                 defaultMax: defaultHourlyRangeMax
+            }
+        },
+        ratingFilter: {
+            id: 7,
+            component: RatingFilter,
+            props: {
+                label: "Select Rating",
+                ratingOptions: ["3.6", "3.8", "4.0", "4.2", "4.4", "4.6", "4.8"],
+                selectedRating: filters.rating,
+                onChange: (newRating) => handleFilterChange('rating', newRating),
+                onAdd: () => handleAddFilter('ratingFilter'),
+                onRemove: () => handleRemoveFilter('ratingFilter'),
             }
         }
     };

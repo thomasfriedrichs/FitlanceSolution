@@ -10,6 +10,7 @@ const useTrainerSearchAndFilter = (trainers) => {
         nutritionCertificationRequired: false,
         yearsOfExperienceRange: {min: 0, max: 30},
         hourlyRateRange: { min: 0, max: 150 },
+        rating: null,
     });
 
     const handleInputChange = (event) => {
@@ -75,6 +76,7 @@ const useTrainerSearchAndFilter = (trainers) => {
                 trainer.yearsOfExperience <= filters.yearsOfExperienceRange.max &&
                 trainer.hourlyRate >= filters.hourlyRateRange.min &&
                 trainer.hourlyRate <= filters.hourlyRateRange.max &&
+                trainer.rating >= filters.rating &&
                 (!filters.trainingCertificationRequired ||
                     (filters.trainingCertificationRequired && (trainer.certifications?.length ?? 0) > 0)) &&
                 (!filters.nutritionCertificationRequired ||
