@@ -28,7 +28,7 @@ const useTrainerSearchAndFilter = (trainers) => {
         }));
     };
 
-    const handleFilterChange = (filterName, value) => {
+    const handleArrayFilterChange = (filterName, value) => {
         setFilters(prevFilters => ({
             ...prevFilters,
             [filterName]: Array.isArray(value) ? value : [],
@@ -93,7 +93,7 @@ const useTrainerSearchAndFilter = (trainers) => {
         filters,
         setFilters,
         handleSearchClick,
-        handleFilterChange,
+        handleArrayFilterChange,
         toggleCertificationFilter,
         handleRangeChange,
         filteredTrainers,

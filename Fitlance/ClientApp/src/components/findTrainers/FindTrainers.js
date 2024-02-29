@@ -22,7 +22,7 @@ const FindTrainers = () => {
         setInput,
         setSearchQuery,
         handleSearchClick,
-        handleFilterChange,
+        handleArrayFilterChange,
         toggleCertificationFilter,
         handleRangeChange,
         filteredTrainers,
@@ -60,8 +60,6 @@ const FindTrainers = () => {
         );
     }
 
-    console.log("trainer", filteredTrainers[0])
-
     return (
         <div className="flex justify-center">
             <div className="mt-8 md:mt-12 mb-20 p-4 md:p-8 w-full md:w-[80vw] h-full">
@@ -75,7 +73,7 @@ const FindTrainers = () => {
                     placeholder="Search trainers"
                     input={input}
                     handleSearchClick={handleSearchClick}
-                    handleFilterChange={handleFilterChange}
+                    handleArrayFilterChange={handleArrayFilterChange}
                     toggleCertificationFilter={toggleCertificationFilter}
                     handleRangeChange={handleRangeChange}
                     filters={filters}

@@ -10,7 +10,7 @@ import RatingFilter from "./filterComponents/RatingFilter";
 const SearchInput = ({
     input,
     handleSearchClick,
-    handleFilterChange,
+    handleArrayFilterChange,
     toggleCertificationFilter,
     handleRangeChange,
     filters = {},
@@ -33,7 +33,7 @@ const SearchInput = ({
                 label: "Select Availability",
                 options: availabilityOptions,
                 selectedOptions: filters.availability,
-                onChange: (selected) => handleFilterChange('availability', selected)
+                onChange: (selected) => handleArrayFilterChange('availability', selected)
             }
         },
         clientSkill: {
@@ -43,7 +43,7 @@ const SearchInput = ({
                 label: "Select Skill Level",
                 options: skillLevelOptions,
                 selectedOptions: filters.clientSkill,
-                onChange: (selected) => handleFilterChange('clientSkill', selected)
+                onChange: (selected) => handleArrayFilterChange('clientSkill', selected)
             }
         },
         trainingCertification: {
@@ -98,13 +98,15 @@ const SearchInput = ({
             props: {
                 label: "Select Rating",
                 ratingOptions: ["3.6", "3.8", "4.0", "4.2", "4.4", "4.6", "4.8"],
-                selectedRating: filters.rating,
+                filter: filters.rating,
                 onChange: (newRating) => handleFilterChange('rating', newRating),
                 onAdd: () => handleAddFilter('ratingFilter'),
                 onRemove: () => handleRemoveFilter('ratingFilter'),
             }
         }
     };
+
+    console.log(filters.rating)
 
     const initialInactiveFilters = Object.keys(filterDefinitions);
     const [activeFilters, setActiveFilters] = useState([]);
@@ -134,6 +136,8 @@ const SearchInput = ({
         setInactiveFilters(initialInactiveFilters);
         setActiveFilters([]);
     };   
+
+    console.log(activeFilters)
 
     return (
         <div className="space-y-4 md:space-y-0 md:flex md:flex-wrap md:justify-between">

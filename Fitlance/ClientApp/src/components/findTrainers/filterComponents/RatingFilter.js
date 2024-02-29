@@ -6,15 +6,15 @@ import useDropdownControl from "../hooks/useDropdownControl";
 
 const RatingFilter = ({
     ratingOptions,
-    selectedRating,
+    filter,
     onChange,
     label,
     onAdd,
     onRemove,
 }) => {
     const { isOpen, setIsOpen, dropdownRef } = useDropdownControl();
-    const [tempRating, setTempRating] = useState(selectedRating);
-    const isActive = tempRating !== null;
+    const [tempRating, setTempRating] = useState(filter);
+    const isActive = filter !== null;
 
     const handleRatingChange = (newRating) => {
         setTempRating(newRating);
@@ -31,6 +31,8 @@ const RatingFilter = ({
         setIsOpen(false);
         onRemove();
     };
+
+    console.log(filter);
 
     return (
         <div className="relative" ref={dropdownRef}>
