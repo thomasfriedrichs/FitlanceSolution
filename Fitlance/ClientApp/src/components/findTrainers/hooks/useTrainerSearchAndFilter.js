@@ -60,6 +60,7 @@ const useTrainerSearchAndFilter = (trainers) => {
             nutritionCertificationRequired: false,
             yearsOfExperienceRange: { min: 0, max: 30 },
             hourlyRateRange: { min: 0, max: 150 },
+            rating: null,
         });
     };
 
