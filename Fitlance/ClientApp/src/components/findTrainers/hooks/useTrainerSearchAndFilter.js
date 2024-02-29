@@ -55,11 +55,6 @@ const useTrainerSearchAndFilter = (trainers) => {
         });
     };
 
-    console.log("searchQuery", searchQuery)
-    console.log("input", input)
-    console.log("trainer", trainers[0])
-
-
     const filteredTrainers = useMemo(() => {
         const lowerCaseSearchQuery = searchQuery.toLowerCase();
 
