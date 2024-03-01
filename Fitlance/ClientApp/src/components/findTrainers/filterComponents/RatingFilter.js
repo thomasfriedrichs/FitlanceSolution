@@ -57,13 +57,13 @@ const RatingFilter = ({
                     ))}
                     <div className="flex justify-around p-2">
                         <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            className="transition-colors duration-300 ease-in-out hover:bg-green hover:text-white p-2 rounded-md mt-2"
                             onClick={handleAddFilter}
                         >
-                            Apply
+                            {isActive ? "Update" : "Add"}
                         </button>
                         <button
-                            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
+                            className="transition-colors duration-300 ease-in-out hover:bg-slate-200 hover:text-slate-600 p-2 rounded-md mt-2 ml-2"
                             onClick={handleRemoveFilter}
                         >
                             Clear
