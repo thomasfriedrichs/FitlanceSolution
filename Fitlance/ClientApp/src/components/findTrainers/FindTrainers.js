@@ -65,7 +65,7 @@ const FindTrainers = () => {
         <div className="flex justify-center">
             <div className="mt-8 md:mt-12 mb-20 p-4 md:p-8 w-full md:w-[80vw] h-full">
                 <div className="flex justify-center mt-2">
-                    <h1 className="text-4xl">
+                    <h1 className="text-4xl p-4">
                         Find Trainers
                     </h1>
                 </div>
