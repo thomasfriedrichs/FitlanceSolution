@@ -1,12 +1,40 @@
 ﻿import React from "react";
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import SingleTrainer from "./SingleTrainer";
+import SearchInput from "./SearchInput";
 import useLazyLoadTrainers from "./hooks/useLazyLoadTrainers";
+import useTrainerSearchAndFilter from "./hooks/useTrainerSearchAndFilter";
 
 const FindTrainers = () => {
-    const { displayedTrainers, isLoading, isError, error, loader } = useLazyLoadTrainers();
+    const {
+        displayedTrainers,
+        isLoading,
+        isError,
+        error,
+        loader
+    } = useLazyLoadTrainers();
+    const {
+        filters,
+        deactivateAllFilters,
+        input,
+        setInput,
+        setSearchQuery,
+        handleSearchClick,
+        handleArrayFilterChange,
+        toggleCertificationFilter,
+        handleRangeChange,
+        filteredTrainers,
+        handleInputChange,
+        handleRatingChange
+    } = useTrainerSearchAndFilter(displayedTrainers);
+
+    const handleSearchReset = () => {
+        setInput('');
+        setSearchQuery('');
+        deactivateAllFilters();
+    };
 
     if (isLoading) {
         return (
@@ -36,20 +64,46 @@ const FindTrainers = () => {
     return (
         <div className="flex justify-center">
             <div className="mt-8 md:mt-12 mb-20 p-4 md:p-8 w-full md:w-[80vw] h-full">
-                <div className="flex justify-start mt-2">
-                    <h1 className="text-4xl">
+                <div className="flex justify-center mt-2">
+                    <h1 className="text-4xl p-4">
                         Find Trainers
                     </h1>
                 </div>
+                <SearchInput
+                    type="text"
+                    placeholder="Search trainers"
+                    input={input}
+                    handleSearchClick={handleSearchClick}
+                    handleArrayFilterChange={handleArrayFilterChange}
+                    toggleCertificationFilter={toggleCertificationFilter}
+                    handleRangeChange={handleRangeChange}
+                    filters={filters}
+                    deactivateAllFilters={deactivateAllFilters}
+                    handleInputChange={handleInputChange}
+                    handleRatingChange={handleRatingChange}
+                />
                 <div className="mt-10">
-                    {displayedTrainers.map((trainer, i) => {
-                        return (
-                            <SingleTrainer
-                                key={i}
-                                trainer={trainer}
-                            />
-                        );
-                    })}
+                    {filteredTrainers.length > 0 ? (
+                        filteredTrainers.map((trainer, i) => (
+                            <SingleTrainer key={i} trainer={trainer} />
+                        ))
+                    ) : (
+                            <div className="text-center mt-10 p-4 md:p-8 bg-white rounded-lg shadow">
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-4">No Trainers Found</h2>
+                                <p className="text-md text-gray-600">We couldn't find any trainers matching your search criteria.</p>
+                                <div className="mt-6">
+                                    <FontAwesomeIcon icon={faSearch} size="3x" className="text-gray-400 mb-4" />
+                                    <p className="mb-6">Try adjusting your search or filter settings.</p>
+                                    <button
+                                        onClick={() => handleSearchReset()}
+                                        className="px-6 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition-colors duration-200 ease-in-out"
+                                    >
+                                        Reset Search
+                                    </button>
+                                </div>
+                            </div>
+
+                    )}
                     <div ref={loader} className="loading-indicator">
                         {isLoading && <span>Loading more trainers...</span>}
                     </div>

@@ -25,12 +25,12 @@ const useLazyLoadTrainers = (batchSize = 10) => {
         const observerInstance = new IntersectionObserver((entries) => {
             // Check if loader is in view and more trainers are available to load
             if (entries[0].isIntersecting && !isFetchingMore && data && displayedTrainers.length < data.length) {
-                setIsFetchingMore(true);  // Set state to indicate more trainers are being fetched
-                loadMoreTrainers();       // Call the function to load more trainers
+                setIsFetchingMore(true); 
+                loadMoreTrainers();
             }
         }, { threshold: 1.0 });  // The threshold sets when the observer's callback should be executed
 
-        observer.current = observerInstance;  // Assigning the observer instance to the ref
+        observer.current = observerInstance; 
 
         let currentLoader = loader.current;  // Capturing the current loader element
         if (currentLoader) {
