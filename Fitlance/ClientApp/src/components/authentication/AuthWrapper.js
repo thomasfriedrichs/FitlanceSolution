@@ -33,7 +33,7 @@ const AuthWrapper = ({ isFormVisible, setIsFormVisible }) => {
                 <div className="flex flex-row justify-evenly">
                     <div className="w-[50%] text-center">
                         <button
-                            className={currentTab === 0 ? "bg-slate-300" : "bg-green w-full rounded-full"}
+                            className={currentTab === 0 ? "bg-slate-300 p-2" : "bg-green w-full rounded-full p-2 text-white"}
                             onClick={setToLogin}
                         >
                             Login
@@ -41,7 +41,7 @@ const AuthWrapper = ({ isFormVisible, setIsFormVisible }) => {
                     </div>
                     <div className="w-[50%] text-center">
                         <button
-                            className={currentTab === 1 ? "bg-slate-300" : "bg-green w-full rounded-full"}
+                            className={currentTab === 1 ? "bg-slate-300 p-2" : "bg-green w-full rounded-full p-2 text-white"}
                             onClick={setToRegister}
                         >
                             Sign up

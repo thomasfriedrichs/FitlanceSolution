@@ -108,11 +108,11 @@ const Register = () => {
                                 aria-labelledby="radio-group"
                                 className="flex flex-row justify-around"
                             >
-                                <label htmlFor="user" className={` w-36 text-center rounded-full ${values.role === "User" ? "bg-green" : ""}`}>
+                                <label htmlFor="user" className={`cursor-pointer w-36 text-center rounded-full p-2 transition-colors border-2 hover:border-slate-400 duration-300 ease-in-out ${values.role === "User" ? "bg-green text-white" : "hover:border-2"}`}>
                                     <Field type="radio" id="user" name="role" value="User" className="hidden" />
                                     Sign up as User
                                 </label>
-                                <label htmlFor="trainer" className={` w-36 text-center rounded-full ${values.role === "Trainer" ? "bg-green" : ""}`}>
+                                <label htmlFor="trainer" className={`cursor-pointer w-36 text-center rounded-full p-2 transition-colors border-2 hover:border-slate-400 duration-300 ease-in-out ${values.role === "Trainer" ? "bg-green text-white" : ""}`}>
                                     <Field type="radio" id="trainer" name="role" value="Trainer" className="hidden" />
                                     Sign up as Trainer
                                 </label>
@@ -120,7 +120,7 @@ const Register = () => {
                             <div className="flex justify-center">
                                 <button
                                     type="submit"
-                                    className={`my-4 w-[8rem] h-[2rem] border rounded-full ${!(dirty && isValid) ? "" : "bg-green"}`}
+                                    className={`my-4 w-[8rem] h-[2rem] rounded-full transition-colors border-2 hover:border-slate-400 duration-300 ease-in-out ${!(dirty && isValid) ? "" : "bg-green"}`}
                                     disabled={!(dirty && isValid)}
                                 >
                                     Sign up

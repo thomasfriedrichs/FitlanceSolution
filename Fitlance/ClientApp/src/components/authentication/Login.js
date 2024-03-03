@@ -107,13 +107,13 @@ const Login = () => {
             <div className="flex flex-row gap-4 justify-around">
                 <button
                     onClick={handleGuestUser}
-                    className="border rounded-full p-2 hover:bg-green transition duration-150"
+                    className="border rounded-full p-2 hover:bg-green hover:text-white transition duration-150"
                 >
                     Login as guest user
                 </button>
                 <button
                     onClick={handleGuestTrainer}
-                    className="border rounded-full p-2 hover:bg-green transition duration-150"
+                    className="border rounded-full p-2 hover:bg-green hover:text-white transition duration-150"
                 >
                     Login as guest trainer
                 </button>
